@@ -1,0 +1,251 @@
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccMmkVbB.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"handlers.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/handlers.c"
+  20              		.section	.text.TIM1_UP_TIM10_IRQHandler,"ax",%progbits
+  21              		.align	1
+  22              		.global	TIM1_UP_TIM10_IRQHandler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	TIM1_UP_TIM10_IRQHandler:
+  28              	.LFB130:
+   1:Core/Src/handlers.c **** #include "handlers.h"
+   2:Core/Src/handlers.c **** 
+   3:Core/Src/handlers.c **** void TIM1_UP_TIM10_IRQHandler(void){
+  29              		.loc 1 3 36 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   4:Core/Src/handlers.c ****     if (TIM10->SR & TIM_SR_UIF){       // Проверка флага обновления
+  34              		.loc 1 4 5 view .LVU1
+  35              		.loc 1 4 14 is_stmt 0 view .LVU2
+  36 0000 0F4B     		ldr	r3, .L4
+  37 0002 1B69     		ldr	r3, [r3, #16]
+  38              		.loc 1 4 8 view .LVU3
+  39 0004 13F0010F 		tst	r3, #1
+  40 0008 18D0     		beq	.L1
+   5:Core/Src/handlers.c ****         TIM10->SR &= ~TIM_SR_UIF;      // Сброс флага
+  41              		.loc 1 5 9 is_stmt 1 view .LVU4
+  42              		.loc 1 5 14 is_stmt 0 view .LVU5
+  43 000a 0D4A     		ldr	r2, .L4
+  44 000c 1369     		ldr	r3, [r2, #16]
+  45              		.loc 1 5 19 view .LVU6
+  46 000e 23F00103 		bic	r3, r3, #1
+  47 0012 1361     		str	r3, [r2, #16]
+   6:Core/Src/handlers.c ****         tick_count++; // Увеличиваем счетчик каждую 1 мс 
+  48              		.loc 1 6 9 is_stmt 1 view .LVU7
+  49              		.loc 1 6 19 is_stmt 0 view .LVU8
+  50 0014 0B4A     		ldr	r2, .L4+4
+  51 0016 1368     		ldr	r3, [r2]
+  52 0018 0133     		adds	r3, r3, #1
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccMmkVbB.s 			page 2
+
+
+  53 001a 1360     		str	r3, [r2]
+   7:Core/Src/handlers.c ****           // Уменьшение delay counters прямо в таймере
+   8:Core/Src/handlers.c ****         if (encoder1_delay > 0) encoder1_delay--;
+  54              		.loc 1 8 9 is_stmt 1 view .LVU9
+  55              		.loc 1 8 28 is_stmt 0 view .LVU10
+  56 001c 0A4B     		ldr	r3, .L4+8
+  57 001e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  58              		.loc 1 8 12 view .LVU11
+  59 0020 23B1     		cbz	r3, .L3
+  60              		.loc 1 8 33 is_stmt 1 discriminator 1 view .LVU12
+  61              		.loc 1 8 47 is_stmt 0 discriminator 1 view .LVU13
+  62 0022 094A     		ldr	r2, .L4+8
+  63 0024 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  64 0026 013B     		subs	r3, r3, #1
+  65 0028 DBB2     		uxtb	r3, r3
+  66 002a 1370     		strb	r3, [r2]
+  67              	.L3:
+   9:Core/Src/handlers.c ****         if (encoder2_delay > 0) encoder2_delay--;
+  68              		.loc 1 9 9 is_stmt 1 view .LVU14
+  69              		.loc 1 9 28 is_stmt 0 view .LVU15
+  70 002c 074B     		ldr	r3, .L4+12
+  71 002e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  72              		.loc 1 9 12 view .LVU16
+  73 0030 23B1     		cbz	r3, .L1
+  74              		.loc 1 9 33 is_stmt 1 discriminator 1 view .LVU17
+  75              		.loc 1 9 47 is_stmt 0 discriminator 1 view .LVU18
+  76 0032 064A     		ldr	r2, .L4+12
+  77 0034 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  78 0036 013B     		subs	r3, r3, #1
+  79 0038 DBB2     		uxtb	r3, r3
+  80 003a 1370     		strb	r3, [r2]
+  81              	.L1:
+  10:Core/Src/handlers.c ****         
+  11:Core/Src/handlers.c ****     }
+  12:Core/Src/handlers.c **** }
+  82              		.loc 1 12 1 view .LVU19
+  83 003c 7047     		bx	lr
+  84              	.L5:
+  85 003e 00BF     		.align	2
+  86              	.L4:
+  87 0040 00440140 		.word	1073824768
+  88 0044 00000000 		.word	tick_count
+  89 0048 00000000 		.word	encoder1_delay
+  90 004c 00000000 		.word	encoder2_delay
+  91              		.cfi_endproc
+  92              	.LFE130:
+  94              		.section	.text.EXTI9_5_IRQHandler,"ax",%progbits
+  95              		.align	1
+  96              		.global	EXTI9_5_IRQHandler
+  97              		.syntax unified
+  98              		.thumb
+  99              		.thumb_func
+ 101              	EXTI9_5_IRQHandler:
+ 102              	.LFB131:
+  13:Core/Src/handlers.c **** 
+  14:Core/Src/handlers.c **** void EXTI9_5_IRQHandler(void)
+  15:Core/Src/handlers.c **** {
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccMmkVbB.s 			page 3
+
+
+ 103              		.loc 1 15 1 is_stmt 1 view -0
+ 104              		.cfi_startproc
+ 105              		@ args = 0, pretend = 0, frame = 0
+ 106              		@ frame_needed = 0, uses_anonymous_args = 0
+ 107              		@ link register save eliminated.
+  16:Core/Src/handlers.c ****     // PB5
+  17:Core/Src/handlers.c ****     if (EXTI->PR & EXTI_PR_PR5)
+ 108              		.loc 1 17 5 view .LVU21
+ 109              		.loc 1 17 13 is_stmt 0 view .LVU22
+ 110 0000 124B     		ldr	r3, .L11
+ 111 0002 5B69     		ldr	r3, [r3, #20]
+ 112              		.loc 1 17 8 view .LVU23
+ 113 0004 13F0200F 		tst	r3, #32
+ 114 0008 0CD0     		beq	.L7
+  18:Core/Src/handlers.c ****     {
+  19:Core/Src/handlers.c ****         if (encoder1_delay == 0)
+ 115              		.loc 1 19 9 is_stmt 1 view .LVU24
+ 116              		.loc 1 19 28 is_stmt 0 view .LVU25
+ 117 000a 114B     		ldr	r3, .L11+4
+ 118 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 119              		.loc 1 19 12 view .LVU26
+ 120 000e 33B9     		cbnz	r3, .L8
+  20:Core/Src/handlers.c ****         {
+  21:Core/Src/handlers.c ****             encoder1_count++;
+ 121              		.loc 1 21 13 is_stmt 1 view .LVU27
+ 122              		.loc 1 21 27 is_stmt 0 view .LVU28
+ 123 0010 104A     		ldr	r2, .L11+8
+ 124 0012 1368     		ldr	r3, [r2]
+ 125 0014 0133     		adds	r3, r3, #1
+ 126 0016 1360     		str	r3, [r2]
+  22:Core/Src/handlers.c ****             encoder1_delay = 10; // антидребезг ~10 мс
+ 127              		.loc 1 22 13 is_stmt 1 view .LVU29
+ 128              		.loc 1 22 28 is_stmt 0 view .LVU30
+ 129 0018 0D4B     		ldr	r3, .L11+4
+ 130 001a 0A22     		movs	r2, #10
+ 131 001c 1A70     		strb	r2, [r3]
+ 132              	.L8:
+  23:Core/Src/handlers.c ****         }
+  24:Core/Src/handlers.c ****         EXTI->PR = EXTI_PR_PR5; // сброс флага
+ 133              		.loc 1 24 9 is_stmt 1 view .LVU31
+ 134              		.loc 1 24 18 is_stmt 0 view .LVU32
+ 135 001e 0B4B     		ldr	r3, .L11
+ 136 0020 2022     		movs	r2, #32
+ 137 0022 5A61     		str	r2, [r3, #20]
+ 138              	.L7:
+  25:Core/Src/handlers.c ****     }
+  26:Core/Src/handlers.c **** 
+  27:Core/Src/handlers.c ****     // PB6
+  28:Core/Src/handlers.c ****     if (EXTI->PR & EXTI_PR_PR6)
+ 139              		.loc 1 28 5 is_stmt 1 view .LVU33
+ 140              		.loc 1 28 13 is_stmt 0 view .LVU34
+ 141 0024 094B     		ldr	r3, .L11
+ 142 0026 5B69     		ldr	r3, [r3, #20]
+ 143              		.loc 1 28 8 view .LVU35
+ 144 0028 13F0400F 		tst	r3, #64
+ 145 002c 0CD0     		beq	.L6
+  29:Core/Src/handlers.c ****     {
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccMmkVbB.s 			page 4
+
+
+  30:Core/Src/handlers.c ****         if (encoder2_delay == 0)
+ 146              		.loc 1 30 9 is_stmt 1 view .LVU36
+ 147              		.loc 1 30 28 is_stmt 0 view .LVU37
+ 148 002e 0A4B     		ldr	r3, .L11+12
+ 149 0030 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 150              		.loc 1 30 12 view .LVU38
+ 151 0032 33B9     		cbnz	r3, .L10
+  31:Core/Src/handlers.c ****         {
+  32:Core/Src/handlers.c ****             encoder2_count++;
+ 152              		.loc 1 32 13 is_stmt 1 view .LVU39
+ 153              		.loc 1 32 27 is_stmt 0 view .LVU40
+ 154 0034 094A     		ldr	r2, .L11+16
+ 155 0036 1368     		ldr	r3, [r2]
+ 156 0038 0133     		adds	r3, r3, #1
+ 157 003a 1360     		str	r3, [r2]
+  33:Core/Src/handlers.c ****             encoder2_delay = 10; // антидребезг ~10 мс
+ 158              		.loc 1 33 13 is_stmt 1 view .LVU41
+ 159              		.loc 1 33 28 is_stmt 0 view .LVU42
+ 160 003c 064B     		ldr	r3, .L11+12
+ 161 003e 0A22     		movs	r2, #10
+ 162 0040 1A70     		strb	r2, [r3]
+ 163              	.L10:
+  34:Core/Src/handlers.c ****         }
+  35:Core/Src/handlers.c ****         EXTI->PR = EXTI_PR_PR6; // сброс флага
+ 164              		.loc 1 35 9 is_stmt 1 view .LVU43
+ 165              		.loc 1 35 18 is_stmt 0 view .LVU44
+ 166 0042 024B     		ldr	r3, .L11
+ 167 0044 4022     		movs	r2, #64
+ 168 0046 5A61     		str	r2, [r3, #20]
+ 169              	.L6:
+  36:Core/Src/handlers.c ****     }
+  37:Core/Src/handlers.c **** }...
+ 170              		.loc 1 37 1 view .LVU45
+ 171 0048 7047     		bx	lr
+ 172              	.L12:
+ 173 004a 00BF     		.align	2
+ 174              	.L11:
+ 175 004c 003C0140 		.word	1073822720
+ 176 0050 00000000 		.word	encoder1_delay
+ 177 0054 00000000 		.word	encoder1_count
+ 178 0058 00000000 		.word	encoder2_delay
+ 179 005c 00000000 		.word	encoder2_count
+ 180              		.cfi_endproc
+ 181              	.LFE131:
+ 183              		.text
+ 184              	.Letext0:
+ 185              		.file 2 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 186              		.file 3 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 187              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ 188              		.file 5 "Core/Inc/handlers.h"
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccMmkVbB.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 handlers.c
+C:\Users\Life\AppData\Local\Temp\ccMmkVbB.s:21     .text.TIM1_UP_TIM10_IRQHandler:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccMmkVbB.s:27     .text.TIM1_UP_TIM10_IRQHandler:00000000 TIM1_UP_TIM10_IRQHandler
+C:\Users\Life\AppData\Local\Temp\ccMmkVbB.s:87     .text.TIM1_UP_TIM10_IRQHandler:00000040 $d
+C:\Users\Life\AppData\Local\Temp\ccMmkVbB.s:95     .text.EXTI9_5_IRQHandler:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccMmkVbB.s:101    .text.EXTI9_5_IRQHandler:00000000 EXTI9_5_IRQHandler
+C:\Users\Life\AppData\Local\Temp\ccMmkVbB.s:175    .text.EXTI9_5_IRQHandler:0000004c $d
+
+UNDEFINED SYMBOLS
+tick_count
+encoder1_delay
+encoder2_delay
+encoder1_count
+encoder2_count

@@ -1,0 +1,130 @@
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccGtQNpk.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"task.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/task.c"
+  20              		.section	.text.UART_SendChar,"ax",%progbits
+  21              		.align	1
+  22              		.global	UART_SendChar
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	UART_SendChar:
+  28              	.LFB130:
+   1:Core/Src/task.c **** #include "task.h"
+   2:Core/Src/task.c **** #include "handlers.h"
+   3:Core/Src/task.c **** 
+   4:Core/Src/task.c **** void UART_SendChar(char c) {
+  29              		.loc 1 4 28 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34              	.LVL0:
+  35              	.L2:
+   5:Core/Src/task.c ****     while (!(USART2->SR & USART_SR_TXE)); // Ждем, пока буфер передачи осв�
+  36              		.loc 1 5 12 discriminator 1 view .LVU1
+  37              		.loc 1 5 20 is_stmt 0 discriminator 1 view .LVU2
+  38 0000 034B     		ldr	r3, .L3
+  39 0002 1B68     		ldr	r3, [r3]
+  40              		.loc 1 5 12 discriminator 1 view .LVU3
+  41 0004 13F0800F 		tst	r3, #128
+  42 0008 FAD0     		beq	.L2
+   6:Core/Src/task.c ****     USART2->DR = (uint8_t)c;              // Явное приведение
+  43              		.loc 1 6 5 is_stmt 1 view .LVU4
+  44              		.loc 1 6 16 is_stmt 0 view .LVU5
+  45 000a 014B     		ldr	r3, .L3
+  46 000c 5860     		str	r0, [r3, #4]
+   7:Core/Src/task.c **** }
+  47              		.loc 1 7 1 view .LVU6
+  48 000e 7047     		bx	lr
+  49              	.L4:
+  50              		.align	2
+  51              	.L3:
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccGtQNpk.s 			page 2
+
+
+  52 0010 00440040 		.word	1073759232
+  53              		.cfi_endproc
+  54              	.LFE130:
+  56              		.section	.text.UART_SendString,"ax",%progbits
+  57              		.align	1
+  58              		.global	UART_SendString
+  59              		.syntax unified
+  60              		.thumb
+  61              		.thumb_func
+  63              	UART_SendString:
+  64              	.LVL1:
+  65              	.LFB131:
+   8:Core/Src/task.c **** 
+   9:Core/Src/task.c **** void UART_SendString(char* str) {
+  66              		.loc 1 9 33 is_stmt 1 view -0
+  67              		.cfi_startproc
+  68              		@ args = 0, pretend = 0, frame = 0
+  69              		@ frame_needed = 0, uses_anonymous_args = 0
+  70              		.loc 1 9 33 is_stmt 0 view .LVU8
+  71 0000 10B5     		push	{r4, lr}
+  72              	.LCFI0:
+  73              		.cfi_def_cfa_offset 8
+  74              		.cfi_offset 4, -8
+  75              		.cfi_offset 14, -4
+  76 0002 0446     		mov	r4, r0
+  10:Core/Src/task.c ****  
+  11:Core/Src/task.c ****    while (*str) UART_SendChar(*str++);
+  77              		.loc 1 11 4 is_stmt 1 view .LVU9
+  78              		.loc 1 11 10 is_stmt 0 view .LVU10
+  79 0004 02E0     		b	.L6
+  80              	.LVL2:
+  81              	.L7:
+  82              		.loc 1 11 17 is_stmt 1 discriminator 2 view .LVU11
+  83              		.loc 1 11 35 is_stmt 0 discriminator 2 view .LVU12
+  84 0006 0134     		adds	r4, r4, #1
+  85              	.LVL3:
+  86              		.loc 1 11 17 discriminator 2 view .LVU13
+  87 0008 FFF7FEFF 		bl	UART_SendChar
+  88              	.LVL4:
+  89              	.L6:
+  90              		.loc 1 11 11 is_stmt 1 discriminator 1 view .LVU14
+  91 000c 2078     		ldrb	r0, [r4]	@ zero_extendqisi2
+  92 000e 0028     		cmp	r0, #0
+  93 0010 F9D1     		bne	.L7
+  12:Core/Src/task.c **** }
+  94              		.loc 1 12 1 is_stmt 0 view .LVU15
+  95 0012 10BD     		pop	{r4, pc}
+  96              		.loc 1 12 1 view .LVU16
+  97              		.cfi_endproc
+  98              	.LFE131:
+ 100              		.text
+ 101              	.Letext0:
+ 102              		.file 2 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 103              		.file 3 "C:/Bools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 104              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ARM GAS  C:\Users\Life\AppData\Local\Temp\ccGtQNpk.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 task.c
+C:\Users\Life\AppData\Local\Temp\ccGtQNpk.s:21     .text.UART_SendChar:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccGtQNpk.s:27     .text.UART_SendChar:00000000 UART_SendChar
+C:\Users\Life\AppData\Local\Temp\ccGtQNpk.s:52     .text.UART_SendChar:00000010 $d
+C:\Users\Life\AppData\Local\Temp\ccGtQNpk.s:57     .text.UART_SendString:00000000 $t
+C:\Users\Life\AppData\Local\Temp\ccGtQNpk.s:63     .text.UART_SendString:00000000 UART_SendString
+
+NO UNDEFINED SYMBOLS
