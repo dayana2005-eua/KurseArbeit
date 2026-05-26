@@ -13,10 +13,11 @@ void GPIO_init(void)
     */
     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN); // Разрешено тактирование портов А
     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN); // Разрешено тактирование портов B
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOCEN); // Разрешено тактирование портов С
 
     // НАСТРОЙКА ДАТЧИКОВ (PA0, PA1, PA4) -> ВХОД
 
-    CELAR_BIT(GPIOA->MODER, GPIO_MODER_MODE0); // Переводим в режим слушания порта PA0
+    CLEAR_BIT(GPIOA->MODER, GPIO_MODER_MODE0); // Переводим в режим слушания порта PA0
     CLEAR_BIT(GPIOA->MODER, GPIO_MODER_MODE1); // Переводим в режим слуашния порта PA1
     CLEAR_BIT(GPIOA->MODER, GPIO_MODER_MODE4); // Переводим в режим слушания порта PA4
 
@@ -49,6 +50,17 @@ void GPIO_init(void)
 
     MODIFY_REG(GPIOB->AFR[0], 0xFU << (3 * 4), 1U << (3 * 4)); // PB3 управляется AFRL (индекс 3, смещение 12 бит)
     MODIFY_REG(GPIOB->AFR[1], 0xFU << ((10 - 8) * 4), 1U << ((10 - 8) * 4)); // PB10 управляется AFRH (индекс 10, смещение (10 - 8) * 4 = 8 бит)
+
+    // НАСТРОЙКА УПРАВЛЯЮЩЕЙ КНОПКИ (PC13)
+
+    CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER13);
+    CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR13);
+
+    // НАСТРОЙКА ИНДИКАЦИОННОГО СВЕТОДИОДА (PC2)
+    CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER2);
+    SET_BIT(GPIOC->MODER, GPIO_MODER_MODER2_0);
+    CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR2);
+    SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR_2);
 }
 
 /**

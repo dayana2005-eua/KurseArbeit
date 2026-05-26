@@ -2,7 +2,9 @@
 #define INIT_H_
 
 #include <stdint.h>
+#include "stm32f4xx.h"
 #include "stm32f411xe.h"
+
 
 void GPIO_init(void);
 void RCC_init(void);

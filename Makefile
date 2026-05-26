@@ -139,6 +139,7 @@ Core/Src/init.c \
 Core/Src/motor.c \
 Core/Src/travel.c \
 Core/Src/interrupt.c \
+Core/Src/sensors.c \
 
 # ASM sources
 ASM_SOURCES =  \

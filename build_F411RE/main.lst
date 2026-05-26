@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc4eO96n.s 			page 1
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccW0V3cO.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,41 +27,252 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc4eO96n.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** #include <stdint.h>
-   2:Core/Src/main.c **** 
-   3:Core/Src/main.c **** int main()
-   4:Core/Src/main.c **** {
-  29              		.loc 1 4 1 view -0
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "init.h"
+   2:Core/Src/main.c **** #include "interrupt.h"
+   3:Core/Src/main.c **** #include "sensors.h"
+   4:Core/Src/main.c **** #include "motor.h"
+   5:Core/Src/main.c **** 
+   6:Core/Src/main.c **** int main(void)
+   7:Core/Src/main.c **** {
+  29              		.loc 1 7 1 view -0
   30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
-  33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
-   5:Core/Src/main.c ****     // GPIO_init();
-   6:Core/Src/main.c ****     // RCC_init();
-   7:Core/Src/main.c ****     // Motor_init();
-   8:Core/Src/main.c **** 
-   9:Core/Src/main.c ****     while(1)
-  36              		.loc 1 9 5 view .LVU1
-  10:Core/Src/main.c ****     {
-  11:Core/Src/main.c ****         // Цикл работы
-  12:Core/Src/main.c ****     }
-  37              		.loc 1 12 5 view .LVU2
-   9:Core/Src/main.c ****     {
-  38              		.loc 1 9 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc4eO96n.s 			page 2
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 38B5     		push	{r3, r4, r5, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 16
+  36              		.cfi_offset 3, -16
+  37              		.cfi_offset 4, -12
+  38              		.cfi_offset 5, -8
+  39              		.cfi_offset 14, -4
+   8:Core/Src/main.c ****     RCC_init();
+  40              		.loc 1 8 5 view .LVU1
+  41 0002 FFF7FEFF 		bl	RCC_init
+  42              	.LVL0:
+   9:Core/Src/main.c ****     SysTick_init();
+  43              		.loc 1 9 5 view .LVU2
+  44 0006 FFF7FEFF 		bl	SysTick_init
+  45              	.LVL1:
+  10:Core/Src/main.c ****     button_interrupt_init();
+  46              		.loc 1 10 5 view .LVU3
+  47 000a FFF7FEFF 		bl	button_interrupt_init
+  48              	.LVL2:
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccW0V3cO.s 			page 2
+
+
+  11:Core/Src/main.c ****     GPIO_init();
+  49              		.loc 1 11 5 view .LVU4
+  50 000e FFF7FEFF 		bl	GPIO_init
+  51              	.LVL3:
+  12:Core/Src/main.c ****     TIMER2_init();
+  52              		.loc 1 12 5 view .LVU5
+  53 0012 FFF7FEFF 		bl	TIMER2_init
+  54              	.LVL4:
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c ****     uint8_t left = 0;
+  55              		.loc 1 14 5 view .LVU6
+  15:Core/Src/main.c ****     uint8_t middle = 0;
+  56              		.loc 1 15 5 view .LVU7
+  16:Core/Src/main.c ****     uint8_t right = 0;
+  57              		.loc 1 16 5 view .LVU8
+  17:Core/Src/main.c **** 
+  18:Core/Src/main.c ****     const int16_t BASE_SPEED = 400;
+  58              		.loc 1 18 5 view .LVU9
+  59              		.loc 1 18 5 is_stmt 0 view .LVU10
+  60 0016 1EE0     		b	.L2
+  61              	.LVL5:
+  62              	.L9:
+  19:Core/Src/main.c **** 
+  20:Core/Src/main.c ****     while(1)
+  21:Core/Src/main.c ****     {
+  22:Core/Src/main.c ****         if (get_button_permission())
+  23:Core/Src/main.c ****         {
+  24:Core/Src/main.c ****             left   = read_left_sensor();
+  25:Core/Src/main.c ****             middle = read_middle_sensor();
+  26:Core/Src/main.c ****             right  = read_right_sensor();
+  27:Core/Src/main.c **** 
+  28:Core/Src/main.c ****             if (middle == 1)
+  29:Core/Src/main.c ****             {
+  30:Core/Src/main.c ****                 left_motor(BASE_SPEED);
+  63              		.loc 1 30 17 is_stmt 1 view .LVU11
+  64 0018 4FF4C870 		mov	r0, #400
+  65              	.LVL6:
+  66              		.loc 1 30 17 is_stmt 0 view .LVU12
+  67 001c FFF7FEFF 		bl	left_motor
+  68              	.LVL7:
+  31:Core/Src/main.c ****                 right_motor(BASE_SPEED);
+  69              		.loc 1 31 17 is_stmt 1 view .LVU13
+  70 0020 4FF4C870 		mov	r0, #400
+  71 0024 FFF7FEFF 		bl	right_motor
+  72              	.LVL8:
+  73 0028 15E0     		b	.L2
+  74              	.LVL9:
+  75              	.L10:
+  32:Core/Src/main.c ****             }
+  33:Core/Src/main.c ****             else if (left == 1)
+  34:Core/Src/main.c ****             {
+  35:Core/Src/main.c ****                 left_motor(BASE_SPEED / 2);  
+  76              		.loc 1 35 17 view .LVU14
+  77 002a C820     		movs	r0, #200
+  78              	.LVL10:
+  79              		.loc 1 35 17 is_stmt 0 view .LVU15
+  80 002c FFF7FEFF 		bl	left_motor
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccW0V3cO.s 			page 3
+
+
+  81              	.LVL11:
+  36:Core/Src/main.c ****                 right_motor(BASE_SPEED);      
+  82              		.loc 1 36 17 is_stmt 1 view .LVU16
+  83 0030 4FF4C870 		mov	r0, #400
+  84 0034 FFF7FEFF 		bl	right_motor
+  85              	.LVL12:
+  86 0038 0DE0     		b	.L2
+  87              	.LVL13:
+  88              	.L11:
+  37:Core/Src/main.c ****             }
+  38:Core/Src/main.c ****             else if (right == 1)
+  39:Core/Src/main.c ****             {
+  40:Core/Src/main.c ****                 left_motor(BASE_SPEED);
+  89              		.loc 1 40 17 view .LVU17
+  90 003a 4FF4C870 		mov	r0, #400
+  91              	.LVL14:
+  92              		.loc 1 40 17 is_stmt 0 view .LVU18
+  93 003e FFF7FEFF 		bl	left_motor
+  94              	.LVL15:
+  41:Core/Src/main.c ****                 right_motor(BASE_SPEED / 2); 
+  95              		.loc 1 41 17 is_stmt 1 view .LVU19
+  96 0042 C820     		movs	r0, #200
+  97 0044 FFF7FEFF 		bl	right_motor
+  98              	.LVL16:
+  99 0048 05E0     		b	.L2
+ 100              	.LVL17:
+ 101              	.L3:
+  42:Core/Src/main.c ****             }
+  43:Core/Src/main.c ****             else
+  44:Core/Src/main.c ****             {
+  45:Core/Src/main.c ****                 left_motor(0);
+  46:Core/Src/main.c ****                 right_motor(0);
+  47:Core/Src/main.c ****             }
+  48:Core/Src/main.c ****         }
+  49:Core/Src/main.c ****         else
+  50:Core/Src/main.c ****         {
+  51:Core/Src/main.c ****             left_motor(0);
+ 102              		.loc 1 51 13 view .LVU20
+ 103 004a 0020     		movs	r0, #0
+ 104 004c FFF7FEFF 		bl	left_motor
+ 105              	.LVL18:
+  52:Core/Src/main.c ****             right_motor(0);
+ 106              		.loc 1 52 13 view .LVU21
+ 107 0050 0020     		movs	r0, #0
+ 108 0052 FFF7FEFF 		bl	right_motor
+ 109              	.LVL19:
+  53:Core/Src/main.c ****             left = 0;
+ 110              		.loc 1 53 13 view .LVU22
+  54:Core/Src/main.c ****             middle = 0;
+ 111              		.loc 1 54 13 view .LVU23
+  55:Core/Src/main.c ****             right = 0;
+ 112              		.loc 1 55 13 view .LVU24
+ 113              	.L2:
+  20:Core/Src/main.c ****     {
+ 114              		.loc 1 20 5 view .LVU25
+  22:Core/Src/main.c ****         {
+ 115              		.loc 1 22 9 view .LVU26
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccW0V3cO.s 			page 4
+
+
+  22:Core/Src/main.c ****         {
+ 116              		.loc 1 22 13 is_stmt 0 view .LVU27
+ 117 0056 FFF7FEFF 		bl	get_button_permission
+ 118              	.LVL20:
+  22:Core/Src/main.c ****         {
+ 119              		.loc 1 22 12 discriminator 1 view .LVU28
+ 120 005a 0028     		cmp	r0, #0
+ 121 005c F5D0     		beq	.L3
+  24:Core/Src/main.c ****             middle = read_middle_sensor();
+ 122              		.loc 1 24 13 is_stmt 1 view .LVU29
+  24:Core/Src/main.c ****             middle = read_middle_sensor();
+ 123              		.loc 1 24 22 is_stmt 0 view .LVU30
+ 124 005e FFF7FEFF 		bl	read_left_sensor
+ 125              	.LVL21:
+ 126 0062 0546     		mov	r5, r0
+ 127              	.LVL22:
+  25:Core/Src/main.c ****             right  = read_right_sensor();
+ 128              		.loc 1 25 13 is_stmt 1 view .LVU31
+  25:Core/Src/main.c ****             right  = read_right_sensor();
+ 129              		.loc 1 25 22 is_stmt 0 view .LVU32
+ 130 0064 FFF7FEFF 		bl	read_middle_sensor
+ 131              	.LVL23:
+ 132 0068 0446     		mov	r4, r0
+ 133              	.LVL24:
+  26:Core/Src/main.c **** 
+ 134              		.loc 1 26 13 is_stmt 1 view .LVU33
+  26:Core/Src/main.c **** 
+ 135              		.loc 1 26 22 is_stmt 0 view .LVU34
+ 136 006a FFF7FEFF 		bl	read_right_sensor
+ 137              	.LVL25:
+  28:Core/Src/main.c ****             {
+ 138              		.loc 1 28 13 is_stmt 1 view .LVU35
+  28:Core/Src/main.c ****             {
+ 139              		.loc 1 28 16 is_stmt 0 view .LVU36
+ 140 006e 012C     		cmp	r4, #1
+ 141 0070 D2D0     		beq	.L9
+  33:Core/Src/main.c ****             {
+ 142              		.loc 1 33 18 is_stmt 1 view .LVU37
+  33:Core/Src/main.c ****             {
+ 143              		.loc 1 33 21 is_stmt 0 view .LVU38
+ 144 0072 012D     		cmp	r5, #1
+ 145 0074 D9D0     		beq	.L10
+  38:Core/Src/main.c ****             {
+ 146              		.loc 1 38 18 is_stmt 1 view .LVU39
+  38:Core/Src/main.c ****             {
+ 147              		.loc 1 38 21 is_stmt 0 view .LVU40
+ 148 0076 0128     		cmp	r0, #1
+ 149 0078 DFD0     		beq	.L11
+  45:Core/Src/main.c ****                 right_motor(0);
+ 150              		.loc 1 45 17 is_stmt 1 view .LVU41
+ 151 007a 0020     		movs	r0, #0
+ 152              	.LVL26:
+  45:Core/Src/main.c ****                 right_motor(0);
+ 153              		.loc 1 45 17 is_stmt 0 view .LVU42
+ 154 007c FFF7FEFF 		bl	left_motor
+ 155              	.LVL27:
+  46:Core/Src/main.c ****             }
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccW0V3cO.s 			page 5
+
+
+ 156              		.loc 1 46 17 is_stmt 1 view .LVU43
+ 157 0080 0020     		movs	r0, #0
+ 158 0082 FFF7FEFF 		bl	right_motor
+ 159              	.LVL28:
+ 160 0086 E6E7     		b	.L2
+ 161              		.cfi_endproc
+ 162              	.LFE130:
+ 164              		.text
+ 165              	.Letext0:
+ 166              		.file 2 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
+ 167              		.file 3 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
+ 168              		.file 4 "Core/Inc/motor.h"
+ 169              		.file 5 "Core/Inc/sensors.h"
+ 170              		.file 6 "Core/Inc/interrupt.h"
+ 171              		.file 7 "Core/Inc/init.h"
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccW0V3cO.s 			page 6
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\User\AppData\Local\Temp\cc4eO96n.s:21     .text.main:00000000 $t
-C:\Users\User\AppData\Local\Temp\cc4eO96n.s:27     .text.main:00000000 main
+C:\Users\User\AppData\Local\Temp\ccW0V3cO.s:21     .text.main:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccW0V3cO.s:27     .text.main:00000000 main
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+RCC_init
+SysTick_init
+button_interrupt_init
+GPIO_init
+TIMER2_init
+left_motor
+right_motor
+get_button_permission
+read_left_sensor
+read_middle_sensor
+read_right_sensor
