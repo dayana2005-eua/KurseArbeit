@@ -136,11 +136,9 @@ C_SOURCES =  \
 $(SYS) \
 Core/Src/main.c \
 Core/Src/init.c \
-Core/Src/handlers.c \
-Core/Src/task.c \
-Core/Src/I2C.c \
-Core/Src/MCU6050.c \
 Core/Src/motor.c \
+Core/Src/travel.c \
+Core/Src/interrupt.c \
 
 # ASM sources
 ASM_SOURCES =  \
