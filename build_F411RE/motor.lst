@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 1
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -31,7 +31,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 1
   29              	.LFB130:
    1:Core/Src/motor.c **** #include "motor.h"
    2:Core/Src/motor.c **** /**
-   3:Core/Src/motor.c ****  * @brief Функция управления левым мотором. Используемые �
+   3:Core/Src/motor.c ****  * @brief Функция управления правым мотором. Используемые
    4:Core/Src/motor.c ****  *  таймер TIM2 скорость вращения PB10
    5:Core/Src/motor.c ****  * @note Функция принимает скорость в диапазоне от -1000 до 1
    6:Core/Src/motor.c ****  * @return None
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 1
   13:Core/Src/motor.c ****         WRITE_REG(TIM2->CCR3, speed);
   44              		.loc 1 13 9 view .LVU5
   45 000a 4FF08043 		mov	r3, #1073741824
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 2
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 2
 
 
   46 000e D863     		str	r0, [r3, #60]
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 1
   82 003c 00000240 		.word	1073872896
   83 0040 40002000 		.word	2097216
   84 0044 20004000 		.word	4194336
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 3
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 3
 
 
   85              		.cfi_endproc
@@ -134,7 +134,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 1
   97              	.LFB131:
   27:Core/Src/motor.c **** 
   28:Core/Src/motor.c **** /**
-  29:Core/Src/motor.c ****  * @brief Функция управления правым мотором. Используемые
+  29:Core/Src/motor.c ****  * @brief Функция управления левым мотором. Используемые �
   30:Core/Src/motor.c ****  *  таймер TIM2 скорость вращения PB3
   31:Core/Src/motor.c ****  * @note Функция принимает скорость в диапазоне от -1000 до 1
   32:Core/Src/motor.c ****  * @return None
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 1
  124 001e 0DDB     		blt	.L12
   44:Core/Src/motor.c ****     {   
   45:Core/Src/motor.c ****         speed = -speed;
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 4
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 4
 
 
   46:Core/Src/motor.c ****         // Седьмой пин порта А выключен, шестой пин порта B �
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 1
  160              		.align	2
  161              	.L13:
  162 0058 00000240 		.word	1073872896
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 5
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 5
 
 
  163              		.cfi_endproc
@@ -248,16 +248,16 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 1
  168              		.file 2 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
  169              		.file 3 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
  170              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccFq2Vne.s 			page 6
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 6
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 motor.c
-C:\Users\User\AppData\Local\Temp\ccFq2Vne.s:21     .text.right_motor:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccFq2Vne.s:27     .text.right_motor:00000000 right_motor
-C:\Users\User\AppData\Local\Temp\ccFq2Vne.s:82     .text.right_motor:0000003c $d
-C:\Users\User\AppData\Local\Temp\ccFq2Vne.s:89     .text.left_motor:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccFq2Vne.s:95     .text.left_motor:00000000 left_motor
-C:\Users\User\AppData\Local\Temp\ccFq2Vne.s:162    .text.left_motor:00000058 $d
+C:\Users\User\AppData\Local\Temp\ccqxBgR3.s:21     .text.right_motor:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccqxBgR3.s:27     .text.right_motor:00000000 right_motor
+C:\Users\User\AppData\Local\Temp\ccqxBgR3.s:82     .text.right_motor:0000003c $d
+C:\Users\User\AppData\Local\Temp\ccqxBgR3.s:89     .text.left_motor:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccqxBgR3.s:95     .text.left_motor:00000000 left_motor
+C:\Users\User\AppData\Local\Temp\ccqxBgR3.s:162    .text.left_motor:00000058 $d
 
 NO UNDEFINED SYMBOLS

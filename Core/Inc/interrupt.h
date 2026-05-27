@@ -9,6 +9,8 @@
 uint32_t get_ticks(void);
 void button_interrupt_init(void);
 uint8_t get_button_permission(void);
+uint8_t get_tim2_flag(void);
+void set_tim2_flag(uint8_t flag);
 
 
 #endif

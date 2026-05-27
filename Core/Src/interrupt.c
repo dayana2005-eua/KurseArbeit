@@ -3,6 +3,7 @@
 static volatile uint32_t ticks = 0;
 static volatile uint32_t press_time = 0;
 static volatile uint8_t button_permission = 0;
+static volatile uint8_t tim2_flag = 0;
 
 static void led_toggle(void)
 {
@@ -86,4 +87,23 @@ void EXTI15_10_IRQHandler(void)
 uint8_t get_button_permission(void)
 {
     return button_permission;
+}
+
+void TIM2_IRQHandler(void)
+{
+    if (TIM2->SR & TIM_SR_UIF)
+    {
+        TIM2->SR &= ~TIM_SR_UIF; // Сбрасываем флаг прерывания вручную
+        tim2_flag = 1;           // Выставляем флаг для основного цикла
+    }
+}
+
+uint8_t get_tim2_flag(void)
+{
+    return tim2_flag;
+}
+
+void set_tim2_flag(uint8_t flag)
+{
+    tim2_flag = flag;
 }

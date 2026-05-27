@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -32,24 +32,25 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
    3:Core/Src/interrupt.c **** static volatile uint32_t ticks = 0;
    4:Core/Src/interrupt.c **** static volatile uint32_t press_time = 0;
    5:Core/Src/interrupt.c **** static volatile uint8_t button_permission = 0;
-   6:Core/Src/interrupt.c **** 
-   7:Core/Src/interrupt.c **** static void led_toggle(void)
-   8:Core/Src/interrupt.c **** {
-  28              		.loc 1 8 1 view -0
+   6:Core/Src/interrupt.c **** static volatile uint8_t tim2_flag = 0;
+   7:Core/Src/interrupt.c **** 
+   8:Core/Src/interrupt.c **** static void led_toggle(void)
+   9:Core/Src/interrupt.c **** {
+  28              		.loc 1 9 1 view -0
   29              		.cfi_startproc
   30              		@ args = 0, pretend = 0, frame = 0
   31              		@ frame_needed = 0, uses_anonymous_args = 0
   32              		@ link register save eliminated.
-   9:Core/Src/interrupt.c ****     GPIOC->ODR ^= GPIO_ODR_ODR_2;
-  33              		.loc 1 9 5 view .LVU1
-  34              		.loc 1 9 10 is_stmt 0 view .LVU2
+  10:Core/Src/interrupt.c ****     GPIOC->ODR ^= GPIO_ODR_ODR_2;
+  33              		.loc 1 10 5 view .LVU1
+  34              		.loc 1 10 10 is_stmt 0 view .LVU2
   35 0000 024A     		ldr	r2, .L2
   36 0002 5369     		ldr	r3, [r2, #20]
-  37              		.loc 1 9 16 view .LVU3
+  37              		.loc 1 10 16 view .LVU3
   38 0004 83F00403 		eor	r3, r3, #4
   39 0008 5361     		str	r3, [r2, #20]
-  10:Core/Src/interrupt.c **** }
-  40              		.loc 1 10 1 view .LVU4
+  11:Core/Src/interrupt.c **** }
+  40              		.loc 1 11 1 view .LVU4
   41 000a 7047     		bx	lr
   42              	.L3:
   43              		.align	2
@@ -57,10 +58,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
   45 000c 00080240 		.word	1073874944
   46              		.cfi_endproc
   47              	.LFE130:
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 2
+
+
   49              		.section	.text.SysTick_Handler,"ax",%progbits
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 2
-
-
   50              		.align	1
   51              		.global	SysTick_Handler
   52              		.syntax unified
@@ -68,13 +69,13 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
   54              		.thumb_func
   56              	SysTick_Handler:
   57              	.LFB131:
-  11:Core/Src/interrupt.c **** 
-  12:Core/Src/interrupt.c **** /**
-  13:Core/Src/interrupt.c ****  * @brief Прерывание системного таймера
-  14:Core/Src/interrupt.c ****  */
-  15:Core/Src/interrupt.c **** void SysTick_Handler(void)
-  16:Core/Src/interrupt.c **** {
-  58              		.loc 1 16 1 is_stmt 1 view -0
+  12:Core/Src/interrupt.c **** 
+  13:Core/Src/interrupt.c **** /**
+  14:Core/Src/interrupt.c ****  * @brief Прерывание системного таймера
+  15:Core/Src/interrupt.c ****  */
+  16:Core/Src/interrupt.c **** void SysTick_Handler(void)
+  17:Core/Src/interrupt.c **** {
+  58              		.loc 1 17 1 is_stmt 1 view -0
   59              		.cfi_startproc
   60              		@ args = 0, pretend = 0, frame = 0
   61              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -83,71 +84,71 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
   64              		.cfi_def_cfa_offset 8
   65              		.cfi_offset 3, -8
   66              		.cfi_offset 14, -4
-  17:Core/Src/interrupt.c ****     static uint32_t led_counter = 0; 
-  67              		.loc 1 17 5 view .LVU6
-  18:Core/Src/interrupt.c ****     led_counter++;
-  68              		.loc 1 18 5 view .LVU7
-  69              		.loc 1 18 16 is_stmt 0 view .LVU8
+  18:Core/Src/interrupt.c ****     static uint32_t led_counter = 0; 
+  67              		.loc 1 18 5 view .LVU6
+  19:Core/Src/interrupt.c ****     led_counter++;
+  68              		.loc 1 19 5 view .LVU7
+  69              		.loc 1 19 16 is_stmt 0 view .LVU8
   70 0002 0D4A     		ldr	r2, .L11
   71 0004 1368     		ldr	r3, [r2]
   72 0006 0133     		adds	r3, r3, #1
   73 0008 1360     		str	r3, [r2]
-  19:Core/Src/interrupt.c **** 
-  20:Core/Src/interrupt.c ****     uint32_t current_interval = (button_permission == 1) ? 100U : 500U;
-  74              		.loc 1 20 5 is_stmt 1 view .LVU9
-  75              		.loc 1 20 52 is_stmt 0 view .LVU10
+  20:Core/Src/interrupt.c **** 
+  21:Core/Src/interrupt.c ****     uint32_t current_interval = (button_permission == 1) ? 100U : 500U;
+  74              		.loc 1 21 5 is_stmt 1 view .LVU9
+  75              		.loc 1 21 52 is_stmt 0 view .LVU10
   76 000a 0C4A     		ldr	r2, .L11+4
   77 000c 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
   78 000e D2B2     		uxtb	r2, r2
-  79              		.loc 1 20 65 view .LVU11
+  79              		.loc 1 21 65 view .LVU11
   80 0010 012A     		cmp	r2, #1
   81 0012 08D0     		beq	.L9
-  82              		.loc 1 20 65 discriminator 2 view .LVU12
+  82              		.loc 1 21 65 discriminator 2 view .LVU12
   83 0014 4FF4FA72 		mov	r2, #500
   84              	.L5:
   85              	.LVL0:
-  21:Core/Src/interrupt.c **** 
-  22:Core/Src/interrupt.c ****     if (led_counter >= current_interval)
-  86              		.loc 1 22 5 is_stmt 1 view .LVU13
-  87              		.loc 1 22 8 is_stmt 0 view .LVU14
+  22:Core/Src/interrupt.c **** 
+  23:Core/Src/interrupt.c ****     if (led_counter >= current_interval)
+  86              		.loc 1 23 5 is_stmt 1 view .LVU13
+  87              		.loc 1 23 8 is_stmt 0 view .LVU14
   88 0018 9342     		cmp	r3, r2
   89 001a 06D2     		bcs	.L10
   90              	.LVL1:
   91              	.L6:
-  23:Core/Src/interrupt.c ****     {
-  24:Core/Src/interrupt.c ****         led_toggle();     // Меняем состояние светодиода (вкл/выкл)
-  25:Core/Src/interrupt.c ****         led_counter = 0;  // Сбрасываем счетчик для нового отсчета
-  26:Core/Src/interrupt.c ****     }
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 3
+  24:Core/Src/interrupt.c ****     {
+  25:Core/Src/interrupt.c ****         led_toggle();     // Меняем состояние светодиода (вкл/выкл)
+  26:Core/Src/interrupt.c ****         led_counter = 0;  // Сбрасываем счетчик для нового отсчета
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 3
 
 
-  27:Core/Src/interrupt.c **** 
-  28:Core/Src/interrupt.c ****     ticks++;
-  92              		.loc 1 28 5 is_stmt 1 view .LVU15
-  93              		.loc 1 28 10 is_stmt 0 view .LVU16
+  27:Core/Src/interrupt.c ****     }
+  28:Core/Src/interrupt.c **** 
+  29:Core/Src/interrupt.c ****     ticks++;
+  92              		.loc 1 29 5 is_stmt 1 view .LVU15
+  93              		.loc 1 29 10 is_stmt 0 view .LVU16
   94 001c 084A     		ldr	r2, .L11+8
   95 001e 1368     		ldr	r3, [r2]
   96 0020 0133     		adds	r3, r3, #1
   97 0022 1360     		str	r3, [r2]
-  29:Core/Src/interrupt.c **** }
-  98              		.loc 1 29 1 view .LVU17
+  30:Core/Src/interrupt.c **** }
+  98              		.loc 1 30 1 view .LVU17
   99 0024 08BD     		pop	{r3, pc}
  100              	.LVL2:
  101              	.L9:
-  20:Core/Src/interrupt.c **** 
- 102              		.loc 1 20 65 discriminator 1 view .LVU18
+  21:Core/Src/interrupt.c **** 
+ 102              		.loc 1 21 65 discriminator 1 view .LVU18
  103 0026 6422     		movs	r2, #100
  104 0028 F6E7     		b	.L5
  105              	.LVL3:
  106              	.L10:
-  24:Core/Src/interrupt.c ****         led_counter = 0;  // Сбрасываем счетчик для нового отсчета
- 107              		.loc 1 24 9 is_stmt 1 view .LVU19
+  25:Core/Src/interrupt.c ****         led_counter = 0;  // Сбрасываем счетчик для нового отсчета
+ 107              		.loc 1 25 9 is_stmt 1 view .LVU19
  108 002a FFF7FEFF 		bl	led_toggle
  109              	.LVL4:
-  25:Core/Src/interrupt.c ****     }
- 110              		.loc 1 25 9 view .LVU20
-  25:Core/Src/interrupt.c ****     }
- 111              		.loc 1 25 21 is_stmt 0 view .LVU21
+  26:Core/Src/interrupt.c ****     }
+ 110              		.loc 1 26 9 view .LVU20
+  26:Core/Src/interrupt.c ****     }
+ 111              		.loc 1 26 21 is_stmt 0 view .LVU21
  112 002e 024B     		ldr	r3, .L11
  113 0030 0022     		movs	r2, #0
  114 0032 1A60     		str	r2, [r3]
@@ -168,27 +169,27 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  130              		.thumb_func
  132              	get_ticks:
  133              	.LFB132:
-  30:Core/Src/interrupt.c **** 
-  31:Core/Src/interrupt.c **** /**
-  32:Core/Src/interrupt.c ****  * @brief Получение тиков
-  33:Core/Src/interrupt.c ****  */
-  34:Core/Src/interrupt.c **** uint32_t get_ticks(void)
-  35:Core/Src/interrupt.c **** {
- 134              		.loc 1 35 1 is_stmt 1 view -0
+  31:Core/Src/interrupt.c **** 
+  32:Core/Src/interrupt.c **** /**
+  33:Core/Src/interrupt.c ****  * @brief Получение тиков
+  34:Core/Src/interrupt.c ****  */
+  35:Core/Src/interrupt.c **** uint32_t get_ticks(void)
+  36:Core/Src/interrupt.c **** {
+ 134              		.loc 1 36 1 is_stmt 1 view -0
  135              		.cfi_startproc
  136              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 4
+
+
  137              		@ frame_needed = 0, uses_anonymous_args = 0
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 4
-
-
  138              		@ link register save eliminated.
-  36:Core/Src/interrupt.c ****     return ticks;
- 139              		.loc 1 36 5 view .LVU23
- 140              		.loc 1 36 12 is_stmt 0 view .LVU24
+  37:Core/Src/interrupt.c ****     return ticks;
+ 139              		.loc 1 37 5 view .LVU23
+ 140              		.loc 1 37 12 is_stmt 0 view .LVU24
  141 0000 014B     		ldr	r3, .L14
  142 0002 1868     		ldr	r0, [r3]
-  37:Core/Src/interrupt.c **** }
- 143              		.loc 1 37 1 view .LVU25
+  38:Core/Src/interrupt.c **** }
+ 143              		.loc 1 38 1 view .LVU25
  144 0004 7047     		bx	lr
  145              	.L15:
  146 0006 00BF     		.align	2
@@ -204,54 +205,54 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  157              		.thumb_func
  159              	button_interrupt_init:
  160              	.LFB133:
-  38:Core/Src/interrupt.c **** 
-  39:Core/Src/interrupt.c **** /**
-  40:Core/Src/interrupt.c ****  * @brief Инициализация внешних прерываний
-  41:Core/Src/interrupt.c ****  */
-  42:Core/Src/interrupt.c **** void button_interrupt_init(void)
-  43:Core/Src/interrupt.c **** {
- 161              		.loc 1 43 1 is_stmt 1 view -0
+  39:Core/Src/interrupt.c **** 
+  40:Core/Src/interrupt.c **** /**
+  41:Core/Src/interrupt.c ****  * @brief Инициализация внешних прерываний
+  42:Core/Src/interrupt.c ****  */
+  43:Core/Src/interrupt.c **** void button_interrupt_init(void)
+  44:Core/Src/interrupt.c **** {
+ 161              		.loc 1 44 1 is_stmt 1 view -0
  162              		.cfi_startproc
  163              		@ args = 0, pretend = 0, frame = 0
  164              		@ frame_needed = 0, uses_anonymous_args = 0
  165              		@ link register save eliminated.
-  44:Core/Src/interrupt.c ****     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);
- 166              		.loc 1 44 5 view .LVU27
+  45:Core/Src/interrupt.c ****     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);
+ 166              		.loc 1 45 5 view .LVU27
  167 0000 104A     		ldr	r2, .L17
  168 0002 536C     		ldr	r3, [r2, #68]
  169 0004 43F48043 		orr	r3, r3, #16384
  170 0008 5364     		str	r3, [r2, #68]
-  45:Core/Src/interrupt.c ****     MODIFY_REG(SYSCFG->EXTICR[13 / 4], 0xFU << ((13 % 4) * 4), 0x2U << ((13 % 4) * 4));
- 171              		.loc 1 45 5 view .LVU28
+  46:Core/Src/interrupt.c ****     MODIFY_REG(SYSCFG->EXTICR[13 / 4], 0xFU << ((13 % 4) * 4), 0x2U << ((13 % 4) * 4));
+ 171              		.loc 1 46 5 view .LVU28
  172 000a A2F58032 		sub	r2, r2, #65536
  173 000e 5369     		ldr	r3, [r2, #20]
  174 0010 23F0F003 		bic	r3, r3, #240
  175 0014 43F02003 		orr	r3, r3, #32
  176 0018 5361     		str	r3, [r2, #20]
-  46:Core/Src/interrupt.c **** 
-  47:Core/Src/interrupt.c ****     SET_BIT(EXTI->IMR, EXTI_IMR_IM13);
- 177              		.loc 1 47 5 view .LVU29
+  47:Core/Src/interrupt.c **** 
+  48:Core/Src/interrupt.c ****     SET_BIT(EXTI->IMR, EXTI_IMR_IM13);
+ 177              		.loc 1 48 5 view .LVU29
  178 001a 0B4B     		ldr	r3, .L17+4
  179 001c 1A68     		ldr	r2, [r3]
  180 001e 42F40052 		orr	r2, r2, #8192
  181 0022 1A60     		str	r2, [r3]
-  48:Core/Src/interrupt.c **** 
-  49:Core/Src/interrupt.c ****     SET_BIT(EXTI->FTSR, EXTI_FTSR_TR13);
- 182              		.loc 1 49 5 view .LVU30
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 5
+  49:Core/Src/interrupt.c **** 
+  50:Core/Src/interrupt.c ****     SET_BIT(EXTI->FTSR, EXTI_FTSR_TR13);
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 5
 
 
+ 182              		.loc 1 50 5 view .LVU30
  183 0024 DA68     		ldr	r2, [r3, #12]
  184 0026 42F40052 		orr	r2, r2, #8192
  185 002a DA60     		str	r2, [r3, #12]
-  50:Core/Src/interrupt.c ****     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13);
- 186              		.loc 1 50 5 view .LVU31
+  51:Core/Src/interrupt.c ****     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13);
+ 186              		.loc 1 51 5 view .LVU31
  187 002c 9A68     		ldr	r2, [r3, #8]
  188 002e 42F40052 		orr	r2, r2, #8192
  189 0032 9A60     		str	r2, [r3, #8]
-  51:Core/Src/interrupt.c **** 
-  52:Core/Src/interrupt.c ****     NVIC_SetPriority(EXTI15_10_IRQn, 2); // Приоритет ниже, чем у SysTick
- 190              		.loc 1 52 5 view .LVU32
+  52:Core/Src/interrupt.c **** 
+  53:Core/Src/interrupt.c ****     NVIC_SetPriority(EXTI15_10_IRQn, 2); // Приоритет ниже, чем у SysTick
+ 190              		.loc 1 53 5 view .LVU32
  191              	.LVL5:
  192              	.LBB6:
  193              	.LBI6:
@@ -297,10 +298,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
   39:CMSIS/Include/core_cm4.h **** 
   40:CMSIS/Include/core_cm4.h **** /**
   41:CMSIS/Include/core_cm4.h ****   \page CMSIS_MISRA_Exceptions  MISRA-C:2004 Compliance Exceptions
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 6
+
+
   42:CMSIS/Include/core_cm4.h ****   CMSIS violates the following MISRA-C:2004 rules:
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 6
-
-
   43:CMSIS/Include/core_cm4.h **** 
   44:CMSIS/Include/core_cm4.h ****    \li Required Rule 8.5, object/function definition in header file.<br>
   45:CMSIS/Include/core_cm4.h ****      Function definitions in header files are used to allow 'inlining'.
@@ -357,10 +358,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
   96:CMSIS/Include/core_cm4.h ****   #else
   97:CMSIS/Include/core_cm4.h ****     #define __FPU_USED         0U
   98:CMSIS/Include/core_cm4.h ****   #endif
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 7
+
+
   99:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 7
-
-
  100:CMSIS/Include/core_cm4.h **** #elif defined ( __GNUC__ )
  101:CMSIS/Include/core_cm4.h ****   #if defined (__VFP_FP__) && !defined(__SOFTFP__)
  102:CMSIS/Include/core_cm4.h ****     #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)
@@ -417,10 +418,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  153:CMSIS/Include/core_cm4.h ****       #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)
  154:CMSIS/Include/core_cm4.h ****       #define __FPU_USED       0U
  155:CMSIS/Include/core_cm4.h ****     #endif
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 8
+
+
  156:CMSIS/Include/core_cm4.h ****   #else
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 8
-
-
  157:CMSIS/Include/core_cm4.h ****     #define __FPU_USED         0U
  158:CMSIS/Include/core_cm4.h ****   #endif
  159:CMSIS/Include/core_cm4.h **** 
@@ -477,10 +478,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  210:CMSIS/Include/core_cm4.h ****     \defgroup CMSIS_glob_defs CMSIS Global Defines
  211:CMSIS/Include/core_cm4.h **** 
  212:CMSIS/Include/core_cm4.h ****     <strong>IO Type Qualifiers</strong> are used
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 9
+
+
  213:CMSIS/Include/core_cm4.h ****     \li to specify the access to peripheral variables.
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 9
-
-
  214:CMSIS/Include/core_cm4.h ****     \li for automatic generation of peripheral register debug information.
  215:CMSIS/Include/core_cm4.h **** */
  216:CMSIS/Include/core_cm4.h **** #ifdef __cplusplus
@@ -537,10 +538,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  267:CMSIS/Include/core_cm4.h ****     uint32_t V:1;                        /*!< bit:     28  Overflow condition code flag */
  268:CMSIS/Include/core_cm4.h ****     uint32_t C:1;                        /*!< bit:     29  Carry condition code flag */
  269:CMSIS/Include/core_cm4.h ****     uint32_t Z:1;                        /*!< bit:     30  Zero condition code flag */
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 10
+
+
  270:CMSIS/Include/core_cm4.h ****     uint32_t N:1;                        /*!< bit:     31  Negative condition code flag */
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 10
-
-
  271:CMSIS/Include/core_cm4.h ****   } b;                                   /*!< Structure used for bit  access */
  272:CMSIS/Include/core_cm4.h ****   uint32_t w;                            /*!< Type      used for word access */
  273:CMSIS/Include/core_cm4.h **** } APSR_Type;
@@ -597,10 +598,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  324:CMSIS/Include/core_cm4.h ****     uint32_t _reserved1:4;               /*!< bit: 20..23  Reserved */
  325:CMSIS/Include/core_cm4.h ****     uint32_t T:1;                        /*!< bit:     24  Thumb bit */
  326:CMSIS/Include/core_cm4.h ****     uint32_t ICI_IT_2:2;                 /*!< bit: 25..26  ICI/IT part 2 */
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 11
+
+
  327:CMSIS/Include/core_cm4.h ****     uint32_t Q:1;                        /*!< bit:     27  Saturation condition flag */
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 11
-
-
  328:CMSIS/Include/core_cm4.h ****     uint32_t V:1;                        /*!< bit:     28  Overflow condition code flag */
  329:CMSIS/Include/core_cm4.h ****     uint32_t C:1;                        /*!< bit:     29  Carry condition code flag */
  330:CMSIS/Include/core_cm4.h ****     uint32_t Z:1;                        /*!< bit:     30  Zero condition code flag */
@@ -657,10 +658,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  381:CMSIS/Include/core_cm4.h **** } CONTROL_Type;
  382:CMSIS/Include/core_cm4.h **** 
  383:CMSIS/Include/core_cm4.h **** /* CONTROL Register Definitions */
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 12
+
+
  384:CMSIS/Include/core_cm4.h **** #define CONTROL_FPCA_Pos                    2U                                            /*!< CONT
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 12
-
-
  385:CMSIS/Include/core_cm4.h **** #define CONTROL_FPCA_Msk                   (1UL << CONTROL_FPCA_Pos)                      /*!< CONT
  386:CMSIS/Include/core_cm4.h **** 
  387:CMSIS/Include/core_cm4.h **** #define CONTROL_SPSEL_Pos                   1U                                            /*!< CONT
@@ -717,10 +718,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  438:CMSIS/Include/core_cm4.h ****   \brief  Structure type to access the System Control Block (SCB).
  439:CMSIS/Include/core_cm4.h ****  */
  440:CMSIS/Include/core_cm4.h **** typedef struct
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 13
+
+
  441:CMSIS/Include/core_cm4.h **** {
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 13
-
-
  442:CMSIS/Include/core_cm4.h ****   __IM  uint32_t CPUID;                  /*!< Offset: 0x000 (R/ )  CPUID Base Register */
  443:CMSIS/Include/core_cm4.h ****   __IOM uint32_t ICSR;                   /*!< Offset: 0x004 (R/W)  Interrupt Control and State Regi
  444:CMSIS/Include/core_cm4.h ****   __IOM uint32_t VTOR;                   /*!< Offset: 0x008 (R/W)  Vector Table Offset Register */
@@ -777,10 +778,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  495:CMSIS/Include/core_cm4.h **** #define SCB_ICSR_PENDSTCLR_Msk             (1UL << SCB_ICSR_PENDSTCLR_Pos)                /*!< SCB 
  496:CMSIS/Include/core_cm4.h **** 
  497:CMSIS/Include/core_cm4.h **** #define SCB_ICSR_ISRPREEMPT_Pos            23U                                            /*!< SCB 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 14
+
+
  498:CMSIS/Include/core_cm4.h **** #define SCB_ICSR_ISRPREEMPT_Msk            (1UL << SCB_ICSR_ISRPREEMPT_Pos)               /*!< SCB 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 14
-
-
  499:CMSIS/Include/core_cm4.h **** 
  500:CMSIS/Include/core_cm4.h **** #define SCB_ICSR_ISRPENDING_Pos            22U                                            /*!< SCB 
  501:CMSIS/Include/core_cm4.h **** #define SCB_ICSR_ISRPENDING_Msk            (1UL << SCB_ICSR_ISRPENDING_Pos)               /*!< SCB 
@@ -837,10 +838,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  552:CMSIS/Include/core_cm4.h **** #define SCB_CCR_BFHFNMIGN_Pos               8U                                            /*!< SCB 
  553:CMSIS/Include/core_cm4.h **** #define SCB_CCR_BFHFNMIGN_Msk              (1UL << SCB_CCR_BFHFNMIGN_Pos)                 /*!< SCB 
  554:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 15
+
+
  555:CMSIS/Include/core_cm4.h **** #define SCB_CCR_DIV_0_TRP_Pos               4U                                            /*!< SCB 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 15
-
-
  556:CMSIS/Include/core_cm4.h **** #define SCB_CCR_DIV_0_TRP_Msk              (1UL << SCB_CCR_DIV_0_TRP_Pos)                 /*!< SCB 
  557:CMSIS/Include/core_cm4.h **** 
  558:CMSIS/Include/core_cm4.h **** #define SCB_CCR_UNALIGN_TRP_Pos             3U                                            /*!< SCB 
@@ -897,10 +898,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  609:CMSIS/Include/core_cm4.h **** 
  610:CMSIS/Include/core_cm4.h **** /* SCB Configurable Fault Status Register Definitions */
  611:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_USGFAULTSR_Pos            16U                                            /*!< SCB 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 16
+
+
  612:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_USGFAULTSR_Msk            (0xFFFFUL << SCB_CFSR_USGFAULTSR_Pos)          /*!< SCB 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 16
-
-
  613:CMSIS/Include/core_cm4.h **** 
  614:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_BUSFAULTSR_Pos             8U                                            /*!< SCB 
  615:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_BUSFAULTSR_Msk            (0xFFUL << SCB_CFSR_BUSFAULTSR_Pos)            /*!< SCB 
@@ -957,10 +958,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  666:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_UNALIGNED_Msk            (1UL << SCB_CFSR_UNALIGNED_Pos)                 /*!< SCB 
  667:CMSIS/Include/core_cm4.h **** 
  668:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_NOCP_Pos                 (SCB_CFSR_USGFAULTSR_Pos + 3U)                  /*!< SCB 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 17
+
+
  669:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_NOCP_Msk                 (1UL << SCB_CFSR_NOCP_Pos)                      /*!< SCB 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 17
-
-
  670:CMSIS/Include/core_cm4.h **** 
  671:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_INVPC_Pos                (SCB_CFSR_USGFAULTSR_Pos + 2U)                  /*!< SCB 
  672:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_INVPC_Msk                (1UL << SCB_CFSR_INVPC_Pos)                     /*!< SCB 
@@ -1017,10 +1018,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  723:CMSIS/Include/core_cm4.h ****   __IOM uint32_t ACTLR;                  /*!< Offset: 0x008 (R/W)  Auxiliary Control Register */
  724:CMSIS/Include/core_cm4.h **** } SCnSCB_Type;
  725:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 18
+
+
  726:CMSIS/Include/core_cm4.h **** /* Interrupt Controller Type Register Definitions */
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 18
-
-
  727:CMSIS/Include/core_cm4.h **** #define SCnSCB_ICTR_INTLINESNUM_Pos         0U                                         /*!< ICTR: I
  728:CMSIS/Include/core_cm4.h **** #define SCnSCB_ICTR_INTLINESNUM_Msk        (0xFUL /*<< SCnSCB_ICTR_INTLINESNUM_Pos*/)  /*!< ICTR: I
  729:CMSIS/Include/core_cm4.h **** 
@@ -1077,10 +1078,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  780:CMSIS/Include/core_cm4.h **** /* SysTick Reload Register Definitions */
  781:CMSIS/Include/core_cm4.h **** #define SysTick_LOAD_RELOAD_Pos             0U                                            /*!< SysT
  782:CMSIS/Include/core_cm4.h **** #define SysTick_LOAD_RELOAD_Msk            (0xFFFFFFUL /*<< SysTick_LOAD_RELOAD_Pos*/)    /*!< SysT
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 19
+
+
  783:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 19
-
-
  784:CMSIS/Include/core_cm4.h **** /* SysTick Current Register Definitions */
  785:CMSIS/Include/core_cm4.h **** #define SysTick_VAL_CURRENT_Pos             0U                                            /*!< SysT
  786:CMSIS/Include/core_cm4.h **** #define SysTick_VAL_CURRENT_Msk            (0xFFFFFFUL /*<< SysTick_VAL_CURRENT_Pos*/)    /*!< SysT
@@ -1137,10 +1138,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  837:CMSIS/Include/core_cm4.h ****   __IM  uint32_t PID0;                   /*!< Offset: 0xFE0 (R/ )  ITM Peripheral Identification Re
  838:CMSIS/Include/core_cm4.h ****   __IM  uint32_t PID1;                   /*!< Offset: 0xFE4 (R/ )  ITM Peripheral Identification Re
  839:CMSIS/Include/core_cm4.h ****   __IM  uint32_t PID2;                   /*!< Offset: 0xFE8 (R/ )  ITM Peripheral Identification Re
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 20
+
+
  840:CMSIS/Include/core_cm4.h ****   __IM  uint32_t PID3;                   /*!< Offset: 0xFEC (R/ )  ITM Peripheral Identification Re
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 20
-
-
  841:CMSIS/Include/core_cm4.h ****   __IM  uint32_t CID0;                   /*!< Offset: 0xFF0 (R/ )  ITM Component  Identification Re
  842:CMSIS/Include/core_cm4.h ****   __IM  uint32_t CID1;                   /*!< Offset: 0xFF4 (R/ )  ITM Component  Identification Re
  843:CMSIS/Include/core_cm4.h ****   __IM  uint32_t CID2;                   /*!< Offset: 0xFF8 (R/ )  ITM Component  Identification Re
@@ -1197,10 +1198,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  894:CMSIS/Include/core_cm4.h **** 
  895:CMSIS/Include/core_cm4.h **** #define ITM_LSR_Access_Pos                  1U                                            /*!< ITM 
  896:CMSIS/Include/core_cm4.h **** #define ITM_LSR_Access_Msk                 (1UL << ITM_LSR_Access_Pos)                    /*!< ITM 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 21
+
+
  897:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 21
-
-
  898:CMSIS/Include/core_cm4.h **** #define ITM_LSR_Present_Pos                 0U                                            /*!< ITM 
  899:CMSIS/Include/core_cm4.h **** #define ITM_LSR_Present_Msk                (1UL /*<< ITM_LSR_Present_Pos*/)               /*!< ITM 
  900:CMSIS/Include/core_cm4.h **** 
@@ -1257,10 +1258,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  951:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_NOCYCCNT_Pos              25U                                         /*!< DWT CTR
  952:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_NOCYCCNT_Msk              (0x1UL << DWT_CTRL_NOCYCCNT_Pos)            /*!< DWT CTR
  953:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 22
+
+
  954:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_NOPRFCNT_Pos              24U                                         /*!< DWT CTR
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 22
-
-
  955:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_NOPRFCNT_Msk              (0x1UL << DWT_CTRL_NOPRFCNT_Pos)            /*!< DWT CTR
  956:CMSIS/Include/core_cm4.h **** 
  957:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_CYCEVTENA_Pos             22U                                         /*!< DWT CTR
@@ -1317,10 +1318,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1008:CMSIS/Include/core_cm4.h **** /* DWT LSU Count Register Definitions */
 1009:CMSIS/Include/core_cm4.h **** #define DWT_LSUCNT_LSUCNT_Pos               0U                                         /*!< DWT LSU
 1010:CMSIS/Include/core_cm4.h **** #define DWT_LSUCNT_LSUCNT_Msk              (0xFFUL /*<< DWT_LSUCNT_LSUCNT_Pos*/)       /*!< DWT LSU
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 23
+
+
 1011:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 23
-
-
 1012:CMSIS/Include/core_cm4.h **** /* DWT Folded-instruction Count Register Definitions */
 1013:CMSIS/Include/core_cm4.h **** #define DWT_FOLDCNT_FOLDCNT_Pos             0U                                         /*!< DWT FOL
 1014:CMSIS/Include/core_cm4.h **** #define DWT_FOLDCNT_FOLDCNT_Msk            (0xFFUL /*<< DWT_FOLDCNT_FOLDCNT_Pos*/)     /*!< DWT FOL
@@ -1377,10 +1378,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1065:CMSIS/Include/core_cm4.h ****         uint32_t RESERVED0[2U];
 1066:CMSIS/Include/core_cm4.h ****   __IOM uint32_t ACPR;                   /*!< Offset: 0x010 (R/W)  Asynchronous Clock Prescaler Reg
 1067:CMSIS/Include/core_cm4.h ****         uint32_t RESERVED1[55U];
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 24
+
+
 1068:CMSIS/Include/core_cm4.h ****   __IOM uint32_t SPPR;                   /*!< Offset: 0x0F0 (R/W)  Selected Pin Protocol Register *
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 24
-
-
 1069:CMSIS/Include/core_cm4.h ****         uint32_t RESERVED2[131U];
 1070:CMSIS/Include/core_cm4.h ****   __IM  uint32_t FFSR;                   /*!< Offset: 0x300 (R/ )  Formatter and Flush Status Regis
 1071:CMSIS/Include/core_cm4.h ****   __IOM uint32_t FFCR;                   /*!< Offset: 0x304 (R/W)  Formatter and Flush Control Regi
@@ -1437,10 +1438,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1122:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ITM_ATVALID_Pos          29U                                         /*!< TPI FIF
 1123:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ITM_ATVALID_Msk          (0x3UL << TPI_FIFO0_ITM_ATVALID_Pos)        /*!< TPI FIF
 1124:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 25
+
+
 1125:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ITM_bytecount_Pos        27U                                         /*!< TPI FIF
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 25
-
-
 1126:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ITM_bytecount_Msk        (0x3UL << TPI_FIFO0_ITM_bytecount_Pos)      /*!< TPI FIF
 1127:CMSIS/Include/core_cm4.h **** 
 1128:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ETM_ATVALID_Pos          26U                                         /*!< TPI FIF
@@ -1497,10 +1498,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1179:CMSIS/Include/core_cm4.h **** /* TPI Integration Mode Control Register Definitions */
 1180:CMSIS/Include/core_cm4.h **** #define TPI_ITCTRL_Mode_Pos                 0U                                         /*!< TPI ITC
 1181:CMSIS/Include/core_cm4.h **** #define TPI_ITCTRL_Mode_Msk                (0x3UL /*<< TPI_ITCTRL_Mode_Pos*/)          /*!< TPI ITC
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 26
+
+
 1182:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 26
-
-
 1183:CMSIS/Include/core_cm4.h **** /* TPI DEVID Register Definitions */
 1184:CMSIS/Include/core_cm4.h **** #define TPI_DEVID_NRZVALID_Pos             11U                                         /*!< TPI DEV
 1185:CMSIS/Include/core_cm4.h **** #define TPI_DEVID_NRZVALID_Msk             (0x1UL << TPI_DEVID_NRZVALID_Pos)           /*!< TPI DEV
@@ -1557,10 +1558,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1236:CMSIS/Include/core_cm4.h **** } MPU_Type;
 1237:CMSIS/Include/core_cm4.h **** 
 1238:CMSIS/Include/core_cm4.h **** #define MPU_TYPE_RALIASES                  4U
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 27
+
+
 1239:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 27
-
-
 1240:CMSIS/Include/core_cm4.h **** /* MPU Type Register Definitions */
 1241:CMSIS/Include/core_cm4.h **** #define MPU_TYPE_IREGION_Pos               16U                                            /*!< MPU 
 1242:CMSIS/Include/core_cm4.h **** #define MPU_TYPE_IREGION_Msk               (0xFFUL << MPU_TYPE_IREGION_Pos)               /*!< MPU 
@@ -1617,10 +1618,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1293:CMSIS/Include/core_cm4.h **** #define MPU_RASR_B_Pos                     16U                                            /*!< MPU 
 1294:CMSIS/Include/core_cm4.h **** #define MPU_RASR_B_Msk                     (1UL << MPU_RASR_B_Pos)                        /*!< MPU 
 1295:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 28
+
+
 1296:CMSIS/Include/core_cm4.h **** #define MPU_RASR_SRD_Pos                    8U                                            /*!< MPU 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 28
-
-
 1297:CMSIS/Include/core_cm4.h **** #define MPU_RASR_SRD_Msk                   (0xFFUL << MPU_RASR_SRD_Pos)                   /*!< MPU 
 1298:CMSIS/Include/core_cm4.h **** 
 1299:CMSIS/Include/core_cm4.h **** #define MPU_RASR_SIZE_Pos                   1U                                            /*!< MPU 
@@ -1677,10 +1678,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1350:CMSIS/Include/core_cm4.h **** 
 1351:CMSIS/Include/core_cm4.h **** #define FPU_FPCCR_USER_Pos                  1U                                            /*!< FPCC
 1352:CMSIS/Include/core_cm4.h **** #define FPU_FPCCR_USER_Msk                 (1UL << FPU_FPCCR_USER_Pos)                    /*!< FPCC
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 29
+
+
 1353:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 29
-
-
 1354:CMSIS/Include/core_cm4.h **** #define FPU_FPCCR_LSPACT_Pos                0U                                            /*!< FPCC
 1355:CMSIS/Include/core_cm4.h **** #define FPU_FPCCR_LSPACT_Msk               (1UL /*<< FPU_FPCCR_LSPACT_Pos*/)              /*!< FPCC
 1356:CMSIS/Include/core_cm4.h **** 
@@ -1737,10 +1738,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1407:CMSIS/Include/core_cm4.h **** #define FPU_MVFR1_D_NaN_mode_Msk           (0xFUL << FPU_MVFR1_D_NaN_mode_Pos)            /*!< MVFR
 1408:CMSIS/Include/core_cm4.h **** 
 1409:CMSIS/Include/core_cm4.h **** #define FPU_MVFR1_FtZ_mode_Pos              0U                                            /*!< MVFR
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 30
+
+
 1410:CMSIS/Include/core_cm4.h **** #define FPU_MVFR1_FtZ_mode_Msk             (0xFUL /*<< FPU_MVFR1_FtZ_mode_Pos*/)          /*!< MVFR
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 30
-
-
 1411:CMSIS/Include/core_cm4.h **** 
 1412:CMSIS/Include/core_cm4.h **** /*@} end of group CMSIS_FPU */
 1413:CMSIS/Include/core_cm4.h **** 
@@ -1797,10 +1798,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1464:CMSIS/Include/core_cm4.h **** #define CoreDebug_DHCSR_C_HALT_Pos          1U                                            /*!< Core
 1465:CMSIS/Include/core_cm4.h **** #define CoreDebug_DHCSR_C_HALT_Msk         (1UL << CoreDebug_DHCSR_C_HALT_Pos)            /*!< Core
 1466:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 31
+
+
 1467:CMSIS/Include/core_cm4.h **** #define CoreDebug_DHCSR_C_DEBUGEN_Pos       0U                                            /*!< Core
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 31
-
-
 1468:CMSIS/Include/core_cm4.h **** #define CoreDebug_DHCSR_C_DEBUGEN_Msk      (1UL /*<< CoreDebug_DHCSR_C_DEBUGEN_Pos*/)     /*!< Core
 1469:CMSIS/Include/core_cm4.h **** 
 1470:CMSIS/Include/core_cm4.h **** /* Debug Core Register Selector Register Definitions */
@@ -1857,10 +1858,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1521:CMSIS/Include/core_cm4.h ****   \ingroup    CMSIS_core_register
 1522:CMSIS/Include/core_cm4.h ****   \defgroup   CMSIS_core_bitfield     Core register bit field macros
 1523:CMSIS/Include/core_cm4.h ****   \brief      Macros for use with bit field definitions (xxx_Pos, xxx_Msk).
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 32
+
+
 1524:CMSIS/Include/core_cm4.h ****   @{
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 32
-
-
 1525:CMSIS/Include/core_cm4.h ****  */
 1526:CMSIS/Include/core_cm4.h **** 
 1527:CMSIS/Include/core_cm4.h **** /**
@@ -1917,10 +1918,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1578:CMSIS/Include/core_cm4.h **** #define FPU                 ((FPU_Type       *)     FPU_BASE      )   /*!< Floating Point Unit */
 1579:CMSIS/Include/core_cm4.h **** 
 1580:CMSIS/Include/core_cm4.h **** /*@} */
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 33
+
+
 1581:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 33
-
-
 1582:CMSIS/Include/core_cm4.h **** 
 1583:CMSIS/Include/core_cm4.h **** 
 1584:CMSIS/Include/core_cm4.h **** /*******************************************************************************
@@ -1977,10 +1978,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1635:CMSIS/Include/core_cm4.h **** 
 1636:CMSIS/Include/core_cm4.h **** #define NVIC_USER_IRQ_OFFSET          16
 1637:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 34
+
+
 1638:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 34
-
-
 1639:CMSIS/Include/core_cm4.h **** /* The following EXC_RETURN values are saved the LR on exception entry */
 1640:CMSIS/Include/core_cm4.h **** #define EXC_RETURN_HANDLER         (0xFFFFFFF1UL)     /* return to Handler mode, uses MSP after ret
 1641:CMSIS/Include/core_cm4.h **** #define EXC_RETURN_THREAD_MSP      (0xFFFFFFF9UL)     /* return to Thread mode, uses MSP after retu
@@ -2037,10 +2038,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1692:CMSIS/Include/core_cm4.h ****     NVIC->ISER[(((uint32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)IRQn) & 0x1FUL));
 1693:CMSIS/Include/core_cm4.h ****   }
 1694:CMSIS/Include/core_cm4.h **** }
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 35
+
+
 1695:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 35
-
-
 1696:CMSIS/Include/core_cm4.h **** 
 1697:CMSIS/Include/core_cm4.h **** /**
 1698:CMSIS/Include/core_cm4.h ****   \brief   Get Interrupt Enable status
@@ -2097,10 +2098,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1749:CMSIS/Include/core_cm4.h ****   else
 1750:CMSIS/Include/core_cm4.h ****   {
 1751:CMSIS/Include/core_cm4.h ****     return(0U);
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 36
+
+
 1752:CMSIS/Include/core_cm4.h ****   }
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 36
-
-
 1753:CMSIS/Include/core_cm4.h **** }
 1754:CMSIS/Include/core_cm4.h **** 
 1755:CMSIS/Include/core_cm4.h **** 
@@ -2157,10 +2158,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
 1806:CMSIS/Include/core_cm4.h **** 
 1807:CMSIS/Include/core_cm4.h **** /**
 1808:CMSIS/Include/core_cm4.h ****   \brief   Set Interrupt Priority
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 37
+
+
 1809:CMSIS/Include/core_cm4.h ****   \details Sets the priority of a device specific interrupt or a processor exception.
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 37
-
-
 1810:CMSIS/Include/core_cm4.h ****            The interrupt number can be positive to specify a device specific interrupt,
 1811:CMSIS/Include/core_cm4.h ****            or negative to specify a processor exception.
 1812:CMSIS/Include/core_cm4.h ****   \param [in]      IRQn  Interrupt number.
@@ -2184,8 +2185,8 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  204              		.loc 2 1820 46 view .LVU37
  205              	.LBE7:
  206              	.LBE6:
-  53:Core/Src/interrupt.c ****     NVIC_EnableIRQ(EXTI15_10_IRQn);
- 207              		.loc 1 53 5 is_stmt 1 view .LVU38
+  54:Core/Src/interrupt.c ****     NVIC_EnableIRQ(EXTI15_10_IRQn);
+ 207              		.loc 1 54 5 is_stmt 1 view .LVU38
  208              	.LBB8:
  209              	.LBI8:
 1688:CMSIS/Include/core_cm4.h **** {
@@ -2204,8 +2205,8 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  218              		.loc 2 1692 43 view .LVU43
  219              	.LBE9:
  220              	.LBE8:
-  54:Core/Src/interrupt.c **** }
- 221              		.loc 1 54 1 view .LVU44
+  55:Core/Src/interrupt.c **** }
+ 221              		.loc 1 55 1 view .LVU44
  222 0042 7047     		bx	lr
  223              	.L18:
  224              		.align	2
@@ -2217,110 +2218,110 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  230              	.LFE133:
  232              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
  233              		.align	1
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 38
+
+
  234              		.global	EXTI15_10_IRQHandler
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 38
-
-
  235              		.syntax unified
  236              		.thumb
  237              		.thumb_func
  239              	EXTI15_10_IRQHandler:
  240              	.LFB134:
-  55:Core/Src/interrupt.c **** 
-  56:Core/Src/interrupt.c **** /**
-  57:Core/Src/interrupt.c ****  * @brief Обработчик внешнего прерывания по кнопке PC13
-  58:Core/Src/interrupt.c ****  */
-  59:Core/Src/interrupt.c **** void EXTI15_10_IRQHandler(void)
-  60:Core/Src/interrupt.c **** {
- 241              		.loc 1 60 1 is_stmt 1 view -0
+  56:Core/Src/interrupt.c **** 
+  57:Core/Src/interrupt.c **** /**
+  58:Core/Src/interrupt.c ****  * @brief Обработчик внешнего прерывания по кнопке PC13
+  59:Core/Src/interrupt.c ****  */
+  60:Core/Src/interrupt.c **** void EXTI15_10_IRQHandler(void)
+  61:Core/Src/interrupt.c **** {
+ 241              		.loc 1 61 1 is_stmt 1 view -0
  242              		.cfi_startproc
  243              		@ args = 0, pretend = 0, frame = 0
  244              		@ frame_needed = 0, uses_anonymous_args = 0
  245              		@ link register save eliminated.
-  61:Core/Src/interrupt.c **** 
-  62:Core/Src/interrupt.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR13) != 0)
- 246              		.loc 1 62 5 view .LVU46
- 247              		.loc 1 62 9 is_stmt 0 view .LVU47
+  62:Core/Src/interrupt.c **** 
+  63:Core/Src/interrupt.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR13) != 0)
+ 246              		.loc 1 63 5 view .LVU46
+ 247              		.loc 1 63 9 is_stmt 0 view .LVU47
  248 0000 104B     		ldr	r3, .L23
  249 0002 5B69     		ldr	r3, [r3, #20]
- 250              		.loc 1 62 8 view .LVU48
+ 250              		.loc 1 63 8 view .LVU48
  251 0004 13F4005F 		tst	r3, #8192
  252 0008 0DD0     		beq	.L19
-  63:Core/Src/interrupt.c ****     {
-  64:Core/Src/interrupt.c **** 
-  65:Core/Src/interrupt.c ****         if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13) == 0)
- 253              		.loc 1 65 9 is_stmt 1 view .LVU49
- 254              		.loc 1 65 13 is_stmt 0 view .LVU50
+  64:Core/Src/interrupt.c ****     {
+  65:Core/Src/interrupt.c **** 
+  66:Core/Src/interrupt.c ****         if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13) == 0)
+ 253              		.loc 1 66 9 is_stmt 1 view .LVU49
+ 254              		.loc 1 66 13 is_stmt 0 view .LVU50
  255 000a 0F4B     		ldr	r3, .L23+4
  256 000c 1B69     		ldr	r3, [r3, #16]
- 257              		.loc 1 65 12 view .LVU51
+ 257              		.loc 1 66 12 view .LVU51
  258 000e 13F4005F 		tst	r3, #8192
  259 0012 09D1     		bne	.L21
-  66:Core/Src/interrupt.c ****         {
-  67:Core/Src/interrupt.c ****             press_time = ticks;
- 260              		.loc 1 67 13 is_stmt 1 view .LVU52
- 261              		.loc 1 67 24 is_stmt 0 view .LVU53
+  67:Core/Src/interrupt.c ****         {
+  68:Core/Src/interrupt.c ****             press_time = ticks;
+ 260              		.loc 1 68 13 is_stmt 1 view .LVU52
+ 261              		.loc 1 68 24 is_stmt 0 view .LVU53
  262 0014 0D4B     		ldr	r3, .L23+8
  263 0016 1A68     		ldr	r2, [r3]
  264 0018 0D4B     		ldr	r3, .L23+12
  265 001a 1A60     		str	r2, [r3]
  266              	.L22:
-  68:Core/Src/interrupt.c ****         }
-  69:Core/Src/interrupt.c ****         else
-  70:Core/Src/interrupt.c ****         {
-  71:Core/Src/interrupt.c ****             uint32_t release_time = ticks;
-  72:Core/Src/interrupt.c ****             
-  73:Core/Src/interrupt.c ****             if ((release_time - press_time) >= MIN_PRESS_DURATION)
-  74:Core/Src/interrupt.c ****             {
-  75:Core/Src/interrupt.c ****                 button_permission = !button_permission; // Меняем флаг старт/сто�
-  76:Core/Src/interrupt.c ****             }
-  77:Core/Src/interrupt.c ****         }
-  78:Core/Src/interrupt.c **** 
-  79:Core/Src/interrupt.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR13);
- 267              		.loc 1 79 9 is_stmt 1 view .LVU54
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 39
+  69:Core/Src/interrupt.c ****         }
+  70:Core/Src/interrupt.c ****         else
+  71:Core/Src/interrupt.c ****         {
+  72:Core/Src/interrupt.c ****             uint32_t release_time = ticks;
+  73:Core/Src/interrupt.c ****             
+  74:Core/Src/interrupt.c ****             if ((release_time - press_time) >= MIN_PRESS_DURATION)
+  75:Core/Src/interrupt.c ****             {
+  76:Core/Src/interrupt.c ****                 button_permission = !button_permission; // Меняем флаг старт/сто�
+  77:Core/Src/interrupt.c ****             }
+  78:Core/Src/interrupt.c ****         }
+  79:Core/Src/interrupt.c **** 
+  80:Core/Src/interrupt.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR13);
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 39
 
 
+ 267              		.loc 1 80 9 is_stmt 1 view .LVU54
  268 001c 094A     		ldr	r2, .L23
  269 001e 5369     		ldr	r3, [r2, #20]
  270 0020 43F40053 		orr	r3, r3, #8192
  271 0024 5361     		str	r3, [r2, #20]
  272              	.L19:
-  80:Core/Src/interrupt.c ****     }
-  81:Core/Src/interrupt.c **** }
- 273              		.loc 1 81 1 is_stmt 0 view .LVU55
+  81:Core/Src/interrupt.c ****     }
+  82:Core/Src/interrupt.c **** }
+ 273              		.loc 1 82 1 is_stmt 0 view .LVU55
  274 0026 7047     		bx	lr
  275              	.L21:
  276              	.LBB10:
-  71:Core/Src/interrupt.c ****             
- 277              		.loc 1 71 13 is_stmt 1 view .LVU56
-  71:Core/Src/interrupt.c ****             
- 278              		.loc 1 71 22 is_stmt 0 view .LVU57
+  72:Core/Src/interrupt.c ****             
+ 277              		.loc 1 72 13 is_stmt 1 view .LVU56
+  72:Core/Src/interrupt.c ****             
+ 278              		.loc 1 72 22 is_stmt 0 view .LVU57
  279 0028 084B     		ldr	r3, .L23+8
  280 002a 1B68     		ldr	r3, [r3]
  281              	.LVL8:
-  73:Core/Src/interrupt.c ****             {
- 282              		.loc 1 73 13 is_stmt 1 view .LVU58
-  73:Core/Src/interrupt.c ****             {
- 283              		.loc 1 73 31 is_stmt 0 view .LVU59
+  74:Core/Src/interrupt.c ****             {
+ 282              		.loc 1 74 13 is_stmt 1 view .LVU58
+  74:Core/Src/interrupt.c ****             {
+ 283              		.loc 1 74 31 is_stmt 0 view .LVU59
  284 002c 084A     		ldr	r2, .L23+12
  285 002e 1268     		ldr	r2, [r2]
  286 0030 9B1A     		subs	r3, r3, r2
  287              	.LVL9:
-  73:Core/Src/interrupt.c ****             {
- 288              		.loc 1 73 16 view .LVU60
+  74:Core/Src/interrupt.c ****             {
+ 288              		.loc 1 74 16 view .LVU60
  289 0032 312B     		cmp	r3, #49
  290 0034 F2D9     		bls	.L22
-  75:Core/Src/interrupt.c ****             }
- 291              		.loc 1 75 17 is_stmt 1 view .LVU61
-  75:Core/Src/interrupt.c ****             }
- 292              		.loc 1 75 37 is_stmt 0 view .LVU62
+  76:Core/Src/interrupt.c ****             }
+ 291              		.loc 1 76 17 is_stmt 1 view .LVU61
+  76:Core/Src/interrupt.c ****             }
+ 292              		.loc 1 76 37 is_stmt 0 view .LVU62
  293 0036 074A     		ldr	r2, .L23+16
  294 0038 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
  295 003a B3FA83F3 		clz	r3, r3
  296 003e 5B09     		lsrs	r3, r3, #5
-  75:Core/Src/interrupt.c ****             }
- 297              		.loc 1 75 35 view .LVU63
+  76:Core/Src/interrupt.c ****             }
+ 297              		.loc 1 76 35 view .LVU63
  298 0040 1370     		strb	r3, [r2]
  299 0042 EBE7     		b	.L22
  300              	.L24:
@@ -2337,32 +2338,32 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  312              		.section	.text.get_button_permission,"ax",%progbits
  313              		.align	1
  314              		.global	get_button_permission
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 40
+
+
  315              		.syntax unified
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 40
-
-
  316              		.thumb
  317              		.thumb_func
  319              	get_button_permission:
  320              	.LFB135:
-  82:Core/Src/interrupt.c **** /**
-  83:Core/Src/interrupt.c ****  * @brief Проверка состояния кнопки
-  84:Core/Src/interrupt.c ****  * @return uint8_t
-  85:Core/Src/interrupt.c ****  */
-  86:Core/Src/interrupt.c **** uint8_t get_button_permission(void)
-  87:Core/Src/interrupt.c **** {
- 321              		.loc 1 87 1 is_stmt 1 view -0
+  83:Core/Src/interrupt.c **** /**
+  84:Core/Src/interrupt.c ****  * @brief Проверка состояния кнопки
+  85:Core/Src/interrupt.c ****  * @return uint8_t
+  86:Core/Src/interrupt.c ****  */
+  87:Core/Src/interrupt.c **** uint8_t get_button_permission(void)
+  88:Core/Src/interrupt.c **** {
+ 321              		.loc 1 88 1 is_stmt 1 view -0
  322              		.cfi_startproc
  323              		@ args = 0, pretend = 0, frame = 0
  324              		@ frame_needed = 0, uses_anonymous_args = 0
  325              		@ link register save eliminated.
-  88:Core/Src/interrupt.c ****     return button_permission;
- 326              		.loc 1 88 5 view .LVU65
- 327              		.loc 1 88 12 is_stmt 0 view .LVU66
+  89:Core/Src/interrupt.c ****     return button_permission;
+ 326              		.loc 1 89 5 view .LVU65
+ 327              		.loc 1 89 12 is_stmt 0 view .LVU66
  328 0000 014B     		ldr	r3, .L26
  329 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
-  89:Core/Src/interrupt.c **** }
- 330              		.loc 1 89 1 view .LVU67
+  90:Core/Src/interrupt.c **** }
+ 330              		.loc 1 90 1 view .LVU67
  331 0004 7047     		bx	lr
  332              	.L27:
  333 0006 00BF     		.align	2
@@ -2370,56 +2371,187 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 1
  335 0008 00000000 		.word	button_permission
  336              		.cfi_endproc
  337              	.LFE135:
- 339              		.section	.bss.led_counter.0,"aw",%nobits
- 340              		.align	2
- 343              	led_counter.0:
- 344 0000 00000000 		.space	4
- 345              		.section	.bss.button_permission,"aw",%nobits
- 348              	button_permission:
- 349 0000 00       		.space	1
- 350              		.section	.bss.press_time,"aw",%nobits
- 351              		.align	2
- 354              	press_time:
- 355 0000 00000000 		.space	4
- 356              		.section	.bss.ticks,"aw",%nobits
- 357              		.align	2
- 360              	ticks:
- 361 0000 00000000 		.space	4
- 362              		.text
- 363              	.Letext0:
- 364              		.file 3 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
- 365              		.file 4 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
- 366              		.file 5 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc41R6bd.s 			page 41
+ 339              		.section	.text.TIM2_IRQHandler,"ax",%progbits
+ 340              		.align	1
+ 341              		.global	TIM2_IRQHandler
+ 342              		.syntax unified
+ 343              		.thumb
+ 344              		.thumb_func
+ 346              	TIM2_IRQHandler:
+ 347              	.LFB136:
+  91:Core/Src/interrupt.c **** 
+  92:Core/Src/interrupt.c **** void TIM2_IRQHandler(void)
+  93:Core/Src/interrupt.c **** {
+ 348              		.loc 1 93 1 is_stmt 1 view -0
+ 349              		.cfi_startproc
+ 350              		@ args = 0, pretend = 0, frame = 0
+ 351              		@ frame_needed = 0, uses_anonymous_args = 0
+ 352              		@ link register save eliminated.
+  94:Core/Src/interrupt.c ****     if (TIM2->SR & TIM_SR_UIF)
+ 353              		.loc 1 94 5 view .LVU69
+ 354              		.loc 1 94 13 is_stmt 0 view .LVU70
+ 355 0000 4FF08043 		mov	r3, #1073741824
+ 356 0004 1B69     		ldr	r3, [r3, #16]
+ 357              		.loc 1 94 8 view .LVU71
+ 358 0006 13F0010F 		tst	r3, #1
+ 359 000a 08D0     		beq	.L28
+  95:Core/Src/interrupt.c ****     {
+  96:Core/Src/interrupt.c ****         TIM2->SR &= ~TIM_SR_UIF; // Сбрасываем флаг прерывания вручну
+ 360              		.loc 1 96 9 is_stmt 1 view .LVU72
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 41
+
+
+ 361              		.loc 1 96 13 is_stmt 0 view .LVU73
+ 362 000c 4FF08042 		mov	r2, #1073741824
+ 363 0010 1369     		ldr	r3, [r2, #16]
+ 364              		.loc 1 96 18 view .LVU74
+ 365 0012 23F00103 		bic	r3, r3, #1
+ 366 0016 1361     		str	r3, [r2, #16]
+  97:Core/Src/interrupt.c ****         tim2_flag = 1;           // Выставляем флаг для основного цик�
+ 367              		.loc 1 97 9 is_stmt 1 view .LVU75
+ 368              		.loc 1 97 19 is_stmt 0 view .LVU76
+ 369 0018 014B     		ldr	r3, .L30
+ 370 001a 0122     		movs	r2, #1
+ 371 001c 1A70     		strb	r2, [r3]
+ 372              	.L28:
+  98:Core/Src/interrupt.c ****     }
+  99:Core/Src/interrupt.c **** }
+ 373              		.loc 1 99 1 view .LVU77
+ 374 001e 7047     		bx	lr
+ 375              	.L31:
+ 376              		.align	2
+ 377              	.L30:
+ 378 0020 00000000 		.word	tim2_flag
+ 379              		.cfi_endproc
+ 380              	.LFE136:
+ 382              		.section	.text.get_tim2_flag,"ax",%progbits
+ 383              		.align	1
+ 384              		.global	get_tim2_flag
+ 385              		.syntax unified
+ 386              		.thumb
+ 387              		.thumb_func
+ 389              	get_tim2_flag:
+ 390              	.LFB137:
+ 100:Core/Src/interrupt.c **** 
+ 101:Core/Src/interrupt.c **** uint8_t get_tim2_flag(void)
+ 102:Core/Src/interrupt.c **** {
+ 391              		.loc 1 102 1 is_stmt 1 view -0
+ 392              		.cfi_startproc
+ 393              		@ args = 0, pretend = 0, frame = 0
+ 394              		@ frame_needed = 0, uses_anonymous_args = 0
+ 395              		@ link register save eliminated.
+ 103:Core/Src/interrupt.c ****     return tim2_flag;
+ 396              		.loc 1 103 5 view .LVU79
+ 397              		.loc 1 103 12 is_stmt 0 view .LVU80
+ 398 0000 014B     		ldr	r3, .L33
+ 399 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 104:Core/Src/interrupt.c **** }
+ 400              		.loc 1 104 1 view .LVU81
+ 401 0004 7047     		bx	lr
+ 402              	.L34:
+ 403 0006 00BF     		.align	2
+ 404              	.L33:
+ 405 0008 00000000 		.word	tim2_flag
+ 406              		.cfi_endproc
+ 407              	.LFE137:
+ 409              		.section	.text.set_tim2_flag,"ax",%progbits
+ 410              		.align	1
+ 411              		.global	set_tim2_flag
+ 412              		.syntax unified
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 42
+
+
+ 413              		.thumb
+ 414              		.thumb_func
+ 416              	set_tim2_flag:
+ 417              	.LVL10:
+ 418              	.LFB138:
+ 105:Core/Src/interrupt.c **** 
+ 106:Core/Src/interrupt.c **** void set_tim2_flag(uint8_t flag)
+ 107:Core/Src/interrupt.c **** {
+ 419              		.loc 1 107 1 is_stmt 1 view -0
+ 420              		.cfi_startproc
+ 421              		@ args = 0, pretend = 0, frame = 0
+ 422              		@ frame_needed = 0, uses_anonymous_args = 0
+ 423              		@ link register save eliminated.
+ 108:Core/Src/interrupt.c ****     tim2_flag = flag;
+ 424              		.loc 1 108 5 view .LVU83
+ 425              		.loc 1 108 15 is_stmt 0 view .LVU84
+ 426 0000 014B     		ldr	r3, .L36
+ 427 0002 1870     		strb	r0, [r3]
+ 109:Core/Src/interrupt.c **** }...
+ 428              		.loc 1 109 1 view .LVU85
+ 429 0004 7047     		bx	lr
+ 430              	.L37:
+ 431 0006 00BF     		.align	2
+ 432              	.L36:
+ 433 0008 00000000 		.word	tim2_flag
+ 434              		.cfi_endproc
+ 435              	.LFE138:
+ 437              		.section	.bss.led_counter.0,"aw",%nobits
+ 438              		.align	2
+ 441              	led_counter.0:
+ 442 0000 00000000 		.space	4
+ 443              		.section	.bss.tim2_flag,"aw",%nobits
+ 446              	tim2_flag:
+ 447 0000 00       		.space	1
+ 448              		.section	.bss.button_permission,"aw",%nobits
+ 451              	button_permission:
+ 452 0000 00       		.space	1
+ 453              		.section	.bss.press_time,"aw",%nobits
+ 454              		.align	2
+ 457              	press_time:
+ 458 0000 00000000 		.space	4
+ 459              		.section	.bss.ticks,"aw",%nobits
+ 460              		.align	2
+ 463              	ticks:
+ 464 0000 00000000 		.space	4
+ 465              		.text
+ 466              	.Letext0:
+ 467              		.file 3 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
+ 468              		.file 4 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
+ 469              		.file 5 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ARM GAS  C:\Users\User\AppData\Local\Temp\cc44RXJe.s 			page 43
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 interrupt.c
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:21     .text.led_toggle:00000000 $t
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:26     .text.led_toggle:00000000 led_toggle
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:45     .text.led_toggle:0000000c $d
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:50     .text.SysTick_Handler:00000000 $t
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:56     .text.SysTick_Handler:00000000 SysTick_Handler
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:119    .text.SysTick_Handler:00000038 $d
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:343    .bss.led_counter.0:00000000 led_counter.0
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:348    .bss.button_permission:00000000 button_permission
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:360    .bss.ticks:00000000 ticks
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:126    .text.get_ticks:00000000 $t
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:132    .text.get_ticks:00000000 get_ticks
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:148    .text.get_ticks:00000008 $d
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:153    .text.button_interrupt_init:00000000 $t
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:159    .text.button_interrupt_init:00000000 button_interrupt_init
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:226    .text.button_interrupt_init:00000044 $d
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:233    .text.EXTI15_10_IRQHandler:00000000 $t
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:239    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:303    .text.EXTI15_10_IRQHandler:00000044 $d
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:354    .bss.press_time:00000000 press_time
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:313    .text.get_button_permission:00000000 $t
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:319    .text.get_button_permission:00000000 get_button_permission
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:335    .text.get_button_permission:00000008 $d
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:340    .bss.led_counter.0:00000000 $d
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:349    .bss.button_permission:00000000 $d
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:351    .bss.press_time:00000000 $d
-C:\Users\User\AppData\Local\Temp\cc41R6bd.s:357    .bss.ticks:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:21     .text.led_toggle:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:26     .text.led_toggle:00000000 led_toggle
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:45     .text.led_toggle:0000000c $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:50     .text.SysTick_Handler:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:56     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:119    .text.SysTick_Handler:00000038 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:441    .bss.led_counter.0:00000000 led_counter.0
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:451    .bss.button_permission:00000000 button_permission
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:463    .bss.ticks:00000000 ticks
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:126    .text.get_ticks:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:132    .text.get_ticks:00000000 get_ticks
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:148    .text.get_ticks:00000008 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:153    .text.button_interrupt_init:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:159    .text.button_interrupt_init:00000000 button_interrupt_init
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:226    .text.button_interrupt_init:00000044 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:233    .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:239    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:303    .text.EXTI15_10_IRQHandler:00000044 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:457    .bss.press_time:00000000 press_time
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:313    .text.get_button_permission:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:319    .text.get_button_permission:00000000 get_button_permission
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:335    .text.get_button_permission:00000008 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:340    .text.TIM2_IRQHandler:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:346    .text.TIM2_IRQHandler:00000000 TIM2_IRQHandler
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:378    .text.TIM2_IRQHandler:00000020 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:446    .bss.tim2_flag:00000000 tim2_flag
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:383    .text.get_tim2_flag:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:389    .text.get_tim2_flag:00000000 get_tim2_flag
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:405    .text.get_tim2_flag:00000008 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:410    .text.set_tim2_flag:00000000 $t
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:416    .text.set_tim2_flag:00000000 set_tim2_flag
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:433    .text.set_tim2_flag:00000008 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:438    .bss.led_counter.0:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:447    .bss.tim2_flag:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:452    .bss.button_permission:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:454    .bss.press_time:00000000 $d
+C:\Users\User\AppData\Local\Temp\cc44RXJe.s:460    .bss.ticks:00000000 $d
 
 NO UNDEFINED SYMBOLS

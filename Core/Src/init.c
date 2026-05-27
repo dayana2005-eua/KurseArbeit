@@ -120,9 +120,14 @@ void TIMER2_init(void)
     MODIFY_REG(TIM2->CCMR2, TIM_CCMR2_OC3M, TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2); // CH3 (Левый)
 
     SET_BIT(TIM2->CCER, TIM_CCER_CC2E | TIM_CCER_CC3E); // Разрешаем выдачу ШИМ-сигнала на физические пины платы
-    
+
+    SET_BIT(TIM2->DIER, TIM_DIER_UIE);    // Разрешаем прерывание по обновлению (переполнению) таймера
+    NVIC_EnableIRQ(TIM2_IRQn);            // Разрешаем обработку этого прерывания в контроллере NVIC микроконтроллера
+    NVIC_SetPriority(TIM2_IRQn, 2);       // Выставляем безопасный приоритет
+
     SET_BIT(TIM2->CR1, TIM_CR1_CEN); // Запускаем таймер TIM2
 }
+
 
 /**
  * @brief Настройка системного таймера
