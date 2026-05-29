@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
   41 000c 42F00202 		orr	r2, r2, #2
   42 0010 1A63     		str	r2, [r3, #48]
   16:Core/Src/init.c ****     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOCEN); // Разрешено тактирование по
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 2
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 2
 
 
   43              		.loc 1 16 5 view .LVU3
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
   81 005e 1A68     		ldr	r2, [r3]
   82 0060 22F44042 		bic	r2, r2, #49152
   83 0064 1A60     		str	r2, [r3]
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 3
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 3
 
 
   33:Core/Src/init.c ****     CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODER6); // Очищаем соответствующие 2 
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  123 00b2 23F44013 		bic	r3, r3, #3145728
  124 00b6 23F0C003 		bic	r3, r3, #192
  125 00ba 1360     		str	r3, [r2]
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 4
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 4
 
 
   48:Core/Src/init.c **** 
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  164 010c 42F48022 		orr	r2, r2, #262144
  165 0110 9A61     		str	r2, [r3, #24]
   64:Core/Src/init.c **** }
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 5
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 5
 
 
  166              		.loc 1 64 1 is_stmt 0 view .LVU32
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
   77:Core/Src/init.c ****     MODIFY_REG(PWR->CR, PWR_CR_VOS, PWR_CR_VOS_1); 
  210              		.loc 1 77 5 view .LVU40
  211 001e 2149     		ldr	r1, .L8+4
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 6
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 6
 
 
  212 0020 0A68     		ldr	r2, [r1]
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  246 0068 9A68     		ldr	r2, [r3, #8]
  247 006a 22F0F002 		bic	r2, r2, #240
  248 006e 9A60     		str	r2, [r3, #8]
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 7
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 7
 
 
   98:Core/Src/init.c ****     MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV2); // APB1 = AHB / 2 = 42 МГц
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  109:Core/Src/init.c ****  * @note Частота ШИМ 1 кГц. Частота TIMER2 1 МГц
  110:Core/Src/init.c ****  * @retval None
  111:Core/Src/init.c ****  */
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 8
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 8
 
 
  112:Core/Src/init.c **** void TIMER2_init(void)
@@ -445,42 +445,43 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  309 0012 40F2E732 		movw	r2, #999
  310 0016 DA62     		str	r2, [r3, #44]
  118:Core/Src/init.c **** 
- 119:Core/Src/init.c ****     MODIFY_REG(TIM2->CCMR1, TIM_CCMR1_OC2M, TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2); // CH2 (Прав�
- 311              		.loc 1 119 5 view .LVU62
+ 119:Core/Src/init.c ****     // Включаем PWM Mode 1 и буферизацию (Preload) для корректной 
+ 120:Core/Src/init.c ****     MODIFY_REG(TIM2->CCMR1, TIM_CCMR1_OC2M | TIM_CCMR1_OC2PE, TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 |
+ 311              		.loc 1 120 5 view .LVU62
  312 0018 9A69     		ldr	r2, [r3, #24]
- 313 001a 22F4E042 		bic	r2, r2, #28672
- 314 001e 42F4C042 		orr	r2, r2, #24576
+ 313 001a 22F4F042 		bic	r2, r2, #30720
+ 314 001e 42F4D042 		orr	r2, r2, #26624
  315 0022 9A61     		str	r2, [r3, #24]
- 120:Core/Src/init.c ****     MODIFY_REG(TIM2->CCMR2, TIM_CCMR2_OC3M, TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2); // CH3 (Левы�
- 316              		.loc 1 120 5 view .LVU63
+ 121:Core/Src/init.c ****     MODIFY_REG(TIM2->CCMR2, TIM_CCMR2_OC3M | TIM_CCMR2_OC3PE, TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2 |
+ 316              		.loc 1 121 5 view .LVU63
  317 0024 DA69     		ldr	r2, [r3, #28]
- 318 0026 22F07002 		bic	r2, r2, #112
- 319 002a 42F06002 		orr	r2, r2, #96
+ 318 0026 22F07802 		bic	r2, r2, #120
+ 319 002a 42F06802 		orr	r2, r2, #104
  320 002e DA61     		str	r2, [r3, #28]
- 121:Core/Src/init.c **** 
- 122:Core/Src/init.c ****     SET_BIT(TIM2->CCER, TIM_CCER_CC2E | TIM_CCER_CC3E); // Разрешаем выдачу ШИМ-�
- 321              		.loc 1 122 5 view .LVU64
+ 122:Core/Src/init.c **** 
+ 123:Core/Src/init.c ****     SET_BIT(TIM2->CCER, TIM_CCER_CC2E | TIM_CCER_CC3E); // Разрешаем выдачу ШИМ-�
+ 321              		.loc 1 123 5 view .LVU64
  322 0030 1A6A     		ldr	r2, [r3, #32]
  323 0032 42F48872 		orr	r2, r2, #272
  324 0036 1A62     		str	r2, [r3, #32]
- 123:Core/Src/init.c **** 
- 124:Core/Src/init.c ****     SET_BIT(TIM2->DIER, TIM_DIER_UIE);    // Разрешаем прерывание по обно�
- 325              		.loc 1 124 5 view .LVU65
+ 124:Core/Src/init.c **** 
+ 125:Core/Src/init.c ****     SET_BIT(TIM2->DIER, TIM_DIER_UIE);    // Разрешаем прерывание по обно�
+ 325              		.loc 1 125 5 view .LVU65
  326 0038 DA68     		ldr	r2, [r3, #12]
  327 003a 42F00102 		orr	r2, r2, #1
  328 003e DA60     		str	r2, [r3, #12]
- 125:Core/Src/init.c ****     NVIC_EnableIRQ(TIM2_IRQn);            // Разрешаем обработку этого пр�
- 329              		.loc 1 125 5 view .LVU66
+ 126:Core/Src/init.c ****     NVIC_EnableIRQ(TIM2_IRQn);            // Разрешаем обработку этого пр�
+ 329              		.loc 1 126 5 view .LVU66
  330              	.LVL0:
  331              	.LBB6:
  332              	.LBI6:
  333              		.file 2 "CMSIS/Include/core_cm4.h"
    1:CMSIS/Include/core_cm4.h **** /**************************************************************************//**
    2:CMSIS/Include/core_cm4.h ****  * @file     core_cm4.h
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 9
+
+
    3:CMSIS/Include/core_cm4.h ****  * @brief    CMSIS Cortex-M4 Core Peripheral Access Layer Header File
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 9
-
-
    4:CMSIS/Include/core_cm4.h ****  * @version  V5.0.8
    5:CMSIS/Include/core_cm4.h ****  * @date     04. June 2018
    6:CMSIS/Include/core_cm4.h ****  ******************************************************************************/
@@ -537,10 +538,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
   57:CMSIS/Include/core_cm4.h ****  ******************************************************************************/
   58:CMSIS/Include/core_cm4.h **** /**
   59:CMSIS/Include/core_cm4.h ****   \ingroup Cortex_M4
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 10
+
+
   60:CMSIS/Include/core_cm4.h ****   @{
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 10
-
-
   61:CMSIS/Include/core_cm4.h ****  */
   62:CMSIS/Include/core_cm4.h **** 
   63:CMSIS/Include/core_cm4.h **** #include "cmsis_version.h"
@@ -597,10 +598,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  114:CMSIS/Include/core_cm4.h ****     #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)
  115:CMSIS/Include/core_cm4.h ****       #define __FPU_USED       1U
  116:CMSIS/Include/core_cm4.h ****     #else
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 11
+
+
  117:CMSIS/Include/core_cm4.h ****       #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 11
-
-
  118:CMSIS/Include/core_cm4.h ****       #define __FPU_USED       0U
  119:CMSIS/Include/core_cm4.h ****     #endif
  120:CMSIS/Include/core_cm4.h ****   #else
@@ -657,10 +658,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  171:CMSIS/Include/core_cm4.h **** #ifndef __CMSIS_GENERIC
  172:CMSIS/Include/core_cm4.h **** 
  173:CMSIS/Include/core_cm4.h **** #ifndef __CORE_CM4_H_DEPENDANT
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 12
+
+
  174:CMSIS/Include/core_cm4.h **** #define __CORE_CM4_H_DEPENDANT
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 12
-
-
  175:CMSIS/Include/core_cm4.h **** 
  176:CMSIS/Include/core_cm4.h **** #ifdef __cplusplus
  177:CMSIS/Include/core_cm4.h ****  extern "C" {
@@ -717,10 +718,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  228:CMSIS/Include/core_cm4.h **** 
  229:CMSIS/Include/core_cm4.h **** /*@} end of group Cortex_M4 */
  230:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 13
+
+
  231:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 13
-
-
  232:CMSIS/Include/core_cm4.h **** 
  233:CMSIS/Include/core_cm4.h **** /*******************************************************************************
  234:CMSIS/Include/core_cm4.h ****  *                 Register Abstraction
@@ -777,10 +778,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  285:CMSIS/Include/core_cm4.h **** #define APSR_V_Pos                         28U                                            /*!< APSR
  286:CMSIS/Include/core_cm4.h **** #define APSR_V_Msk                         (1UL << APSR_V_Pos)                            /*!< APSR
  287:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 14
+
+
  288:CMSIS/Include/core_cm4.h **** #define APSR_Q_Pos                         27U                                            /*!< APSR
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 14
-
-
  289:CMSIS/Include/core_cm4.h **** #define APSR_Q_Msk                         (1UL << APSR_Q_Pos)                            /*!< APSR
  290:CMSIS/Include/core_cm4.h **** 
  291:CMSIS/Include/core_cm4.h **** #define APSR_GE_Pos                        16U                                            /*!< APSR
@@ -837,10 +838,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  342:CMSIS/Include/core_cm4.h **** 
  343:CMSIS/Include/core_cm4.h **** #define xPSR_C_Pos                         29U                                            /*!< xPSR
  344:CMSIS/Include/core_cm4.h **** #define xPSR_C_Msk                         (1UL << xPSR_C_Pos)                            /*!< xPSR
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 15
+
+
  345:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 15
-
-
  346:CMSIS/Include/core_cm4.h **** #define xPSR_V_Pos                         28U                                            /*!< xPSR
  347:CMSIS/Include/core_cm4.h **** #define xPSR_V_Msk                         (1UL << xPSR_V_Pos)                            /*!< xPSR
  348:CMSIS/Include/core_cm4.h **** 
@@ -897,10 +898,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  399:CMSIS/Include/core_cm4.h ****   \brief      Type definitions for the NVIC Registers
  400:CMSIS/Include/core_cm4.h ****   @{
  401:CMSIS/Include/core_cm4.h ****  */
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 16
+
+
  402:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 16
-
-
  403:CMSIS/Include/core_cm4.h **** /**
  404:CMSIS/Include/core_cm4.h ****   \brief  Structure type to access the Nested Vectored Interrupt Controller (NVIC).
  405:CMSIS/Include/core_cm4.h ****  */
@@ -957,10 +958,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  456:CMSIS/Include/core_cm4.h ****   __IM  uint32_t PFR[2U];                /*!< Offset: 0x040 (R/ )  Processor Feature Register */
  457:CMSIS/Include/core_cm4.h ****   __IM  uint32_t DFR;                    /*!< Offset: 0x048 (R/ )  Debug Feature Register */
  458:CMSIS/Include/core_cm4.h ****   __IM  uint32_t ADR;                    /*!< Offset: 0x04C (R/ )  Auxiliary Feature Register */
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 17
+
+
  459:CMSIS/Include/core_cm4.h ****   __IM  uint32_t MMFR[4U];               /*!< Offset: 0x050 (R/ )  Memory Model Feature Register */
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 17
-
-
  460:CMSIS/Include/core_cm4.h ****   __IM  uint32_t ISAR[5U];               /*!< Offset: 0x060 (R/ )  Instruction Set Attributes Regis
  461:CMSIS/Include/core_cm4.h ****         uint32_t RESERVED0[5U];
  462:CMSIS/Include/core_cm4.h ****   __IOM uint32_t CPACR;                  /*!< Offset: 0x088 (R/W)  Coprocessor Access Control Regis
@@ -1017,10 +1018,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  513:CMSIS/Include/core_cm4.h **** #define SCB_VTOR_TBLOFF_Pos                 7U                                            /*!< SCB 
  514:CMSIS/Include/core_cm4.h **** #define SCB_VTOR_TBLOFF_Msk                (0x1FFFFFFUL << SCB_VTOR_TBLOFF_Pos)           /*!< SCB 
  515:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 18
+
+
  516:CMSIS/Include/core_cm4.h **** /* SCB Application Interrupt and Reset Control Register Definitions */
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 18
-
-
  517:CMSIS/Include/core_cm4.h **** #define SCB_AIRCR_VECTKEY_Pos              16U                                            /*!< SCB 
  518:CMSIS/Include/core_cm4.h **** #define SCB_AIRCR_VECTKEY_Msk              (0xFFFFUL << SCB_AIRCR_VECTKEY_Pos)            /*!< SCB 
  519:CMSIS/Include/core_cm4.h **** 
@@ -1077,10 +1078,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  570:CMSIS/Include/core_cm4.h **** 
  571:CMSIS/Include/core_cm4.h **** #define SCB_SHCSR_BUSFAULTENA_Pos          17U                                            /*!< SCB 
  572:CMSIS/Include/core_cm4.h **** #define SCB_SHCSR_BUSFAULTENA_Msk          (1UL << SCB_SHCSR_BUSFAULTENA_Pos)             /*!< SCB 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 19
+
+
  573:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 19
-
-
  574:CMSIS/Include/core_cm4.h **** #define SCB_SHCSR_MEMFAULTENA_Pos          16U                                            /*!< SCB 
  575:CMSIS/Include/core_cm4.h **** #define SCB_SHCSR_MEMFAULTENA_Msk          (1UL << SCB_SHCSR_MEMFAULTENA_Pos)             /*!< SCB 
  576:CMSIS/Include/core_cm4.h **** 
@@ -1137,10 +1138,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  627:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_MSTKERR_Pos               (SCB_SHCSR_MEMFAULTACT_Pos + 4U)               /*!< SCB 
  628:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_MSTKERR_Msk               (1UL << SCB_CFSR_MSTKERR_Pos)                  /*!< SCB 
  629:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 20
+
+
  630:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_MUNSTKERR_Pos             (SCB_SHCSR_MEMFAULTACT_Pos + 3U)               /*!< SCB 
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 20
-
-
  631:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_MUNSTKERR_Msk             (1UL << SCB_CFSR_MUNSTKERR_Pos)                /*!< SCB 
  632:CMSIS/Include/core_cm4.h **** 
  633:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_DACCVIOL_Pos              (SCB_SHCSR_MEMFAULTACT_Pos + 1U)               /*!< SCB 
@@ -1197,10 +1198,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  684:CMSIS/Include/core_cm4.h **** #define SCB_HFSR_FORCED_Pos                30U                                            /*!< SCB 
  685:CMSIS/Include/core_cm4.h **** #define SCB_HFSR_FORCED_Msk                (1UL << SCB_HFSR_FORCED_Pos)                   /*!< SCB 
  686:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 21
+
+
  687:CMSIS/Include/core_cm4.h **** #define SCB_HFSR_VECTTBL_Pos                1U                                            /*!< SCB 
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 21
-
-
  688:CMSIS/Include/core_cm4.h **** #define SCB_HFSR_VECTTBL_Msk               (1UL << SCB_HFSR_VECTTBL_Pos)                  /*!< SCB 
  689:CMSIS/Include/core_cm4.h **** 
  690:CMSIS/Include/core_cm4.h **** /* SCB Debug Fault Status Register Definitions */
@@ -1257,10 +1258,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  741:CMSIS/Include/core_cm4.h **** #define SCnSCB_ACTLR_DISDEFWBUF_Msk        (1UL << SCnSCB_ACTLR_DISDEFWBUF_Pos)        /*!< ACTLR: 
  742:CMSIS/Include/core_cm4.h **** 
  743:CMSIS/Include/core_cm4.h **** #define SCnSCB_ACTLR_DISMCYCINT_Pos         0U                                         /*!< ACTLR: 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 22
+
+
  744:CMSIS/Include/core_cm4.h **** #define SCnSCB_ACTLR_DISMCYCINT_Msk        (1UL /*<< SCnSCB_ACTLR_DISMCYCINT_Pos*/)    /*!< ACTLR: 
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 22
-
-
  745:CMSIS/Include/core_cm4.h **** 
  746:CMSIS/Include/core_cm4.h **** /*@} end of group CMSIS_SCnotSCB */
  747:CMSIS/Include/core_cm4.h **** 
@@ -1317,10 +1318,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  798:CMSIS/Include/core_cm4.h **** /*@} end of group CMSIS_SysTick */
  799:CMSIS/Include/core_cm4.h **** 
  800:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 23
+
+
  801:CMSIS/Include/core_cm4.h **** /**
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 23
-
-
  802:CMSIS/Include/core_cm4.h ****   \ingroup  CMSIS_core_register
  803:CMSIS/Include/core_cm4.h ****   \defgroup CMSIS_ITM     Instrumentation Trace Macrocell (ITM)
  804:CMSIS/Include/core_cm4.h ****   \brief    Type definitions for the Instrumentation Trace Macrocell (ITM)
@@ -1377,10 +1378,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  855:CMSIS/Include/core_cm4.h **** #define ITM_TCR_TraceBusID_Pos             16U                                            /*!< ITM 
  856:CMSIS/Include/core_cm4.h **** #define ITM_TCR_TraceBusID_Msk             (0x7FUL << ITM_TCR_TraceBusID_Pos)             /*!< ITM 
  857:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 24
+
+
  858:CMSIS/Include/core_cm4.h **** #define ITM_TCR_GTSFREQ_Pos                10U                                            /*!< ITM 
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 24
-
-
  859:CMSIS/Include/core_cm4.h **** #define ITM_TCR_GTSFREQ_Msk                (3UL << ITM_TCR_GTSFREQ_Pos)                   /*!< ITM 
  860:CMSIS/Include/core_cm4.h **** 
  861:CMSIS/Include/core_cm4.h **** #define ITM_TCR_TSPrescale_Pos              8U                                            /*!< ITM 
@@ -1437,10 +1438,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  912:CMSIS/Include/core_cm4.h ****   \brief  Structure type to access the Data Watchpoint and Trace Register (DWT).
  913:CMSIS/Include/core_cm4.h ****  */
  914:CMSIS/Include/core_cm4.h **** typedef struct
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 25
+
+
  915:CMSIS/Include/core_cm4.h **** {
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 25
-
-
  916:CMSIS/Include/core_cm4.h ****   __IOM uint32_t CTRL;                   /*!< Offset: 0x000 (R/W)  Control Register */
  917:CMSIS/Include/core_cm4.h ****   __IOM uint32_t CYCCNT;                 /*!< Offset: 0x004 (R/W)  Cycle Count Register */
  918:CMSIS/Include/core_cm4.h ****   __IOM uint32_t CPICNT;                 /*!< Offset: 0x008 (R/W)  CPI Count Register */
@@ -1497,10 +1498,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  969:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_EXCEVTENA_Pos             18U                                         /*!< DWT CTR
  970:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_EXCEVTENA_Msk             (0x1UL << DWT_CTRL_EXCEVTENA_Pos)           /*!< DWT CTR
  971:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 26
+
+
  972:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_CPIEVTENA_Pos             17U                                         /*!< DWT CTR
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 26
-
-
  973:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_CPIEVTENA_Msk             (0x1UL << DWT_CTRL_CPIEVTENA_Pos)           /*!< DWT CTR
  974:CMSIS/Include/core_cm4.h **** 
  975:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_EXCTRCENA_Pos             16U                                         /*!< DWT CTR
@@ -1557,10 +1558,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1026:CMSIS/Include/core_cm4.h **** 
 1027:CMSIS/Include/core_cm4.h **** #define DWT_FUNCTION_DATAVADDR0_Pos        12U                                         /*!< DWT FUN
 1028:CMSIS/Include/core_cm4.h **** #define DWT_FUNCTION_DATAVADDR0_Msk        (0xFUL << DWT_FUNCTION_DATAVADDR0_Pos)      /*!< DWT FUN
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 27
+
+
 1029:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 27
-
-
 1030:CMSIS/Include/core_cm4.h **** #define DWT_FUNCTION_DATAVSIZE_Pos         10U                                         /*!< DWT FUN
 1031:CMSIS/Include/core_cm4.h **** #define DWT_FUNCTION_DATAVSIZE_Msk         (0x3UL << DWT_FUNCTION_DATAVSIZE_Pos)       /*!< DWT FUN
 1032:CMSIS/Include/core_cm4.h **** 
@@ -1617,10 +1618,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1083:CMSIS/Include/core_cm4.h ****   __IOM uint32_t CLAIMCLR;               /*!< Offset: 0xFA4 (R/W)  Claim tag clear */
 1084:CMSIS/Include/core_cm4.h ****         uint32_t RESERVED7[8U];
 1085:CMSIS/Include/core_cm4.h ****   __IM  uint32_t DEVID;                  /*!< Offset: 0xFC8 (R/ )  TPIU_DEVID */
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 28
+
+
 1086:CMSIS/Include/core_cm4.h ****   __IM  uint32_t DEVTYPE;                /*!< Offset: 0xFCC (R/ )  TPIU_DEVTYPE */
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 28
-
-
 1087:CMSIS/Include/core_cm4.h **** } TPI_Type;
 1088:CMSIS/Include/core_cm4.h **** 
 1089:CMSIS/Include/core_cm4.h **** /* TPI Asynchronous Clock Prescaler Register Definitions */
@@ -1677,10 +1678,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1140:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ETM0_Pos                  0U                                         /*!< TPI FIF
 1141:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ETM0_Msk                 (0xFFUL /*<< TPI_FIFO0_ETM0_Pos*/)          /*!< TPI FIF
 1142:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 29
+
+
 1143:CMSIS/Include/core_cm4.h **** /* TPI ITATBCTR2 Register Definitions */
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 29
-
-
 1144:CMSIS/Include/core_cm4.h **** #define TPI_ITATBCTR2_ATREADY2_Pos          0U                                         /*!< TPI ITA
 1145:CMSIS/Include/core_cm4.h **** #define TPI_ITATBCTR2_ATREADY2_Msk         (0x1UL /*<< TPI_ITATBCTR2_ATREADY2_Pos*/)   /*!< TPI ITA
 1146:CMSIS/Include/core_cm4.h **** 
@@ -1737,10 +1738,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1197:CMSIS/Include/core_cm4.h **** #define TPI_DEVID_AsynClkIn_Msk            (0x1UL << TPI_DEVID_AsynClkIn_Pos)          /*!< TPI DEV
 1198:CMSIS/Include/core_cm4.h **** 
 1199:CMSIS/Include/core_cm4.h **** #define TPI_DEVID_NrTraceInput_Pos          0U                                         /*!< TPI DEV
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 30
+
+
 1200:CMSIS/Include/core_cm4.h **** #define TPI_DEVID_NrTraceInput_Msk         (0x1FUL /*<< TPI_DEVID_NrTraceInput_Pos*/)  /*!< TPI DEV
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 30
-
-
 1201:CMSIS/Include/core_cm4.h **** 
 1202:CMSIS/Include/core_cm4.h **** /* TPI DEVTYPE Register Definitions */
 1203:CMSIS/Include/core_cm4.h **** #define TPI_DEVTYPE_SubType_Pos             4U                                         /*!< TPI DEV
@@ -1797,10 +1798,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1254:CMSIS/Include/core_cm4.h **** #define MPU_CTRL_HFNMIENA_Pos               1U                                            /*!< MPU 
 1255:CMSIS/Include/core_cm4.h **** #define MPU_CTRL_HFNMIENA_Msk              (1UL << MPU_CTRL_HFNMIENA_Pos)                 /*!< MPU 
 1256:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 31
+
+
 1257:CMSIS/Include/core_cm4.h **** #define MPU_CTRL_ENABLE_Pos                 0U                                            /*!< MPU 
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 31
-
-
 1258:CMSIS/Include/core_cm4.h **** #define MPU_CTRL_ENABLE_Msk                (1UL /*<< MPU_CTRL_ENABLE_Pos*/)               /*!< MPU 
 1259:CMSIS/Include/core_cm4.h **** 
 1260:CMSIS/Include/core_cm4.h **** /* MPU Region Number Register Definitions */
@@ -1857,10 +1858,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1311:CMSIS/Include/core_cm4.h ****   \defgroup CMSIS_FPU     Floating Point Unit (FPU)
 1312:CMSIS/Include/core_cm4.h ****   \brief    Type definitions for the Floating Point Unit (FPU)
 1313:CMSIS/Include/core_cm4.h ****   @{
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 32
+
+
 1314:CMSIS/Include/core_cm4.h ****  */
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 32
-
-
 1315:CMSIS/Include/core_cm4.h **** 
 1316:CMSIS/Include/core_cm4.h **** /**
 1317:CMSIS/Include/core_cm4.h ****   \brief  Structure type to access the Floating Point Unit (FPU).
@@ -1917,10 +1918,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1368:CMSIS/Include/core_cm4.h **** #define FPU_FPDSCR_FZ_Pos                  24U                                            /*!< FPDS
 1369:CMSIS/Include/core_cm4.h **** #define FPU_FPDSCR_FZ_Msk                  (1UL << FPU_FPDSCR_FZ_Pos)                     /*!< FPDS
 1370:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 33
+
+
 1371:CMSIS/Include/core_cm4.h **** #define FPU_FPDSCR_RMode_Pos               22U                                            /*!< FPDS
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 33
-
-
 1372:CMSIS/Include/core_cm4.h **** #define FPU_FPDSCR_RMode_Msk               (3UL << FPU_FPDSCR_RMode_Pos)                  /*!< FPDS
 1373:CMSIS/Include/core_cm4.h **** 
 1374:CMSIS/Include/core_cm4.h **** /* Media and FP Feature Register 0 Definitions */
@@ -1977,10 +1978,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1425:CMSIS/Include/core_cm4.h **** typedef struct
 1426:CMSIS/Include/core_cm4.h **** {
 1427:CMSIS/Include/core_cm4.h ****   __IOM uint32_t DHCSR;                  /*!< Offset: 0x000 (R/W)  Debug Halting Control and Status
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 34
+
+
 1428:CMSIS/Include/core_cm4.h ****   __OM  uint32_t DCRSR;                  /*!< Offset: 0x004 ( /W)  Debug Core Register Selector Reg
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 34
-
-
 1429:CMSIS/Include/core_cm4.h ****   __IOM uint32_t DCRDR;                  /*!< Offset: 0x008 (R/W)  Debug Core Register Data Registe
 1430:CMSIS/Include/core_cm4.h ****   __IOM uint32_t DEMCR;                  /*!< Offset: 0x00C (R/W)  Debug Exception and Monitor Cont
 1431:CMSIS/Include/core_cm4.h **** } CoreDebug_Type;
@@ -2037,10 +2038,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1482:CMSIS/Include/core_cm4.h **** #define CoreDebug_DEMCR_MON_REQ_Msk        (1UL << CoreDebug_DEMCR_MON_REQ_Pos)           /*!< Core
 1483:CMSIS/Include/core_cm4.h **** 
 1484:CMSIS/Include/core_cm4.h **** #define CoreDebug_DEMCR_MON_STEP_Pos       18U                                            /*!< Core
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 35
+
+
 1485:CMSIS/Include/core_cm4.h **** #define CoreDebug_DEMCR_MON_STEP_Msk       (1UL << CoreDebug_DEMCR_MON_STEP_Pos)          /*!< Core
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 35
-
-
 1486:CMSIS/Include/core_cm4.h **** 
 1487:CMSIS/Include/core_cm4.h **** #define CoreDebug_DEMCR_MON_PEND_Pos       17U                                            /*!< Core
 1488:CMSIS/Include/core_cm4.h **** #define CoreDebug_DEMCR_MON_PEND_Msk       (1UL << CoreDebug_DEMCR_MON_PEND_Pos)          /*!< Core
@@ -2097,10 +2098,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1539:CMSIS/Include/core_cm4.h ****   \return           Masked and shifted bit field value.
 1540:CMSIS/Include/core_cm4.h **** */
 1541:CMSIS/Include/core_cm4.h **** #define _FLD2VAL(field, value)    (((uint32_t)(value) & field ## _Msk) >> field ## _Pos)
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 36
+
+
 1542:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 36
-
-
 1543:CMSIS/Include/core_cm4.h **** /*@} end of group CMSIS_core_bitfield */
 1544:CMSIS/Include/core_cm4.h **** 
 1545:CMSIS/Include/core_cm4.h **** 
@@ -2157,10 +2158,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1596:CMSIS/Include/core_cm4.h **** 
 1597:CMSIS/Include/core_cm4.h **** 
 1598:CMSIS/Include/core_cm4.h **** /* ##########################   NVIC functions  #################################### */
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 37
+
+
 1599:CMSIS/Include/core_cm4.h **** /**
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 37
-
-
 1600:CMSIS/Include/core_cm4.h ****   \ingroup  CMSIS_Core_FunctionInterface
 1601:CMSIS/Include/core_cm4.h ****   \defgroup CMSIS_Core_NVICFunctions NVIC Functions
 1602:CMSIS/Include/core_cm4.h ****   \brief    Functions that manage interrupts and exceptions via the NVIC.
@@ -2217,10 +2218,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1653:CMSIS/Include/core_cm4.h ****            In case of a conflict between priority grouping and available
 1654:CMSIS/Include/core_cm4.h ****            priority bits (__NVIC_PRIO_BITS), the smallest possible priority group is set.
 1655:CMSIS/Include/core_cm4.h ****   \param [in]      PriorityGroup  Priority grouping field.
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 38
+
+
 1656:CMSIS/Include/core_cm4.h ****  */
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 38
-
-
 1657:CMSIS/Include/core_cm4.h **** __STATIC_INLINE void __NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
 1658:CMSIS/Include/core_cm4.h **** {
 1659:CMSIS/Include/core_cm4.h ****   uint32_t reg_value;
@@ -2269,18 +2270,18 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  343              		.loc 2 1692 43 view .LVU71
  344              	.LBE7:
  345              	.LBE6:
- 126:Core/Src/init.c ****     NVIC_SetPriority(TIM2_IRQn, 2);       // Выставляем безопасный приори
- 346              		.loc 1 126 5 is_stmt 1 view .LVU72
+ 127:Core/Src/init.c ****     NVIC_SetPriority(TIM2_IRQn, 2);       // Выставляем безопасный приори
+ 346              		.loc 1 127 5 is_stmt 1 view .LVU72
  347              	.LBB8:
  348              	.LBI8:
 1693:CMSIS/Include/core_cm4.h ****   }
 1694:CMSIS/Include/core_cm4.h **** }
 1695:CMSIS/Include/core_cm4.h **** 
 1696:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 39
+
+
 1697:CMSIS/Include/core_cm4.h **** /**
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 39
-
-
 1698:CMSIS/Include/core_cm4.h ****   \brief   Get Interrupt Enable status
 1699:CMSIS/Include/core_cm4.h ****   \details Returns a device specific interrupt enable status from the NVIC interrupt controller.
 1700:CMSIS/Include/core_cm4.h ****   \param [in]      IRQn  Device specific interrupt number.
@@ -2337,10 +2338,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1751:CMSIS/Include/core_cm4.h ****     return(0U);
 1752:CMSIS/Include/core_cm4.h ****   }
 1753:CMSIS/Include/core_cm4.h **** }
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 40
+
+
 1754:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 40
-
-
 1755:CMSIS/Include/core_cm4.h **** 
 1756:CMSIS/Include/core_cm4.h **** /**
 1757:CMSIS/Include/core_cm4.h ****   \brief   Set Pending Interrupt
@@ -2397,10 +2398,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
 1808:CMSIS/Include/core_cm4.h ****   \brief   Set Interrupt Priority
 1809:CMSIS/Include/core_cm4.h ****   \details Sets the priority of a device specific interrupt or a processor exception.
 1810:CMSIS/Include/core_cm4.h ****            The interrupt number can be positive to specify a device specific interrupt,
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 41
+
+
 1811:CMSIS/Include/core_cm4.h ****            or negative to specify a processor exception.
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 41
-
-
 1812:CMSIS/Include/core_cm4.h ****   \param [in]      IRQn  Interrupt number.
 1813:CMSIS/Include/core_cm4.h ****   \param [in]  priority  Priority to set.
 1814:CMSIS/Include/core_cm4.h ****   \note    The priority cannot be set for every processor exception.
@@ -2421,14 +2422,14 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  357              		.loc 2 1820 46 view .LVU77
  358              	.LBE9:
  359              	.LBE8:
- 127:Core/Src/init.c **** 
- 128:Core/Src/init.c ****     SET_BIT(TIM2->CR1, TIM_CR1_CEN); // Запускаем таймер TIM2
- 360              		.loc 1 128 5 is_stmt 1 view .LVU78
+ 128:Core/Src/init.c **** 
+ 129:Core/Src/init.c ****     SET_BIT(TIM2->CR1, TIM_CR1_CEN); // Запускаем таймер TIM2
+ 360              		.loc 1 129 5 is_stmt 1 view .LVU78
  361 004e 1A68     		ldr	r2, [r3]
  362 0050 42F00102 		orr	r2, r2, #1
  363 0054 1A60     		str	r2, [r3]
- 129:Core/Src/init.c **** }
- 364              		.loc 1 129 1 is_stmt 0 view .LVU79
+ 130:Core/Src/init.c **** }
+ 364              		.loc 1 130 1 is_stmt 0 view .LVU79
  365 0056 7047     		bx	lr
  366              	.L12:
  367              		.align	2
@@ -2445,7 +2446,6 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  379              		.thumb_func
  381              	SysTick_init:
  382              	.LFB133:
- 130:Core/Src/init.c **** 
  131:Core/Src/init.c **** 
  132:Core/Src/init.c **** /**
  133:Core/Src/init.c ****  * @brief Настройка системного таймера
@@ -2458,7 +2458,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  386              		@ frame_needed = 0, uses_anonymous_args = 0
  387              		@ link register save eliminated.
  137:Core/Src/init.c ****     WRITE_REG(SysTick->LOAD, (SystemCoreClock/1000U) - 1U); // 1 мс = 84000 тиков
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 42
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 42
 
 
  388              		.loc 1 137 5 view .LVU81
@@ -2508,23 +2508,23 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 1
  427              		.file 4 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
  428              		.file 5 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
  429              		.file 6 "CMSIS/Devices/STM32F4xx/Inc/system_stm32f4xx.h"
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s 			page 43
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccKGgzW4.s 			page 43
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 init.c
-C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s:21     .text.GPIO_init:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s:27     .text.GPIO_init:00000000 GPIO_init
-C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s:171    .text.GPIO_init:00000114 $d
-C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s:178    .text.RCC_init:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s:184    .text.RCC_init:00000000 RCC_init
-C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s:279    .text.RCC_init:000000a0 $d
-C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s:286    .text.TIMER2_init:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s:292    .text.TIMER2_init:00000000 TIMER2_init
-C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s:369    .text.TIMER2_init:00000058 $d
-C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s:375    .text.SysTick_init:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s:381    .text.SysTick_init:00000000 SysTick_init
-C:\Users\User\AppData\Local\Temp\ccSQ3UqS.s:419    .text.SysTick_init:00000034 $d
+C:\Users\User\AppData\Local\Temp\ccKGgzW4.s:21     .text.GPIO_init:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccKGgzW4.s:27     .text.GPIO_init:00000000 GPIO_init
+C:\Users\User\AppData\Local\Temp\ccKGgzW4.s:171    .text.GPIO_init:00000114 $d
+C:\Users\User\AppData\Local\Temp\ccKGgzW4.s:178    .text.RCC_init:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccKGgzW4.s:184    .text.RCC_init:00000000 RCC_init
+C:\Users\User\AppData\Local\Temp\ccKGgzW4.s:279    .text.RCC_init:000000a0 $d
+C:\Users\User\AppData\Local\Temp\ccKGgzW4.s:286    .text.TIMER2_init:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccKGgzW4.s:292    .text.TIMER2_init:00000000 TIMER2_init
+C:\Users\User\AppData\Local\Temp\ccKGgzW4.s:369    .text.TIMER2_init:00000058 $d
+C:\Users\User\AppData\Local\Temp\ccKGgzW4.s:375    .text.SysTick_init:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccKGgzW4.s:381    .text.SysTick_init:00000000 SysTick_init
+C:\Users\User\AppData\Local\Temp\ccKGgzW4.s:419    .text.SysTick_init:00000034 $d
 
 UNDEFINED SYMBOLS
 SystemCoreClock

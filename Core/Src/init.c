@@ -116,8 +116,9 @@ void TIMER2_init(void)
     WRITE_REG(TIM2->PSC, 84 - 1); // Предделитель 84. Частота таймера 1 МГц
     WRITE_REG(TIM2->ARR, 1000 - 1); // Период ШИМ 1000 тиков. Частота ШИМ 1 кГц
 
-    MODIFY_REG(TIM2->CCMR1, TIM_CCMR1_OC2M, TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2); // CH2 (Правый)
-    MODIFY_REG(TIM2->CCMR2, TIM_CCMR2_OC3M, TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2); // CH3 (Левый)
+    // Включаем PWM Mode 1 и буферизацию (Preload) для корректной смены скважности
+    MODIFY_REG(TIM2->CCMR1, TIM_CCMR1_OC2M | TIM_CCMR1_OC2PE, TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2PE); // CH2 (Правый)
+    MODIFY_REG(TIM2->CCMR2, TIM_CCMR2_OC3M | TIM_CCMR2_OC3PE, TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3PE); // CH3 (Левый)
 
     SET_BIT(TIM2->CCER, TIM_CCER_CC2E | TIM_CCER_CC3E); // Разрешаем выдачу ШИМ-сигнала на физические пины платы
 
@@ -127,7 +128,6 @@ void TIMER2_init(void)
 
     SET_BIT(TIM2->CR1, TIM_CR1_CEN); // Запускаем таймер TIM2
 }
-
 
 /**
  * @brief Настройка системного таймера

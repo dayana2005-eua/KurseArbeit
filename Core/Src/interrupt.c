@@ -1,4 +1,10 @@
 #include "interrupt.h"
+#include "motor.h"     
+#include "sensors.h"  
+
+#define SPEED_FAST   450 // Высокая скорость для забегания вперед
+#define SPEED_BASE   400 // Базовая скорость для движения прямо
+#define SPEED_SLOW   300 // Пониженная скорость для плавного прохождения поворота
 
 static volatile uint32_t ticks = 0;
 static volatile uint32_t press_time = 0;
@@ -59,10 +65,8 @@ void button_interrupt_init(void)
  */
 void EXTI15_10_IRQHandler(void)
 {
-
     if (READ_BIT(EXTI->PR, EXTI_PR_PR13) != 0)
     {
-
         if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13) == 0)
         {
             press_time = ticks;
@@ -80,6 +84,7 @@ void EXTI15_10_IRQHandler(void)
         SET_BIT(EXTI->PR, EXTI_PR_PR13);
     }
 }
+
 /**
  * @brief Проверка состояния кнопки
  * @return uint8_t
@@ -89,14 +94,72 @@ uint8_t get_button_permission(void)
     return button_permission;
 }
 
+/**
+ * @brief Обработчик прерывания таймера TIM2 (1 кГц)
+ */
+/**
+ * @brief Обработчик прерывания таймера TIM2 (1 кГц)
+ */
 void TIM2_IRQHandler(void)
 {
-    if (TIM2->SR & TIM_SR_UIF)
+    if (READ_BIT(TIM2->SR, TIM_SR_UIF)) // Проверяем флаг прерывания по обновлению таймера
     {
-        TIM2->SR &= ~TIM_SR_UIF; // Сбрасываем флаг прерывания вручную
-        tim2_flag = 1;           // Выставляем флаг для основного цикла
+        CLEAR_BIT(TIM2->SR, TIM_SR_UIF); // Сбрасываем флаг прерывания
+        tim2_flag = 1;                   // Сигнализируем в main о прошедшем тике таймера
+
+        // Если движение запрещено кнопкой — глушим моторы и выходим
+        if (button_permission == 0)
+        {
+            left_motor(0);
+            right_motor(0);
+            return;
+        }
+
+        uint8_t sensor_left  = read_left_sensor();  
+        uint8_t sensor_right = read_right_sensor();
+
+        // Память направления для защиты от вылета (0 - центр, 1 - ушел влево, 2 - ушел вправо)
+        static uint8_t last_state = 0;
+
+        if (sensor_left && !sensor_right)
+        {
+            left_motor(0);            // Сместились влево: плавно подруливаем направо
+            right_motor(SPEED_BASE); 
+            last_state = 1;           // Запоминаем, что линия теряется с левой стороны
+        }
+        else if (!sensor_left && sensor_right)
+        {
+            left_motor(SPEED_BASE);   // Сместились вправо: плавно подруливаем налево
+            right_motor(0);
+        } // Ошибка исправлена: изменено с right_motor(0) на left_motor(SPEED_BASE); right_motor(0);
+        else if (sensor_left && sensor_right)
+        {
+            left_motor(SPEED_SLOW);   // Перекресток или резкий занос: разворот на месте
+            right_motor(-SPEED_SLOW); 
+            last_state = 0;           // На перекрестке сбрасываем память направления
+        }
+        else // !sensor_left && !sensor_right — оба датчика видят белое field
+        {
+            if (last_state == 1)      // Если до этого робот слишком сильно ушел влево
+            {
+                left_motor(0);            // Продолжаем активно доворачивать направо
+                right_motor(SPEED_BASE);
+            }
+            else if (last_state == 2) // Если до этого робот слишком сильно ушел вправо
+            {
+                left_motor(SPEED_BASE);   // Продолжаем активно доворачивать налево
+                right_motor(0);
+            }
+            else                      // Идеальное состояние: линия ровно посередине между датчиками
+            {
+                left_motor(SPEED_BASE);   // Спокойно едем вперед
+                right_motor(SPEED_BASE);
+            }
+        }
     }
 }
+
+
 
 uint8_t get_tim2_flag(void)
 {

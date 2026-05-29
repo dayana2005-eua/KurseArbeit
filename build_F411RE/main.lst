@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc0Ogsit.s 			page 1
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccUFVWfx.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -33,287 +33,70 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\cc0Ogsit.s 			page 1
    3:Core/Src/main.c **** #include "sensors.h"
    4:Core/Src/main.c **** #include "motor.h"
    5:Core/Src/main.c **** 
-   6:Core/Src/main.c **** // Атомарный флаг для синхронизации основного цикла с �
-   7:Core/Src/main.c **** volatile uint8_t tim2_flag = 0;
-   8:Core/Src/main.c **** 
-   9:Core/Src/main.c **** // Константы скоростей по логике алгоритма "вилки"
-  10:Core/Src/main.c **** const int16_t HIGH_SPEED = 450; 
-  11:Core/Src/main.c **** const int16_t MOTOR_TRIM = -30; 
-  12:Core/Src/main.c **** 
-  13:Core/Src/main.c **** int main(void)
-  14:Core/Src/main.c **** {
-  29              		.loc 1 14 1 view -0
+   6:Core/Src/main.c **** int main(void)
+   7:Core/Src/main.c **** {
+  29              		.loc 1 7 1 view -0
   30              		.cfi_startproc
-  31              		@ args = 0, pretend = 0, frame = 0
-  32              		@ frame_needed = 0, uses_anonymous_args = 0
-  33 0000 10B5     		push	{r4, lr}
-  34              	.LCFI0:
-  35              		.cfi_def_cfa_offset 8
-  36              		.cfi_offset 4, -8
-  37              		.cfi_offset 14, -4
-  15:Core/Src/main.c ****     RCC_init();
-  38              		.loc 1 15 5 view .LVU1
-  39 0002 FFF7FEFF 		bl	RCC_init
-  40              	.LVL0:
-  16:Core/Src/main.c ****     SysTick_init();
-  41              		.loc 1 16 5 view .LVU2
-  42 0006 FFF7FEFF 		bl	SysTick_init
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc0Ogsit.s 			page 2
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+   8:Core/Src/main.c ****     RCC_init();
+  39              		.loc 1 8 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	RCC_init
+  41              	.LVL0:
+   9:Core/Src/main.c ****     SysTick_init();
+  42              		.loc 1 9 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	SysTick_init
+  44              	.LVL1:
+  10:Core/Src/main.c ****     button_interrupt_init();
+  45              		.loc 1 10 5 view .LVU3
+  46 000a FFF7FEFF 		bl	button_interrupt_init
+  47              	.LVL2:
+  11:Core/Src/main.c ****     GPIO_init();
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccUFVWfx.s 			page 2
 
 
-  43              	.LVL1:
-  17:Core/Src/main.c ****     button_interrupt_init();
-  44              		.loc 1 17 5 view .LVU3
-  45 000a FFF7FEFF 		bl	button_interrupt_init
-  46              	.LVL2:
-  18:Core/Src/main.c ****     GPIO_init();
-  47              		.loc 1 18 5 view .LVU4
-  48 000e FFF7FEFF 		bl	GPIO_init
-  49              	.LVL3:
-  19:Core/Src/main.c ****     TIMER2_init(); // Запуск ШИМ и прерываний таймера
-  50              		.loc 1 19 5 view .LVU5
-  51 0012 FFF7FEFF 		bl	TIMER2_init
-  52              	.LVL4:
-  20:Core/Src/main.c **** 
-  21:Core/Src/main.c ****     uint8_t left = 0;
-  53              		.loc 1 21 5 view .LVU6
-  22:Core/Src/main.c ****     uint8_t right = 0;
-  54              		.loc 1 22 5 view .LVU7
-  55              		.loc 1 22 5 is_stmt 0 view .LVU8
-  56 0016 00E0     		b	.L2
-  57              	.LVL5:
-  58              	.L3:
-  23:Core/Src/main.c **** 
-  24:Core/Src/main.c ****     while(1)
-  25:Core/Src/main.c ****     {
-  26:Core/Src/main.c ****         // Процессор физически засыпает и ждет прерывания 
-  27:Core/Src/main.c ****         while (get_tim2_flag() == 0)
-  28:Core/Src/main.c ****         {
-  29:Core/Src/main.c ****             __WFI(); 
-  59              		.loc 1 29 13 is_stmt 1 view .LVU9
-  60              		.syntax unified
-  61              	@ 29 "Core/Src/main.c" 1
-  62 0018 30BF     		wfi
-  63              	@ 0 "" 2
-  64              		.thumb
-  65              		.syntax unified
-  66              	.L2:
-  27:Core/Src/main.c ****         {
-  67              		.loc 1 27 32 view .LVU10
-  27:Core/Src/main.c ****         {
-  68              		.loc 1 27 16 is_stmt 0 view .LVU11
-  69 001a FFF7FEFF 		bl	get_tim2_flag
-  70              	.LVL6:
-  27:Core/Src/main.c ****         {
-  71              		.loc 1 27 32 discriminator 1 view .LVU12
-  72 001e 0028     		cmp	r0, #0
-  73 0020 FAD0     		beq	.L3
-  30:Core/Src/main.c ****         }
-  31:Core/Src/main.c ****         
-  32:Core/Src/main.c ****         set_tim2_flag(0); // Сбрасываем флаг и выполняем шаг управ�
-  74              		.loc 1 32 9 is_stmt 1 view .LVU13
-  75 0022 0020     		movs	r0, #0
-  76 0024 FFF7FEFF 		bl	set_tim2_flag
-  77              	.LVL7:
-  33:Core/Src/main.c **** 
-  34:Core/Src/main.c ****         if (get_button_permission())
-  78              		.loc 1 34 9 view .LVU14
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc0Ogsit.s 			page 3
-
-
-  79              		.loc 1 34 13 is_stmt 0 view .LVU15
-  80 0028 FFF7FEFF 		bl	get_button_permission
-  81              	.LVL8:
-  82              		.loc 1 34 12 discriminator 1 view .LVU16
-  83 002c 70B3     		cbz	r0, .L4
-  35:Core/Src/main.c ****         {
-  36:Core/Src/main.c ****             // Опрос датчиков выполняется в main
-  37:Core/Src/main.c ****             left  = read_left_sensor();
-  84              		.loc 1 37 13 is_stmt 1 view .LVU17
-  85              		.loc 1 37 21 is_stmt 0 view .LVU18
-  86 002e FFF7FEFF 		bl	read_left_sensor
-  87              	.LVL9:
-  88 0032 0446     		mov	r4, r0
-  89              	.LVL10:
-  38:Core/Src/main.c ****             right = read_right_sensor();
-  90              		.loc 1 38 13 is_stmt 1 view .LVU19
-  91              		.loc 1 38 21 is_stmt 0 view .LVU20
-  92 0034 FFF7FEFF 		bl	read_right_sensor
-  93              	.LVL11:
-  39:Core/Src/main.c **** 
-  40:Core/Src/main.c ****             // Алгоритм "вилки" (линия удерживается между дат
-  41:Core/Src/main.c ****             if (left == 0 && right == 0)
-  94              		.loc 1 41 13 is_stmt 1 view .LVU21
-  95              		.loc 1 41 16 is_stmt 0 view .LVU22
-  96 0038 04B9     		cbnz	r4, .L5
-  97              		.loc 1 41 27 discriminator 1 view .LVU23
-  98 003a 58B1     		cbz	r0, .L10
-  99              	.L5:
-  42:Core/Src/main.c ****             {
-  43:Core/Src/main.c ****                 // Линия по центру -> едем прямо
-  44:Core/Src/main.c ****                 left_motor(HIGH_SPEED + MOTOR_TRIM);
-  45:Core/Src/main.c ****                 right_motor(HIGH_SPEED);
-  46:Core/Src/main.c ****             }
-  47:Core/Src/main.c ****             else if (left == 1 && right == 0)
- 100              		.loc 1 47 18 is_stmt 1 view .LVU24
- 101              		.loc 1 47 21 is_stmt 0 view .LVU25
- 102 003c 012C     		cmp	r4, #1
- 103 003e 12D0     		beq	.L11
- 104              	.L7:
-  48:Core/Src/main.c ****             {
-  49:Core/Src/main.c ****                 // Линия слева -> доворачиваем влево
-  50:Core/Src/main.c ****                 left_motor(HIGH_SPEED + MOTOR_TRIM);
-  51:Core/Src/main.c ****                 right_motor(0); 
-  52:Core/Src/main.c ****             }
-  53:Core/Src/main.c ****             else if (right == 1 && left == 0)
- 105              		.loc 1 53 18 is_stmt 1 view .LVU26
- 106              		.loc 1 53 21 is_stmt 0 view .LVU27
- 107 0040 0128     		cmp	r0, #1
- 108 0042 00D1     		bne	.L8
- 109              		.loc 1 53 33 discriminator 1 view .LVU28
- 110 0044 CCB1     		cbz	r4, .L12
- 111              	.L8:
-  54:Core/Src/main.c ****             {
-  55:Core/Src/main.c ****                 // Линия справа -> доворачиваем вправо
-  56:Core/Src/main.c ****                 left_motor(0 + MOTOR_TRIM); 
-  57:Core/Src/main.c ****                 right_motor(HIGH_SPEED);
-  58:Core/Src/main.c ****             }
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc0Ogsit.s 			page 4
-
-
-  59:Core/Src/main.c ****             else
-  60:Core/Src/main.c ****             {
-  61:Core/Src/main.c ****                 // Перекресток или полная потеря линии -> стоп
-  62:Core/Src/main.c ****                 left_motor(0);
- 112              		.loc 1 62 17 is_stmt 1 view .LVU29
- 113 0046 0020     		movs	r0, #0
- 114              	.LVL12:
- 115              		.loc 1 62 17 is_stmt 0 view .LVU30
- 116 0048 FFF7FEFF 		bl	left_motor
- 117              	.LVL13:
-  63:Core/Src/main.c ****                 right_motor(0);
- 118              		.loc 1 63 17 is_stmt 1 view .LVU31
- 119 004c 0020     		movs	r0, #0
- 120 004e FFF7FEFF 		bl	right_motor
- 121              	.LVL14:
- 122 0052 E2E7     		b	.L2
- 123              	.LVL15:
- 124              	.L10:
-  44:Core/Src/main.c ****                 right_motor(HIGH_SPEED);
- 125              		.loc 1 44 17 view .LVU32
- 126 0054 4FF4D270 		mov	r0, #420
- 127              	.LVL16:
-  44:Core/Src/main.c ****                 right_motor(HIGH_SPEED);
- 128              		.loc 1 44 17 is_stmt 0 view .LVU33
- 129 0058 FFF7FEFF 		bl	left_motor
- 130              	.LVL17:
-  45:Core/Src/main.c ****             }
- 131              		.loc 1 45 17 is_stmt 1 view .LVU34
- 132 005c 4FF4E170 		mov	r0, #450
- 133 0060 FFF7FEFF 		bl	right_motor
- 134              	.LVL18:
- 135 0064 D9E7     		b	.L2
- 136              	.LVL19:
- 137              	.L11:
-  47:Core/Src/main.c ****             {
- 138              		.loc 1 47 32 is_stmt 0 discriminator 1 view .LVU35
- 139 0066 0028     		cmp	r0, #0
- 140 0068 EAD1     		bne	.L7
-  50:Core/Src/main.c ****                 right_motor(0); 
- 141              		.loc 1 50 17 is_stmt 1 view .LVU36
- 142 006a 4FF4D270 		mov	r0, #420
- 143              	.LVL20:
-  50:Core/Src/main.c ****                 right_motor(0); 
- 144              		.loc 1 50 17 is_stmt 0 view .LVU37
- 145 006e FFF7FEFF 		bl	left_motor
- 146              	.LVL21:
-  51:Core/Src/main.c ****             }
- 147              		.loc 1 51 17 is_stmt 1 view .LVU38
- 148 0072 0020     		movs	r0, #0
- 149 0074 FFF7FEFF 		bl	right_motor
- 150              	.LVL22:
- 151 0078 CFE7     		b	.L2
- 152              	.LVL23:
- 153              	.L12:
-  56:Core/Src/main.c ****                 right_motor(HIGH_SPEED);
- 154              		.loc 1 56 17 view .LVU39
- 155 007a 6FF01D00 		mvn	r0, #29
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc0Ogsit.s 			page 5
-
-
- 156              	.LVL24:
-  56:Core/Src/main.c ****                 right_motor(HIGH_SPEED);
- 157              		.loc 1 56 17 is_stmt 0 view .LVU40
- 158 007e FFF7FEFF 		bl	left_motor
- 159              	.LVL25:
-  57:Core/Src/main.c ****             }
- 160              		.loc 1 57 17 is_stmt 1 view .LVU41
- 161 0082 4FF4E170 		mov	r0, #450
- 162 0086 FFF7FEFF 		bl	right_motor
- 163              	.LVL26:
- 164 008a C6E7     		b	.L2
- 165              	.LVL27:
- 166              	.L4:
-  64:Core/Src/main.c ****             }
-  65:Core/Src/main.c ****         }
-  66:Core/Src/main.c ****         else
-  67:Core/Src/main.c ****         {
-  68:Core/Src/main.c ****             left_motor(0);
- 167              		.loc 1 68 13 view .LVU42
- 168 008c 0020     		movs	r0, #0
- 169 008e FFF7FEFF 		bl	left_motor
- 170              	.LVL28:
-  69:Core/Src/main.c ****             right_motor(0);
- 171              		.loc 1 69 13 view .LVU43
- 172 0092 0020     		movs	r0, #0
- 173 0094 FFF7FEFF 		bl	right_motor
- 174              	.LVL29:
-  70:Core/Src/main.c ****             left = 0;
- 175              		.loc 1 70 13 view .LVU44
-  71:Core/Src/main.c ****             right = 0;
- 176              		.loc 1 71 13 view .LVU45
- 177              		.loc 1 71 13 is_stmt 0 view .LVU46
- 178 0098 BFE7     		b	.L2
- 179              		.cfi_endproc
- 180              	.LFE130:
- 182              		.global	MOTOR_TRIM
- 183              		.section	.rodata.MOTOR_TRIM,"a"
- 184              		.align	1
- 187              	MOTOR_TRIM:
- 188 0000 E2FF     		.short	-30
- 189              		.global	HIGH_SPEED
- 190              		.section	.rodata.HIGH_SPEED,"a"
- 191              		.align	1
- 194              	HIGH_SPEED:
- 195 0000 C201     		.short	450
- 196              		.global	tim2_flag
- 197              		.section	.bss.tim2_flag,"aw",%nobits
- 200              	tim2_flag:
- 201 0000 00       		.space	1
- 202              		.text
- 203              	.Letext0:
- 204              		.file 2 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
- 205              		.file 3 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
- 206              		.file 4 "Core/Inc/motor.h"
- 207              		.file 5 "Core/Inc/sensors.h"
- 208              		.file 6 "Core/Inc/interrupt.h"
- 209              		.file 7 "Core/Inc/init.h"
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc0Ogsit.s 			page 6
-
-
-ARM GAS  C:\Users\User\AppData\Local\Temp\cc0Ogsit.s 			page 7
+  48              		.loc 1 11 5 view .LVU4
+  49 000e FFF7FEFF 		bl	GPIO_init
+  50              	.LVL3:
+  12:Core/Src/main.c ****     TIMER2_init(); 
+  51              		.loc 1 12 5 view .LVU5
+  52 0012 FFF7FEFF 		bl	TIMER2_init
+  53              	.LVL4:
+  54              	.L2:
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c ****     while(1)
+  55              		.loc 1 14 5 view .LVU6
+  15:Core/Src/main.c ****     {
+  16:Core/Src/main.c ****         __WFI();
+  56              		.loc 1 16 9 discriminator 1 view .LVU7
+  57              		.syntax unified
+  58              	@ 16 "Core/Src/main.c" 1
+  59 0016 30BF     		wfi
+  60              	@ 0 "" 2
+  14:Core/Src/main.c ****     {
+  61              		.loc 1 14 10 view .LVU8
+  62              		.thumb
+  63              		.syntax unified
+  64 0018 FDE7     		b	.L2
+  65              		.cfi_endproc
+  66              	.LFE130:
+  68              		.text
+  69              	.Letext0:
+  70              		.file 2 "Core/Inc/init.h"
+  71              		.file 3 "Core/Inc/interrupt.h"
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccUFVWfx.s 			page 3
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\User\AppData\Local\Temp\cc0Ogsit.s:21     .text.main:00000000 $t
-C:\Users\User\AppData\Local\Temp\cc0Ogsit.s:27     .text.main:00000000 main
-C:\Users\User\AppData\Local\Temp\cc0Ogsit.s:187    .rodata.MOTOR_TRIM:00000000 MOTOR_TRIM
-C:\Users\User\AppData\Local\Temp\cc0Ogsit.s:184    .rodata.MOTOR_TRIM:00000000 $d
-C:\Users\User\AppData\Local\Temp\cc0Ogsit.s:194    .rodata.HIGH_SPEED:00000000 HIGH_SPEED
-C:\Users\User\AppData\Local\Temp\cc0Ogsit.s:191    .rodata.HIGH_SPEED:00000000 $d
-C:\Users\User\AppData\Local\Temp\cc0Ogsit.s:200    .bss.tim2_flag:00000000 tim2_flag
-C:\Users\User\AppData\Local\Temp\cc0Ogsit.s:201    .bss.tim2_flag:00000000 $d
+C:\Users\User\AppData\Local\Temp\ccUFVWfx.s:21     .text.main:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccUFVWfx.s:27     .text.main:00000000 main
 
 UNDEFINED SYMBOLS
 RCC_init
@@ -321,10 +104,3 @@ SysTick_init
 button_interrupt_init
 GPIO_init
 TIMER2_init
-get_tim2_flag
-set_tim2_flag
-get_button_permission
-read_left_sensor
-read_right_sensor
-left_motor
-right_motor

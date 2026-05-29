@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s 			page 1
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccUskNCR.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,21 +20,21 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/sensors.c"
-  20              		.section	.text.read_left_sensor,"ax",%progbits
+  20              		.section	.text.read_right_sensor,"ax",%progbits
   21              		.align	1
-  22              		.global	read_left_sensor
+  22              		.global	read_right_sensor
   23              		.syntax unified
   24              		.thumb
   25              		.thumb_func
-  27              	read_left_sensor:
+  27              	read_right_sensor:
   28              	.LFB130:
    1:Core/Src/sensors.c **** #include "sensors.h"
    2:Core/Src/sensors.c **** 
    3:Core/Src/sensors.c **** /**
-   4:Core/Src/sensors.c ****  * @brief Чтение левого датчика
+   4:Core/Src/sensors.c ****  * @brief Чтение правого датчика
    5:Core/Src/sensors.c ****  * @returns 1 если черная линия, иначе 0
    6:Core/Src/sensors.c ****  */
-   7:Core/Src/sensors.c **** uint8_t read_left_sensor(void)
+   7:Core/Src/sensors.c **** uint8_t read_right_sensor(void)
    8:Core/Src/sensors.c **** {
   29              		.loc 1 8 1 view -0
   30              		.cfi_startproc
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s 			page 1
   46              	.LFE130:
   48              		.section	.text.read_middle_sensor,"ax",%progbits
   49              		.align	1
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s 			page 2
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccUskNCR.s 			page 2
 
 
   50              		.global	read_middle_sensor
@@ -102,23 +102,23 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s 			page 1
   80 0014 00000240 		.word	1073872896
   81              		.cfi_endproc
   82              	.LFE131:
-  84              		.section	.text.read_right_sensor,"ax",%progbits
+  84              		.section	.text.read_left_sensor,"ax",%progbits
   85              		.align	1
-  86              		.global	read_right_sensor
+  86              		.global	read_left_sensor
   87              		.syntax unified
   88              		.thumb
   89              		.thumb_func
-  91              	read_right_sensor:
+  91              	read_left_sensor:
   92              	.LFB132:
   20:Core/Src/sensors.c **** 
   21:Core/Src/sensors.c **** /**
-  22:Core/Src/sensors.c ****  * @brief Чтение правого датчика
+  22:Core/Src/sensors.c ****  * @brief Чтение левого датчика
   23:Core/Src/sensors.c ****  * @returns 1 если черная линия, иначе 0
   24:Core/Src/sensors.c ****  */
-  25:Core/Src/sensors.c **** uint8_t read_right_sensor(void)
+  25:Core/Src/sensors.c **** uint8_t read_left_sensor(void)
   26:Core/Src/sensors.c **** {
   93              		.loc 1 26 1 is_stmt 1 view -0
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s 			page 3
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccUskNCR.s 			page 3
 
 
   94              		.cfi_startproc
@@ -153,19 +153,19 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s 			page 1
  122              		.file 2 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
  123              		.file 3 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
  124              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s 			page 4
+ARM GAS  C:\Users\User\AppData\Local\Temp\ccUskNCR.s 			page 4
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 sensors.c
-C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s:21     .text.read_left_sensor:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s:27     .text.read_left_sensor:00000000 read_left_sensor
-C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s:44     .text.read_left_sensor:0000000c $d
-C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s:49     .text.read_middle_sensor:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s:55     .text.read_middle_sensor:00000000 read_middle_sensor
-C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s:80     .text.read_middle_sensor:00000014 $d
-C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s:85     .text.read_right_sensor:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s:91     .text.read_right_sensor:00000000 read_right_sensor
-C:\Users\User\AppData\Local\Temp\ccDj9Xgv.s:116    .text.read_right_sensor:00000014 $d
+C:\Users\User\AppData\Local\Temp\ccUskNCR.s:21     .text.read_right_sensor:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccUskNCR.s:27     .text.read_right_sensor:00000000 read_right_sensor
+C:\Users\User\AppData\Local\Temp\ccUskNCR.s:44     .text.read_right_sensor:0000000c $d
+C:\Users\User\AppData\Local\Temp\ccUskNCR.s:49     .text.read_middle_sensor:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccUskNCR.s:55     .text.read_middle_sensor:00000000 read_middle_sensor
+C:\Users\User\AppData\Local\Temp\ccUskNCR.s:80     .text.read_middle_sensor:00000014 $d
+C:\Users\User\AppData\Local\Temp\ccUskNCR.s:85     .text.read_left_sensor:00000000 $t
+C:\Users\User\AppData\Local\Temp\ccUskNCR.s:91     .text.read_left_sensor:00000000 read_left_sensor
+C:\Users\User\AppData\Local\Temp\ccUskNCR.s:116    .text.read_left_sensor:00000014 $d
 
 NO UNDEFINED SYMBOLS
