@@ -5,7 +5,7 @@
  * @note Функция принимает скорость в диапазоне от -1000 до 1000
  * @return None
  */
-void right_motor(int16_t speed)
+void left_motor(int16_t speed)
 {   
     if(speed > 0) // Вращение вперед
     {
@@ -20,8 +20,8 @@ void right_motor(int16_t speed)
     }
     else // Останов
     {
-        WRITE_REG(GPIOA->BSRR, GPIO_BSRR_BR_5 | GPIO_BSRR_BR_6); // Оба выключены, плавное торможение
-        WRITE_REG(TIM2->CCR3, 0);
+        WRITE_REG(GPIOA->BSRR, GPIO_BSRR_BS_5 | GPIO_BSRR_BS_6); // Оба выключены, плавное торможение
+        WRITE_REG(TIM2->CCR3, 1000);
     }
 }
 
@@ -31,7 +31,7 @@ void right_motor(int16_t speed)
  * @note Функция принимает скорость в диапазоне от -1000 до 1000
  * @return None
  */
-void left_motor(int16_t speed)
+void right_motor(int16_t speed)
 {   
     if(speed > 0) // Вращение вперед
     {
@@ -51,8 +51,8 @@ void left_motor(int16_t speed)
     else // Останов
     {
         // Оба выключены, плавное торможение
-        WRITE_REG(GPIOA->BSRR, GPIO_BSRR_BR_7);
-        WRITE_REG(GPIOB->BSRR, GPIO_BSRR_BR_6);
-        WRITE_REG(TIM2->CCR2, 0);
+        WRITE_REG(GPIOA->BSRR, GPIO_BSRR_BS_7);
+        WRITE_REG(GPIOB->BSRR, GPIO_BSRR_BS_6);
+        WRITE_REG(TIM2->CCR2, 1000);
     }
 }

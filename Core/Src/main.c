@@ -9,7 +9,7 @@ int main(void)
     SysTick_init();
     button_interrupt_init();
     GPIO_init();
-    TIMER2_init(); 
+    TIMER2_init();
 
     while(1)
     {

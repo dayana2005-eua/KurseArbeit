@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 1
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccdv9uIk.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,13 +20,13 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/motor.c"
-  20              		.section	.text.right_motor,"ax",%progbits
+  20              		.section	.text.left_motor,"ax",%progbits
   21              		.align	1
-  22              		.global	right_motor
+  22              		.global	left_motor
   23              		.syntax unified
   24              		.thumb
   25              		.thumb_func
-  27              	right_motor:
+  27              	left_motor:
   28              	.LVL0:
   29              	.LFB130:
    1:Core/Src/motor.c **** #include "motor.h"
@@ -36,7 +36,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 1
    5:Core/Src/motor.c ****  * @note Функция принимает скорость в диапазоне от -1000 до 1
    6:Core/Src/motor.c ****  * @return None
    7:Core/Src/motor.c ****  */
-   8:Core/Src/motor.c **** void right_motor(int16_t speed)
+   8:Core/Src/motor.c **** void left_motor(int16_t speed)
    9:Core/Src/motor.c **** {   
   30              		.loc 1 9 1 view -0
   31              		.cfi_startproc
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 1
   13:Core/Src/motor.c ****         WRITE_REG(TIM2->CCR3, speed);
   44              		.loc 1 13 9 view .LVU5
   45 000a 4FF08043 		mov	r3, #1073741824
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 2
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccdv9uIk.s 			page 2
 
 
   46 000e D863     		str	r0, [r3, #60]
@@ -77,15 +77,15 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 1
   20:Core/Src/motor.c ****     }
   21:Core/Src/motor.c ****     else // Останов
   22:Core/Src/motor.c ****     {
-  23:Core/Src/motor.c ****         WRITE_REG(GPIOA->BSRR, GPIO_BSRR_BR_5 | GPIO_BSRR_BR_6); // Оба выключены, пл
+  23:Core/Src/motor.c ****         WRITE_REG(GPIOA->BSRR, GPIO_BSRR_BS_5 | GPIO_BSRR_BS_6); // Оба выключены, пл
   53              		.loc 1 23 9 is_stmt 1 view .LVU8
   54 0016 094B     		ldr	r3, .L6
-  55 0018 4FF4C002 		mov	r2, #6291456
-  56 001c 9A61     		str	r2, [r3, #24]
-  24:Core/Src/motor.c ****         WRITE_REG(TIM2->CCR3, 0);
+  55 0018 6022     		movs	r2, #96
+  56 001a 9A61     		str	r2, [r3, #24]
+  24:Core/Src/motor.c ****         WRITE_REG(TIM2->CCR3, 1000);
   57              		.loc 1 24 9 view .LVU9
-  58 001e 4FF08043 		mov	r3, #1073741824
-  59 0022 0022     		movs	r2, #0
+  58 001c 4FF08043 		mov	r3, #1073741824
+  59 0020 4FF47A72 		mov	r2, #1000
   60 0024 DA63     		str	r2, [r3, #60]
   25:Core/Src/motor.c ****     }
   26:Core/Src/motor.c **** }
@@ -118,18 +118,18 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 1
   82 003c 00000240 		.word	1073872896
   83 0040 40002000 		.word	2097216
   84 0044 20004000 		.word	4194336
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 3
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccdv9uIk.s 			page 3
 
 
   85              		.cfi_endproc
   86              	.LFE130:
-  88              		.section	.text.left_motor,"ax",%progbits
+  88              		.section	.text.right_motor,"ax",%progbits
   89              		.align	1
-  90              		.global	left_motor
+  90              		.global	right_motor
   91              		.syntax unified
   92              		.thumb
   93              		.thumb_func
-  95              	left_motor:
+  95              	right_motor:
   96              	.LVL3:
   97              	.LFB131:
   27:Core/Src/motor.c **** 
@@ -139,7 +139,7 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 1
   31:Core/Src/motor.c ****  * @note Функция принимает скорость в диапазоне от -1000 до 1
   32:Core/Src/motor.c ****  * @return None
   33:Core/Src/motor.c ****  */
-  34:Core/Src/motor.c **** void left_motor(int16_t speed)
+  34:Core/Src/motor.c **** void right_motor(int16_t speed)
   35:Core/Src/motor.c **** {   
   98              		.loc 1 35 1 view -0
   99              		.cfi_startproc
@@ -175,10 +175,10 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 1
  121              		.loc 1 43 10 view .LVU23
  122              		.loc 1 43 12 is_stmt 0 view .LVU24
  123 001c 0028     		cmp	r0, #0
- 124 001e 0DDB     		blt	.L12
+ 124 001e 0CDB     		blt	.L12
   44:Core/Src/motor.c ****     {   
   45:Core/Src/motor.c ****         speed = -speed;
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 4
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccdv9uIk.s 			page 4
 
 
   46:Core/Src/motor.c ****         // Седьмой пин порта А выключен, шестой пин порта B �
@@ -189,75 +189,75 @@ ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 1
   51:Core/Src/motor.c ****     else // Останов
   52:Core/Src/motor.c ****     {
   53:Core/Src/motor.c ****         // Оба выключены, плавное торможение
-  54:Core/Src/motor.c ****         WRITE_REG(GPIOA->BSRR, GPIO_BSRR_BR_7);
+  54:Core/Src/motor.c ****         WRITE_REG(GPIOA->BSRR, GPIO_BSRR_BS_7);
  125              		.loc 1 54 9 is_stmt 1 view .LVU25
  126 0020 0D4B     		ldr	r3, .L13
- 127 0022 4FF40002 		mov	r2, #8388608
- 128 0026 9A61     		str	r2, [r3, #24]
-  55:Core/Src/motor.c ****         WRITE_REG(GPIOB->BSRR, GPIO_BSRR_BR_6);
+ 127 0022 8022     		movs	r2, #128
+ 128 0024 9A61     		str	r2, [r3, #24]
+  55:Core/Src/motor.c ****         WRITE_REG(GPIOB->BSRR, GPIO_BSRR_BS_6);
  129              		.loc 1 55 9 view .LVU26
- 130 0028 03F58063 		add	r3, r3, #1024
- 131 002c 4FF48002 		mov	r2, #4194304
- 132 0030 9A61     		str	r2, [r3, #24]
-  56:Core/Src/motor.c ****         WRITE_REG(TIM2->CCR2, 0);
+ 130 0026 03F58063 		add	r3, r3, #1024
+ 131 002a 4022     		movs	r2, #64
+ 132 002c 9A61     		str	r2, [r3, #24]
+  56:Core/Src/motor.c ****         WRITE_REG(TIM2->CCR2, 1000);
  133              		.loc 1 56 9 view .LVU27
- 134 0032 4FF08043 		mov	r3, #1073741824
- 135 0036 0022     		movs	r2, #0
- 136 0038 9A63     		str	r2, [r3, #56]
+ 134 002e 4FF08043 		mov	r3, #1073741824
+ 135 0032 4FF47A72 		mov	r2, #1000
+ 136 0036 9A63     		str	r2, [r3, #56]
   57:Core/Src/motor.c ****     }
   58:Core/Src/motor.c **** }
  137              		.loc 1 58 1 is_stmt 0 view .LVU28
- 138 003a 7047     		bx	lr
+ 138 0038 7047     		bx	lr
  139              	.L12:
   45:Core/Src/motor.c ****         // Седьмой пин порта А выключен, шестой пин порта B �
  140              		.loc 1 45 9 is_stmt 1 view .LVU29
   45:Core/Src/motor.c ****         // Седьмой пин порта А выключен, шестой пин порта B �
  141              		.loc 1 45 15 is_stmt 0 view .LVU30
- 142 003c 4042     		rsbs	r0, r0, #0
+ 142 003a 4042     		rsbs	r0, r0, #0
  143              	.LVL4:
   45:Core/Src/motor.c ****         // Седьмой пин порта А выключен, шестой пин порта B �
  144              		.loc 1 45 15 view .LVU31
- 145 003e 00B2     		sxth	r0, r0
+ 145 003c 00B2     		sxth	r0, r0
  146              	.LVL5:
   47:Core/Src/motor.c ****         WRITE_REG(GPIOB->BSRR, GPIO_BSRR_BS_6);
  147              		.loc 1 47 9 is_stmt 1 view .LVU32
- 148 0040 054B     		ldr	r3, .L13
- 149 0042 4FF40002 		mov	r2, #8388608
- 150 0046 9A61     		str	r2, [r3, #24]
+ 148 003e 064B     		ldr	r3, .L13
+ 149 0040 4FF40002 		mov	r2, #8388608
+ 150 0044 9A61     		str	r2, [r3, #24]
   48:Core/Src/motor.c ****         WRITE_REG(TIM2->CCR2, speed);
  151              		.loc 1 48 9 view .LVU33
- 152 0048 03F58063 		add	r3, r3, #1024
- 153 004c 4022     		movs	r2, #64
- 154 004e 9A61     		str	r2, [r3, #24]
+ 152 0046 03F58063 		add	r3, r3, #1024
+ 153 004a 4022     		movs	r2, #64
+ 154 004c 9A61     		str	r2, [r3, #24]
   49:Core/Src/motor.c ****     }
  155              		.loc 1 49 9 view .LVU34
- 156 0050 4FF08043 		mov	r3, #1073741824
- 157 0054 9863     		str	r0, [r3, #56]
- 158 0056 7047     		bx	lr
+ 156 004e 4FF08043 		mov	r3, #1073741824
+ 157 0052 9863     		str	r0, [r3, #56]
+ 158 0054 7047     		bx	lr
  159              	.L14:
- 160              		.align	2
+ 160 0056 00BF     		.align	2
  161              	.L13:
  162 0058 00000240 		.word	1073872896
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 5
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccdv9uIk.s 			page 5
 
 
  163              		.cfi_endproc
  164              	.LFE131:
  166              		.text
  167              	.Letext0:
- 168              		.file 2 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
- 169              		.file 3 "C:/Users/User/OneDrive/Desktop/Tools/ARM/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi
+ 168              		.file 2 "C:/Users/Daiana/Desktop/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/includ
+ 169              		.file 3 "C:/Users/Daiana/Desktop/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/includ
  170              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
-ARM GAS  C:\Users\User\AppData\Local\Temp\ccqxBgR3.s 			page 6
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccdv9uIk.s 			page 6
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 motor.c
-C:\Users\User\AppData\Local\Temp\ccqxBgR3.s:21     .text.right_motor:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccqxBgR3.s:27     .text.right_motor:00000000 right_motor
-C:\Users\User\AppData\Local\Temp\ccqxBgR3.s:82     .text.right_motor:0000003c $d
-C:\Users\User\AppData\Local\Temp\ccqxBgR3.s:89     .text.left_motor:00000000 $t
-C:\Users\User\AppData\Local\Temp\ccqxBgR3.s:95     .text.left_motor:00000000 left_motor
-C:\Users\User\AppData\Local\Temp\ccqxBgR3.s:162    .text.left_motor:00000058 $d
+C:\Users\Daiana\AppData\Local\Temp\ccdv9uIk.s:21     .text.left_motor:00000000 $t
+C:\Users\Daiana\AppData\Local\Temp\ccdv9uIk.s:27     .text.left_motor:00000000 left_motor
+C:\Users\Daiana\AppData\Local\Temp\ccdv9uIk.s:82     .text.left_motor:0000003c $d
+C:\Users\Daiana\AppData\Local\Temp\ccdv9uIk.s:89     .text.right_motor:00000000 $t
+C:\Users\Daiana\AppData\Local\Temp\ccdv9uIk.s:95     .text.right_motor:00000000 right_motor
+C:\Users\Daiana\AppData\Local\Temp\ccdv9uIk.s:162    .text.right_motor:00000058 $d
 
 NO UNDEFINED SYMBOLS
