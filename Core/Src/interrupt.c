@@ -2,19 +2,23 @@
 #include "motor.h"     
 #include "sensors.h"  
 
-// Настраиваем "окно" скоростей. 
-// Базовая должна быть ощутимо выше минимальной, чтобы было куда сбрасывать скорость.
-#define SPEED_FAST   550 // Скорость для внешнего колеса при повороте
-#define SPEED_BASE   450 // Базовая скорость для движения прямо
-#define SPEED_MIN    350 // Минимальная скорость (ниже которой мотор глохнет)
+// Настройки скоростей (адаптировано под массу 1 кг и L298N)
+#define SPEED_FAST   550 // Ускоренное внешнее колесо в повороте
+#define SPEED_BASE   450 // Базовая скорость прямо
+#define SPEED_MIN    350 // Грань сваливания (минимальная скорость работы мотора)
+#define MIN_PRESS_DURATION 50 // Время антидребезга кнопки в миллисекундах (тиках)
 
 static volatile uint32_t ticks = 0;
 static volatile uint32_t press_time = 0;
 static volatile uint8_t button_permission = 0;
 static volatile uint8_t tim2_flag = 0;
 
-// Память состояний
+// Память состояний линии
 static uint8_t last_state = 0; // 0 - прямо, 1 - поворот влево, 2 - поворот вправо
+
+// Переменные для подсчета перекрестков
+static uint8_t cross_count = 0;   // Счетчик перекрестков
+static uint8_t is_on_cross = 0;   // Флаг нахождения на перекрестке (защита от множественных срабатываний)
 
 static void led_toggle(void)
 {
@@ -65,6 +69,13 @@ void EXTI15_10_IRQHandler(void)
             if ((release_time - press_time) >= MIN_PRESS_DURATION)
             {
                 button_permission = !button_permission; 
+                
+                // Если мы заново запускаем робота кнопкой, сбрасываем счетчик перекрестков
+                if (button_permission == 1) 
+                {
+                    cross_count = 0;
+                    is_on_cross = 0;
+                }
             }
         }
         SET_BIT(EXTI->PR, EXTI_PR_PR13);
@@ -93,8 +104,47 @@ void TIM2_IRQHandler(void)
         uint8_t s_left   = read_right_sensor();  
         uint8_t s_middle = read_middle_sensor(); 
         uint8_t s_right  = read_left_sensor();   
+
+       // === 1. ЛОГИКА ПЕРЕКРЕСТКОВ И ОСТАНОВКИ ===
         
-        // 1. ИДЕАЛЬНО ПРЯМО
+        // Главный признак Х-петли или Т-перекрестка: оба крайних на черном.
+        // Центральный может быть где угодно (на черном или в белом зазоре креста).
+        if (s_left && s_right)
+        {
+            if (is_on_cross == 0)
+            {
+                cross_count++;      
+                is_on_cross = 1;    
+            }
+
+            // Проверка финиша (3 перекрестка: вход в петлю, выход из петли, Т-конец)
+            if (cross_count >= 3)
+            {
+                left_motor(0);
+                right_motor(0);
+                button_permission = 0; 
+                return; 
+            }
+            
+            // ПРОБИВАЕМ ПЕРЕКРЕСТОК НАСКВОЗЬ
+            // Жестко даем команду ехать прямо, чтобы он не дернулся в поворот
+            last_state = 0; 
+            left_motor(SPEED_BASE); 
+            right_motor(SPEED_BASE);
+            return; 
+        }
+        else
+        {
+            // Сброс флага: мы съехали с перекрестка, когда ОБА крайних датчика вышли на белое
+            if (!s_left && !s_right)
+            {
+                is_on_cross = 0;
+            }
+        }
+        
+        // === 2. ЛОГИКА РУЛЕНИЯ (ЕЗДА ПО ЛИНИИ) ===
+        
+        // ИДЕАЛЬНО ПРЯМО
         if (!s_left && s_middle && !s_right)
         {
             last_state = 0;
@@ -102,7 +152,7 @@ void TIM2_IRQHandler(void)
             right_motor(SPEED_BASE);
         }
         
-        // 2. ЛЕГКАЯ ДУГА ВЛЕВО - ускоряем правое, левое держим на грани сваливания
+        // ЛЕГКАЯ ДУГА ВЛЕВО
         else if (s_left && s_middle && !s_right)
         {
             last_state = 1;
@@ -110,7 +160,7 @@ void TIM2_IRQHandler(void)
             right_motor(SPEED_FAST); 
         }
         
-        // 3. ЛЕГКАЯ ДУГА ВПРАВО - ускоряем левое, правое держим на грани сваливания
+        // ЛЕГКАЯ ДУГА ВПРАВО
         else if (!s_left && s_middle && s_right)
         {
             last_state = 2;
@@ -118,8 +168,7 @@ void TIM2_IRQHandler(void)
             right_motor(SPEED_MIN); 
         }
         
-        // 4. КРУТАЯ ДУГА ВЛЕВО - тут останавливаем внутреннее колесо
-        // Если инерция все равно выкидывает робота, попробуй тут left_motor(-SPEED_MIN)
+        // КРУТАЯ ДУГА ВЛЕВО
         else if (s_left && !s_middle && !s_right)
         {
             last_state = 1;
@@ -127,8 +176,7 @@ void TIM2_IRQHandler(void)
             right_motor(SPEED_FAST);
         }
         
-        // 5. КРУТАЯ ДУГА ВПРАВО
-        // Аналогично, если заносит - используй реверс right_motor(-SPEED_MIN)
+        // КРУТАЯ ДУГА ВПРАВО
         else if (!s_left && !s_middle && s_right)
         {
             last_state = 2;
@@ -136,16 +184,7 @@ void TIM2_IRQHandler(void)
             right_motor(0);   
         }
         
-        // 6. ПЕРЕКРЕСТОК
-        else if ( (s_left && s_middle && s_right) || (s_left && !s_middle && s_right) )
-        {
-            last_state = 0; 
-            left_motor(SPEED_BASE); 
-            right_motor(SPEED_BASE);
-        }
-        
-        // 7. ПОТЕРЯ ЛИНИИ (угол 90 градусов или вылет)
-        // Вращаемся на месте на минимальной скорости, чтобы найти линию
+        // ПОТЕРЯ ЛИНИИ (угол 90 градусов) - вращение на месте для поиска
         else if (!s_left && !s_middle && !s_right)
         {
             if (last_state == 1)
@@ -160,7 +199,6 @@ void TIM2_IRQHandler(void)
             }
             else 
             {
-                // Если слетели на прямой, сдаем чуть-чуть назад или просто стоим
                 left_motor(0);
                 right_motor(0);
             }

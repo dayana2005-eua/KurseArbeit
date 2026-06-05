@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -31,40 +31,44 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
    2:Core/Src/interrupt.c **** #include "motor.h"     
    3:Core/Src/interrupt.c **** #include "sensors.h"  
    4:Core/Src/interrupt.c **** 
-   5:Core/Src/interrupt.c **** // Настраиваем "окно" скоростей. 
-   6:Core/Src/interrupt.c **** // Базовая должна быть ощутимо выше минимальной, чтобы 
-   7:Core/Src/interrupt.c **** #define SPEED_FAST   550 // Скорость для внешнего колеса при повор
-   8:Core/Src/interrupt.c **** #define SPEED_BASE   450 // Базовая скорость для движения прямо
-   9:Core/Src/interrupt.c **** #define SPEED_MIN    350 // Минимальная скорость (ниже которой мот
+   5:Core/Src/interrupt.c **** // Настройки скоростей (адаптировано под массу 1 кг и L298
+   6:Core/Src/interrupt.c **** #define SPEED_FAST   550 // Ускоренное внешнее колесо в повороте
+   7:Core/Src/interrupt.c **** #define SPEED_BASE   450 // Базовая скорость прямо
+   8:Core/Src/interrupt.c **** #define SPEED_MIN    350 // Грань сваливания (минимальная скорост�
+   9:Core/Src/interrupt.c **** #define MIN_PRESS_DURATION 50 // Время антидребезга кнопки в миллисе
   10:Core/Src/interrupt.c **** 
   11:Core/Src/interrupt.c **** static volatile uint32_t ticks = 0;
   12:Core/Src/interrupt.c **** static volatile uint32_t press_time = 0;
   13:Core/Src/interrupt.c **** static volatile uint8_t button_permission = 0;
   14:Core/Src/interrupt.c **** static volatile uint8_t tim2_flag = 0;
   15:Core/Src/interrupt.c **** 
-  16:Core/Src/interrupt.c **** // Память состояний
+  16:Core/Src/interrupt.c **** // Память состояний линии
   17:Core/Src/interrupt.c **** static uint8_t last_state = 0; // 0 - прямо, 1 - поворот влево, 2 - поворот
   18:Core/Src/interrupt.c **** 
-  19:Core/Src/interrupt.c **** static void led_toggle(void)
-  20:Core/Src/interrupt.c **** {
-  28              		.loc 1 20 1 view -0
+  19:Core/Src/interrupt.c **** // Переменные для подсчета перекрестков
+  20:Core/Src/interrupt.c **** static uint8_t cross_count = 0;   // Счетчик перекрестков
+  21:Core/Src/interrupt.c **** static uint8_t is_on_cross = 0;   // Флаг нахождения на перекрестке (з�
+  22:Core/Src/interrupt.c **** 
+  23:Core/Src/interrupt.c **** static void led_toggle(void)
+  24:Core/Src/interrupt.c **** {
+  28              		.loc 1 24 1 view -0
   29              		.cfi_startproc
   30              		@ args = 0, pretend = 0, frame = 0
   31              		@ frame_needed = 0, uses_anonymous_args = 0
   32              		@ link register save eliminated.
-  21:Core/Src/interrupt.c ****     GPIOC->ODR ^= GPIO_ODR_ODR_2;
-  33              		.loc 1 21 5 view .LVU1
-  34              		.loc 1 21 10 is_stmt 0 view .LVU2
+  25:Core/Src/interrupt.c ****     GPIOC->ODR ^= GPIO_ODR_ODR_2;
+  33              		.loc 1 25 5 view .LVU1
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 2
+
+
+  34              		.loc 1 25 10 is_stmt 0 view .LVU2
   35 0000 024A     		ldr	r2, .L2
   36 0002 5369     		ldr	r3, [r2, #20]
-  37              		.loc 1 21 16 view .LVU3
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 2
-
-
+  37              		.loc 1 25 16 view .LVU3
   38 0004 83F00403 		eor	r3, r3, #4
   39 0008 5361     		str	r3, [r2, #20]
-  22:Core/Src/interrupt.c **** }
-  40              		.loc 1 22 1 view .LVU4
+  26:Core/Src/interrupt.c **** }
+  40              		.loc 1 26 1 view .LVU4
   41 000a 7047     		bx	lr
   42              	.L3:
   43              		.align	2
@@ -80,10 +84,10 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
   54              		.thumb_func
   56              	SysTick_Handler:
   57              	.LFB131:
-  23:Core/Src/interrupt.c **** 
-  24:Core/Src/interrupt.c **** void SysTick_Handler(void)
-  25:Core/Src/interrupt.c **** {
-  58              		.loc 1 25 1 is_stmt 1 view -0
+  27:Core/Src/interrupt.c **** 
+  28:Core/Src/interrupt.c **** void SysTick_Handler(void)
+  29:Core/Src/interrupt.c **** {
+  58              		.loc 1 29 1 is_stmt 1 view -0
   59              		.cfi_startproc
   60              		@ args = 0, pretend = 0, frame = 0
   61              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -92,69 +96,69 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
   64              		.cfi_def_cfa_offset 8
   65              		.cfi_offset 3, -8
   66              		.cfi_offset 14, -4
-  26:Core/Src/interrupt.c ****     static uint32_t led_counter = 0; 
-  67              		.loc 1 26 5 view .LVU6
-  27:Core/Src/interrupt.c ****     led_counter++;
-  68              		.loc 1 27 5 view .LVU7
-  69              		.loc 1 27 16 is_stmt 0 view .LVU8
+  30:Core/Src/interrupt.c ****     static uint32_t led_counter = 0; 
+  67              		.loc 1 30 5 view .LVU6
+  31:Core/Src/interrupt.c ****     led_counter++;
+  68              		.loc 1 31 5 view .LVU7
+  69              		.loc 1 31 16 is_stmt 0 view .LVU8
   70 0002 0D4A     		ldr	r2, .L11
   71 0004 1368     		ldr	r3, [r2]
   72 0006 0133     		adds	r3, r3, #1
   73 0008 1360     		str	r3, [r2]
-  28:Core/Src/interrupt.c ****     uint32_t current_interval = (button_permission == 1) ? 100U : 500U;
-  74              		.loc 1 28 5 is_stmt 1 view .LVU9
-  75              		.loc 1 28 52 is_stmt 0 view .LVU10
+  32:Core/Src/interrupt.c ****     uint32_t current_interval = (button_permission == 1) ? 100U : 500U;
+  74              		.loc 1 32 5 is_stmt 1 view .LVU9
+  75              		.loc 1 32 52 is_stmt 0 view .LVU10
   76 000a 0C4A     		ldr	r2, .L11+4
   77 000c 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
   78 000e D2B2     		uxtb	r2, r2
-  79              		.loc 1 28 65 view .LVU11
+  79              		.loc 1 32 65 view .LVU11
   80 0010 012A     		cmp	r2, #1
   81 0012 08D0     		beq	.L9
-  82              		.loc 1 28 65 discriminator 2 view .LVU12
+  82              		.loc 1 32 65 discriminator 2 view .LVU12
   83 0014 4FF4FA72 		mov	r2, #500
   84              	.L5:
   85              	.LVL0:
-  29:Core/Src/interrupt.c **** 
-  30:Core/Src/interrupt.c ****     if (led_counter >= current_interval)
-  86              		.loc 1 30 5 is_stmt 1 view .LVU13
-  87              		.loc 1 30 8 is_stmt 0 view .LVU14
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 3
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 3
 
 
+  33:Core/Src/interrupt.c **** 
+  34:Core/Src/interrupt.c ****     if (led_counter >= current_interval)
+  86              		.loc 1 34 5 is_stmt 1 view .LVU13
+  87              		.loc 1 34 8 is_stmt 0 view .LVU14
   88 0018 9342     		cmp	r3, r2
   89 001a 06D2     		bcs	.L10
   90              	.LVL1:
   91              	.L6:
-  31:Core/Src/interrupt.c ****     {
-  32:Core/Src/interrupt.c ****         led_toggle();     
-  33:Core/Src/interrupt.c ****         led_counter = 0;  
-  34:Core/Src/interrupt.c ****     }
-  35:Core/Src/interrupt.c ****     ticks++;
-  92              		.loc 1 35 5 is_stmt 1 view .LVU15
-  93              		.loc 1 35 10 is_stmt 0 view .LVU16
+  35:Core/Src/interrupt.c ****     {
+  36:Core/Src/interrupt.c ****         led_toggle();     
+  37:Core/Src/interrupt.c ****         led_counter = 0;  
+  38:Core/Src/interrupt.c ****     }
+  39:Core/Src/interrupt.c ****     ticks++;
+  92              		.loc 1 39 5 is_stmt 1 view .LVU15
+  93              		.loc 1 39 10 is_stmt 0 view .LVU16
   94 001c 084A     		ldr	r2, .L11+8
   95 001e 1368     		ldr	r3, [r2]
   96 0020 0133     		adds	r3, r3, #1
   97 0022 1360     		str	r3, [r2]
-  36:Core/Src/interrupt.c **** }
-  98              		.loc 1 36 1 view .LVU17
+  40:Core/Src/interrupt.c **** }
+  98              		.loc 1 40 1 view .LVU17
   99 0024 08BD     		pop	{r3, pc}
  100              	.LVL2:
  101              	.L9:
-  28:Core/Src/interrupt.c **** 
- 102              		.loc 1 28 65 discriminator 1 view .LVU18
+  32:Core/Src/interrupt.c **** 
+ 102              		.loc 1 32 65 discriminator 1 view .LVU18
  103 0026 6422     		movs	r2, #100
  104 0028 F6E7     		b	.L5
  105              	.LVL3:
  106              	.L10:
-  32:Core/Src/interrupt.c ****         led_counter = 0;  
- 107              		.loc 1 32 9 is_stmt 1 view .LVU19
+  36:Core/Src/interrupt.c ****         led_counter = 0;  
+ 107              		.loc 1 36 9 is_stmt 1 view .LVU19
  108 002a FFF7FEFF 		bl	led_toggle
  109              	.LVL4:
-  33:Core/Src/interrupt.c ****     }
- 110              		.loc 1 33 9 view .LVU20
-  33:Core/Src/interrupt.c ****     }
- 111              		.loc 1 33 21 is_stmt 0 view .LVU21
+  37:Core/Src/interrupt.c ****     }
+ 110              		.loc 1 37 9 view .LVU20
+  37:Core/Src/interrupt.c ****     }
+ 111              		.loc 1 37 21 is_stmt 0 view .LVU21
  112 002e 024B     		ldr	r3, .L11
  113 0030 0022     		movs	r2, #0
  114 0032 1A60     		str	r2, [r3]
@@ -174,25 +178,25 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  129              		.thumb
  130              		.thumb_func
  132              	get_ticks:
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 4
+
+
  133              	.LFB132:
-  37:Core/Src/interrupt.c **** 
-  38:Core/Src/interrupt.c **** uint32_t get_ticks(void)
-  39:Core/Src/interrupt.c **** {
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 4
-
-
- 134              		.loc 1 39 1 is_stmt 1 view -0
+  41:Core/Src/interrupt.c **** 
+  42:Core/Src/interrupt.c **** uint32_t get_ticks(void)
+  43:Core/Src/interrupt.c **** {
+ 134              		.loc 1 43 1 is_stmt 1 view -0
  135              		.cfi_startproc
  136              		@ args = 0, pretend = 0, frame = 0
  137              		@ frame_needed = 0, uses_anonymous_args = 0
  138              		@ link register save eliminated.
-  40:Core/Src/interrupt.c ****     return ticks;
- 139              		.loc 1 40 5 view .LVU23
- 140              		.loc 1 40 12 is_stmt 0 view .LVU24
+  44:Core/Src/interrupt.c ****     return ticks;
+ 139              		.loc 1 44 5 view .LVU23
+ 140              		.loc 1 44 12 is_stmt 0 view .LVU24
  141 0000 014B     		ldr	r3, .L14
  142 0002 1868     		ldr	r0, [r3]
-  41:Core/Src/interrupt.c **** }
- 143              		.loc 1 41 1 view .LVU25
+  45:Core/Src/interrupt.c **** }
+ 143              		.loc 1 45 1 view .LVU25
  144 0004 7047     		bx	lr
  145              	.L15:
  146 0006 00BF     		.align	2
@@ -208,48 +212,48 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  157              		.thumb_func
  159              	button_interrupt_init:
  160              	.LFB133:
-  42:Core/Src/interrupt.c **** 
-  43:Core/Src/interrupt.c **** void button_interrupt_init(void)
-  44:Core/Src/interrupt.c **** {
- 161              		.loc 1 44 1 is_stmt 1 view -0
+  46:Core/Src/interrupt.c **** 
+  47:Core/Src/interrupt.c **** void button_interrupt_init(void)
+  48:Core/Src/interrupt.c **** {
+ 161              		.loc 1 48 1 is_stmt 1 view -0
  162              		.cfi_startproc
  163              		@ args = 0, pretend = 0, frame = 0
  164              		@ frame_needed = 0, uses_anonymous_args = 0
  165              		@ link register save eliminated.
-  45:Core/Src/interrupt.c ****     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);
- 166              		.loc 1 45 5 view .LVU27
+  49:Core/Src/interrupt.c ****     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);
+ 166              		.loc 1 49 5 view .LVU27
  167 0000 104A     		ldr	r2, .L17
  168 0002 536C     		ldr	r3, [r2, #68]
  169 0004 43F48043 		orr	r3, r3, #16384
  170 0008 5364     		str	r3, [r2, #68]
-  46:Core/Src/interrupt.c ****     MODIFY_REG(SYSCFG->EXTICR[13 / 4], 0xFU << ((13 % 4) * 4), 0x2U << ((13 % 4) * 4));
- 171              		.loc 1 46 5 view .LVU28
+  50:Core/Src/interrupt.c ****     MODIFY_REG(SYSCFG->EXTICR[13 / 4], 0xFU << ((13 % 4) * 4), 0x2U << ((13 % 4) * 4));
+ 171              		.loc 1 50 5 view .LVU28
  172 000a A2F58032 		sub	r2, r2, #65536
  173 000e 5369     		ldr	r3, [r2, #20]
  174 0010 23F0F003 		bic	r3, r3, #240
  175 0014 43F02003 		orr	r3, r3, #32
  176 0018 5361     		str	r3, [r2, #20]
-  47:Core/Src/interrupt.c ****     SET_BIT(EXTI->IMR, EXTI_IMR_IM13);
- 177              		.loc 1 47 5 view .LVU29
+  51:Core/Src/interrupt.c ****     SET_BIT(EXTI->IMR, EXTI_IMR_IM13);
+ 177              		.loc 1 51 5 view .LVU29
  178 001a 0B4B     		ldr	r3, .L17+4
  179 001c 1A68     		ldr	r2, [r3]
  180 001e 42F40052 		orr	r2, r2, #8192
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 5
+
+
  181 0022 1A60     		str	r2, [r3]
-  48:Core/Src/interrupt.c ****     SET_BIT(EXTI->FTSR, EXTI_FTSR_TR13);
- 182              		.loc 1 48 5 view .LVU30
+  52:Core/Src/interrupt.c ****     SET_BIT(EXTI->FTSR, EXTI_FTSR_TR13);
+ 182              		.loc 1 52 5 view .LVU30
  183 0024 DA68     		ldr	r2, [r3, #12]
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 5
-
-
  184 0026 42F40052 		orr	r2, r2, #8192
  185 002a DA60     		str	r2, [r3, #12]
-  49:Core/Src/interrupt.c ****     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13);
- 186              		.loc 1 49 5 view .LVU31
+  53:Core/Src/interrupt.c ****     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13);
+ 186              		.loc 1 53 5 view .LVU31
  187 002c 9A68     		ldr	r2, [r3, #8]
  188 002e 42F40052 		orr	r2, r2, #8192
  189 0032 9A60     		str	r2, [r3, #8]
-  50:Core/Src/interrupt.c ****     NVIC_SetPriority(EXTI15_10_IRQn, 2); 
- 190              		.loc 1 50 5 view .LVU32
+  54:Core/Src/interrupt.c ****     NVIC_SetPriority(EXTI15_10_IRQn, 2); 
+ 190              		.loc 1 54 5 view .LVU32
  191              	.LVL5:
  192              	.LBB6:
  193              	.LBI6:
@@ -294,13 +298,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
   38:CMSIS/Include/core_cm4.h **** #endif
   39:CMSIS/Include/core_cm4.h **** 
   40:CMSIS/Include/core_cm4.h **** /**
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 6
+
+
   41:CMSIS/Include/core_cm4.h ****   \page CMSIS_MISRA_Exceptions  MISRA-C:2004 Compliance Exceptions
   42:CMSIS/Include/core_cm4.h ****   CMSIS violates the following MISRA-C:2004 rules:
   43:CMSIS/Include/core_cm4.h **** 
   44:CMSIS/Include/core_cm4.h ****    \li Required Rule 8.5, object/function definition in header file.<br>
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 6
-
-
   45:CMSIS/Include/core_cm4.h ****      Function definitions in header files are used to allow 'inlining'.
   46:CMSIS/Include/core_cm4.h **** 
   47:CMSIS/Include/core_cm4.h ****    \li Required Rule 18.4, declaration of union type or object of union type: '{...}'.<br>
@@ -354,13 +358,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
   95:CMSIS/Include/core_cm4.h ****     #endif
   96:CMSIS/Include/core_cm4.h ****   #else
   97:CMSIS/Include/core_cm4.h ****     #define __FPU_USED         0U
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 7
+
+
   98:CMSIS/Include/core_cm4.h ****   #endif
   99:CMSIS/Include/core_cm4.h **** 
  100:CMSIS/Include/core_cm4.h **** #elif defined ( __GNUC__ )
  101:CMSIS/Include/core_cm4.h ****   #if defined (__VFP_FP__) && !defined(__SOFTFP__)
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 7
-
-
  102:CMSIS/Include/core_cm4.h ****     #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)
  103:CMSIS/Include/core_cm4.h ****       #define __FPU_USED       1U
  104:CMSIS/Include/core_cm4.h ****     #else
@@ -414,13 +418,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  152:CMSIS/Include/core_cm4.h ****     #else
  153:CMSIS/Include/core_cm4.h ****       #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)
  154:CMSIS/Include/core_cm4.h ****       #define __FPU_USED       0U
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 8
+
+
  155:CMSIS/Include/core_cm4.h ****     #endif
  156:CMSIS/Include/core_cm4.h ****   #else
  157:CMSIS/Include/core_cm4.h ****     #define __FPU_USED         0U
  158:CMSIS/Include/core_cm4.h ****   #endif
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 8
-
-
  159:CMSIS/Include/core_cm4.h **** 
  160:CMSIS/Include/core_cm4.h **** #endif
  161:CMSIS/Include/core_cm4.h **** 
@@ -474,13 +478,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  209:CMSIS/Include/core_cm4.h **** /**
  210:CMSIS/Include/core_cm4.h ****     \defgroup CMSIS_glob_defs CMSIS Global Defines
  211:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 9
+
+
  212:CMSIS/Include/core_cm4.h ****     <strong>IO Type Qualifiers</strong> are used
  213:CMSIS/Include/core_cm4.h ****     \li to specify the access to peripheral variables.
  214:CMSIS/Include/core_cm4.h ****     \li for automatic generation of peripheral register debug information.
  215:CMSIS/Include/core_cm4.h **** */
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 9
-
-
  216:CMSIS/Include/core_cm4.h **** #ifdef __cplusplus
  217:CMSIS/Include/core_cm4.h ****   #define   __I     volatile             /*!< Defines 'read only' permissions */
  218:CMSIS/Include/core_cm4.h **** #else
@@ -534,13 +538,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  266:CMSIS/Include/core_cm4.h ****     uint32_t Q:1;                        /*!< bit:     27  Saturation condition flag */
  267:CMSIS/Include/core_cm4.h ****     uint32_t V:1;                        /*!< bit:     28  Overflow condition code flag */
  268:CMSIS/Include/core_cm4.h ****     uint32_t C:1;                        /*!< bit:     29  Carry condition code flag */
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 10
+
+
  269:CMSIS/Include/core_cm4.h ****     uint32_t Z:1;                        /*!< bit:     30  Zero condition code flag */
  270:CMSIS/Include/core_cm4.h ****     uint32_t N:1;                        /*!< bit:     31  Negative condition code flag */
  271:CMSIS/Include/core_cm4.h ****   } b;                                   /*!< Structure used for bit  access */
  272:CMSIS/Include/core_cm4.h ****   uint32_t w;                            /*!< Type      used for word access */
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 10
-
-
  273:CMSIS/Include/core_cm4.h **** } APSR_Type;
  274:CMSIS/Include/core_cm4.h **** 
  275:CMSIS/Include/core_cm4.h **** /* APSR Register Definitions */
@@ -594,13 +598,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  323:CMSIS/Include/core_cm4.h ****     uint32_t GE:4;                       /*!< bit: 16..19  Greater than or Equal flags */
  324:CMSIS/Include/core_cm4.h ****     uint32_t _reserved1:4;               /*!< bit: 20..23  Reserved */
  325:CMSIS/Include/core_cm4.h ****     uint32_t T:1;                        /*!< bit:     24  Thumb bit */
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 11
+
+
  326:CMSIS/Include/core_cm4.h ****     uint32_t ICI_IT_2:2;                 /*!< bit: 25..26  ICI/IT part 2 */
  327:CMSIS/Include/core_cm4.h ****     uint32_t Q:1;                        /*!< bit:     27  Saturation condition flag */
  328:CMSIS/Include/core_cm4.h ****     uint32_t V:1;                        /*!< bit:     28  Overflow condition code flag */
  329:CMSIS/Include/core_cm4.h ****     uint32_t C:1;                        /*!< bit:     29  Carry condition code flag */
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 11
-
-
  330:CMSIS/Include/core_cm4.h ****     uint32_t Z:1;                        /*!< bit:     30  Zero condition code flag */
  331:CMSIS/Include/core_cm4.h ****     uint32_t N:1;                        /*!< bit:     31  Negative condition code flag */
  332:CMSIS/Include/core_cm4.h ****   } b;                                   /*!< Structure used for bit  access */
@@ -654,13 +658,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  380:CMSIS/Include/core_cm4.h ****   uint32_t w;                            /*!< Type      used for word access */
  381:CMSIS/Include/core_cm4.h **** } CONTROL_Type;
  382:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 12
+
+
  383:CMSIS/Include/core_cm4.h **** /* CONTROL Register Definitions */
  384:CMSIS/Include/core_cm4.h **** #define CONTROL_FPCA_Pos                    2U                                            /*!< CONT
  385:CMSIS/Include/core_cm4.h **** #define CONTROL_FPCA_Msk                   (1UL << CONTROL_FPCA_Pos)                      /*!< CONT
  386:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 12
-
-
  387:CMSIS/Include/core_cm4.h **** #define CONTROL_SPSEL_Pos                   1U                                            /*!< CONT
  388:CMSIS/Include/core_cm4.h **** #define CONTROL_SPSEL_Msk                  (1UL << CONTROL_SPSEL_Pos)                     /*!< CONT
  389:CMSIS/Include/core_cm4.h **** 
@@ -714,13 +718,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  437:CMSIS/Include/core_cm4.h **** /**
  438:CMSIS/Include/core_cm4.h ****   \brief  Structure type to access the System Control Block (SCB).
  439:CMSIS/Include/core_cm4.h ****  */
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 13
+
+
  440:CMSIS/Include/core_cm4.h **** typedef struct
  441:CMSIS/Include/core_cm4.h **** {
  442:CMSIS/Include/core_cm4.h ****   __IM  uint32_t CPUID;                  /*!< Offset: 0x000 (R/ )  CPUID Base Register */
  443:CMSIS/Include/core_cm4.h ****   __IOM uint32_t ICSR;                   /*!< Offset: 0x004 (R/W)  Interrupt Control and State Regi
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 13
-
-
  444:CMSIS/Include/core_cm4.h ****   __IOM uint32_t VTOR;                   /*!< Offset: 0x008 (R/W)  Vector Table Offset Register */
  445:CMSIS/Include/core_cm4.h ****   __IOM uint32_t AIRCR;                  /*!< Offset: 0x00C (R/W)  Application Interrupt and Reset 
  446:CMSIS/Include/core_cm4.h ****   __IOM uint32_t SCR;                    /*!< Offset: 0x010 (R/W)  System Control Register */
@@ -774,13 +778,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  494:CMSIS/Include/core_cm4.h **** #define SCB_ICSR_PENDSTCLR_Pos             25U                                            /*!< SCB 
  495:CMSIS/Include/core_cm4.h **** #define SCB_ICSR_PENDSTCLR_Msk             (1UL << SCB_ICSR_PENDSTCLR_Pos)                /*!< SCB 
  496:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 14
+
+
  497:CMSIS/Include/core_cm4.h **** #define SCB_ICSR_ISRPREEMPT_Pos            23U                                            /*!< SCB 
  498:CMSIS/Include/core_cm4.h **** #define SCB_ICSR_ISRPREEMPT_Msk            (1UL << SCB_ICSR_ISRPREEMPT_Pos)               /*!< SCB 
  499:CMSIS/Include/core_cm4.h **** 
  500:CMSIS/Include/core_cm4.h **** #define SCB_ICSR_ISRPENDING_Pos            22U                                            /*!< SCB 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 14
-
-
  501:CMSIS/Include/core_cm4.h **** #define SCB_ICSR_ISRPENDING_Msk            (1UL << SCB_ICSR_ISRPENDING_Pos)               /*!< SCB 
  502:CMSIS/Include/core_cm4.h **** 
  503:CMSIS/Include/core_cm4.h **** #define SCB_ICSR_VECTPENDING_Pos           12U                                            /*!< SCB 
@@ -834,13 +838,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  551:CMSIS/Include/core_cm4.h **** 
  552:CMSIS/Include/core_cm4.h **** #define SCB_CCR_BFHFNMIGN_Pos               8U                                            /*!< SCB 
  553:CMSIS/Include/core_cm4.h **** #define SCB_CCR_BFHFNMIGN_Msk              (1UL << SCB_CCR_BFHFNMIGN_Pos)                 /*!< SCB 
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 15
+
+
  554:CMSIS/Include/core_cm4.h **** 
  555:CMSIS/Include/core_cm4.h **** #define SCB_CCR_DIV_0_TRP_Pos               4U                                            /*!< SCB 
  556:CMSIS/Include/core_cm4.h **** #define SCB_CCR_DIV_0_TRP_Msk              (1UL << SCB_CCR_DIV_0_TRP_Pos)                 /*!< SCB 
  557:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 15
-
-
  558:CMSIS/Include/core_cm4.h **** #define SCB_CCR_UNALIGN_TRP_Pos             3U                                            /*!< SCB 
  559:CMSIS/Include/core_cm4.h **** #define SCB_CCR_UNALIGN_TRP_Msk            (1UL << SCB_CCR_UNALIGN_TRP_Pos)               /*!< SCB 
  560:CMSIS/Include/core_cm4.h **** 
@@ -894,13 +898,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  608:CMSIS/Include/core_cm4.h **** #define SCB_SHCSR_MEMFAULTACT_Msk          (1UL /*<< SCB_SHCSR_MEMFAULTACT_Pos*/)         /*!< SCB 
  609:CMSIS/Include/core_cm4.h **** 
  610:CMSIS/Include/core_cm4.h **** /* SCB Configurable Fault Status Register Definitions */
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 16
+
+
  611:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_USGFAULTSR_Pos            16U                                            /*!< SCB 
  612:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_USGFAULTSR_Msk            (0xFFFFUL << SCB_CFSR_USGFAULTSR_Pos)          /*!< SCB 
  613:CMSIS/Include/core_cm4.h **** 
  614:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_BUSFAULTSR_Pos             8U                                            /*!< SCB 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 16
-
-
  615:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_BUSFAULTSR_Msk            (0xFFUL << SCB_CFSR_BUSFAULTSR_Pos)            /*!< SCB 
  616:CMSIS/Include/core_cm4.h **** 
  617:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_MEMFAULTSR_Pos             0U                                            /*!< SCB 
@@ -954,13 +958,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  665:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_UNALIGNED_Pos            (SCB_CFSR_USGFAULTSR_Pos + 8U)                  /*!< SCB 
  666:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_UNALIGNED_Msk            (1UL << SCB_CFSR_UNALIGNED_Pos)                 /*!< SCB 
  667:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 17
+
+
  668:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_NOCP_Pos                 (SCB_CFSR_USGFAULTSR_Pos + 3U)                  /*!< SCB 
  669:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_NOCP_Msk                 (1UL << SCB_CFSR_NOCP_Pos)                      /*!< SCB 
  670:CMSIS/Include/core_cm4.h **** 
  671:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_INVPC_Pos                (SCB_CFSR_USGFAULTSR_Pos + 2U)                  /*!< SCB 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 17
-
-
  672:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_INVPC_Msk                (1UL << SCB_CFSR_INVPC_Pos)                     /*!< SCB 
  673:CMSIS/Include/core_cm4.h **** 
  674:CMSIS/Include/core_cm4.h **** #define SCB_CFSR_INVSTATE_Pos             (SCB_CFSR_USGFAULTSR_Pos + 1U)                  /*!< SCB 
@@ -1014,13 +1018,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  722:CMSIS/Include/core_cm4.h ****   __IM  uint32_t ICTR;                   /*!< Offset: 0x004 (R/ )  Interrupt Controller Type Regist
  723:CMSIS/Include/core_cm4.h ****   __IOM uint32_t ACTLR;                  /*!< Offset: 0x008 (R/W)  Auxiliary Control Register */
  724:CMSIS/Include/core_cm4.h **** } SCnSCB_Type;
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 18
+
+
  725:CMSIS/Include/core_cm4.h **** 
  726:CMSIS/Include/core_cm4.h **** /* Interrupt Controller Type Register Definitions */
  727:CMSIS/Include/core_cm4.h **** #define SCnSCB_ICTR_INTLINESNUM_Pos         0U                                         /*!< ICTR: I
  728:CMSIS/Include/core_cm4.h **** #define SCnSCB_ICTR_INTLINESNUM_Msk        (0xFUL /*<< SCnSCB_ICTR_INTLINESNUM_Pos*/)  /*!< ICTR: I
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 18
-
-
  729:CMSIS/Include/core_cm4.h **** 
  730:CMSIS/Include/core_cm4.h **** /* Auxiliary Control Register Definitions */
  731:CMSIS/Include/core_cm4.h **** #define SCnSCB_ACTLR_DISOOFP_Pos            9U                                         /*!< ACTLR: 
@@ -1074,13 +1078,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  779:CMSIS/Include/core_cm4.h **** 
  780:CMSIS/Include/core_cm4.h **** /* SysTick Reload Register Definitions */
  781:CMSIS/Include/core_cm4.h **** #define SysTick_LOAD_RELOAD_Pos             0U                                            /*!< SysT
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 19
+
+
  782:CMSIS/Include/core_cm4.h **** #define SysTick_LOAD_RELOAD_Msk            (0xFFFFFFUL /*<< SysTick_LOAD_RELOAD_Pos*/)    /*!< SysT
  783:CMSIS/Include/core_cm4.h **** 
  784:CMSIS/Include/core_cm4.h **** /* SysTick Current Register Definitions */
  785:CMSIS/Include/core_cm4.h **** #define SysTick_VAL_CURRENT_Pos             0U                                            /*!< SysT
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 19
-
-
  786:CMSIS/Include/core_cm4.h **** #define SysTick_VAL_CURRENT_Msk            (0xFFFFFFUL /*<< SysTick_VAL_CURRENT_Pos*/)    /*!< SysT
  787:CMSIS/Include/core_cm4.h **** 
  788:CMSIS/Include/core_cm4.h **** /* SysTick Calibration Register Definitions */
@@ -1134,13 +1138,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  836:CMSIS/Include/core_cm4.h ****   __IM  uint32_t PID7;                   /*!< Offset: 0xFDC (R/ )  ITM Peripheral Identification Re
  837:CMSIS/Include/core_cm4.h ****   __IM  uint32_t PID0;                   /*!< Offset: 0xFE0 (R/ )  ITM Peripheral Identification Re
  838:CMSIS/Include/core_cm4.h ****   __IM  uint32_t PID1;                   /*!< Offset: 0xFE4 (R/ )  ITM Peripheral Identification Re
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 20
+
+
  839:CMSIS/Include/core_cm4.h ****   __IM  uint32_t PID2;                   /*!< Offset: 0xFE8 (R/ )  ITM Peripheral Identification Re
  840:CMSIS/Include/core_cm4.h ****   __IM  uint32_t PID3;                   /*!< Offset: 0xFEC (R/ )  ITM Peripheral Identification Re
  841:CMSIS/Include/core_cm4.h ****   __IM  uint32_t CID0;                   /*!< Offset: 0xFF0 (R/ )  ITM Component  Identification Re
  842:CMSIS/Include/core_cm4.h ****   __IM  uint32_t CID1;                   /*!< Offset: 0xFF4 (R/ )  ITM Component  Identification Re
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 20
-
-
  843:CMSIS/Include/core_cm4.h ****   __IM  uint32_t CID2;                   /*!< Offset: 0xFF8 (R/ )  ITM Component  Identification Re
  844:CMSIS/Include/core_cm4.h ****   __IM  uint32_t CID3;                   /*!< Offset: 0xFFC (R/ )  ITM Component  Identification Re
  845:CMSIS/Include/core_cm4.h **** } ITM_Type;
@@ -1194,13 +1198,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  893:CMSIS/Include/core_cm4.h **** #define ITM_LSR_ByteAcc_Msk                (1UL << ITM_LSR_ByteAcc_Pos)                   /*!< ITM 
  894:CMSIS/Include/core_cm4.h **** 
  895:CMSIS/Include/core_cm4.h **** #define ITM_LSR_Access_Pos                  1U                                            /*!< ITM 
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 21
+
+
  896:CMSIS/Include/core_cm4.h **** #define ITM_LSR_Access_Msk                 (1UL << ITM_LSR_Access_Pos)                    /*!< ITM 
  897:CMSIS/Include/core_cm4.h **** 
  898:CMSIS/Include/core_cm4.h **** #define ITM_LSR_Present_Pos                 0U                                            /*!< ITM 
  899:CMSIS/Include/core_cm4.h **** #define ITM_LSR_Present_Msk                (1UL /*<< ITM_LSR_Present_Pos*/)               /*!< ITM 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 21
-
-
  900:CMSIS/Include/core_cm4.h **** 
  901:CMSIS/Include/core_cm4.h **** /*@}*/ /* end of group CMSIS_ITM */
  902:CMSIS/Include/core_cm4.h **** 
@@ -1254,13 +1258,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  950:CMSIS/Include/core_cm4.h **** 
  951:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_NOCYCCNT_Pos              25U                                         /*!< DWT CTR
  952:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_NOCYCCNT_Msk              (0x1UL << DWT_CTRL_NOCYCCNT_Pos)            /*!< DWT CTR
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 22
+
+
  953:CMSIS/Include/core_cm4.h **** 
  954:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_NOPRFCNT_Pos              24U                                         /*!< DWT CTR
  955:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_NOPRFCNT_Msk              (0x1UL << DWT_CTRL_NOPRFCNT_Pos)            /*!< DWT CTR
  956:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 22
-
-
  957:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_CYCEVTENA_Pos             22U                                         /*!< DWT CTR
  958:CMSIS/Include/core_cm4.h **** #define DWT_CTRL_CYCEVTENA_Msk             (0x1UL << DWT_CTRL_CYCEVTENA_Pos)           /*!< DWT CTR
  959:CMSIS/Include/core_cm4.h **** 
@@ -1314,13 +1318,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1007:CMSIS/Include/core_cm4.h **** 
 1008:CMSIS/Include/core_cm4.h **** /* DWT LSU Count Register Definitions */
 1009:CMSIS/Include/core_cm4.h **** #define DWT_LSUCNT_LSUCNT_Pos               0U                                         /*!< DWT LSU
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 23
+
+
 1010:CMSIS/Include/core_cm4.h **** #define DWT_LSUCNT_LSUCNT_Msk              (0xFFUL /*<< DWT_LSUCNT_LSUCNT_Pos*/)       /*!< DWT LSU
 1011:CMSIS/Include/core_cm4.h **** 
 1012:CMSIS/Include/core_cm4.h **** /* DWT Folded-instruction Count Register Definitions */
 1013:CMSIS/Include/core_cm4.h **** #define DWT_FOLDCNT_FOLDCNT_Pos             0U                                         /*!< DWT FOL
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 23
-
-
 1014:CMSIS/Include/core_cm4.h **** #define DWT_FOLDCNT_FOLDCNT_Msk            (0xFFUL /*<< DWT_FOLDCNT_FOLDCNT_Pos*/)     /*!< DWT FOL
 1015:CMSIS/Include/core_cm4.h **** 
 1016:CMSIS/Include/core_cm4.h **** /* DWT Comparator Mask Register Definitions */
@@ -1374,13 +1378,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1064:CMSIS/Include/core_cm4.h ****   __IOM uint32_t CSPSR;                  /*!< Offset: 0x004 (R/W)  Current Parallel Port Size Regis
 1065:CMSIS/Include/core_cm4.h ****         uint32_t RESERVED0[2U];
 1066:CMSIS/Include/core_cm4.h ****   __IOM uint32_t ACPR;                   /*!< Offset: 0x010 (R/W)  Asynchronous Clock Prescaler Reg
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 24
+
+
 1067:CMSIS/Include/core_cm4.h ****         uint32_t RESERVED1[55U];
 1068:CMSIS/Include/core_cm4.h ****   __IOM uint32_t SPPR;                   /*!< Offset: 0x0F0 (R/W)  Selected Pin Protocol Register *
 1069:CMSIS/Include/core_cm4.h ****         uint32_t RESERVED2[131U];
 1070:CMSIS/Include/core_cm4.h ****   __IM  uint32_t FFSR;                   /*!< Offset: 0x300 (R/ )  Formatter and Flush Status Regis
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 24
-
-
 1071:CMSIS/Include/core_cm4.h ****   __IOM uint32_t FFCR;                   /*!< Offset: 0x304 (R/W)  Formatter and Flush Control Regi
 1072:CMSIS/Include/core_cm4.h ****   __IM  uint32_t FSCR;                   /*!< Offset: 0x308 (R/ )  Formatter Synchronization Counte
 1073:CMSIS/Include/core_cm4.h ****         uint32_t RESERVED3[759U];
@@ -1434,13 +1438,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1121:CMSIS/Include/core_cm4.h **** /* TPI Integration ETM Data Register Definitions (FIFO0) */
 1122:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ITM_ATVALID_Pos          29U                                         /*!< TPI FIF
 1123:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ITM_ATVALID_Msk          (0x3UL << TPI_FIFO0_ITM_ATVALID_Pos)        /*!< TPI FIF
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 25
+
+
 1124:CMSIS/Include/core_cm4.h **** 
 1125:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ITM_bytecount_Pos        27U                                         /*!< TPI FIF
 1126:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ITM_bytecount_Msk        (0x3UL << TPI_FIFO0_ITM_bytecount_Pos)      /*!< TPI FIF
 1127:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 25
-
-
 1128:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ETM_ATVALID_Pos          26U                                         /*!< TPI FIF
 1129:CMSIS/Include/core_cm4.h **** #define TPI_FIFO0_ETM_ATVALID_Msk          (0x3UL << TPI_FIFO0_ETM_ATVALID_Pos)        /*!< TPI FIF
 1130:CMSIS/Include/core_cm4.h **** 
@@ -1494,13 +1498,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1178:CMSIS/Include/core_cm4.h **** 
 1179:CMSIS/Include/core_cm4.h **** /* TPI Integration Mode Control Register Definitions */
 1180:CMSIS/Include/core_cm4.h **** #define TPI_ITCTRL_Mode_Pos                 0U                                         /*!< TPI ITC
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 26
+
+
 1181:CMSIS/Include/core_cm4.h **** #define TPI_ITCTRL_Mode_Msk                (0x3UL /*<< TPI_ITCTRL_Mode_Pos*/)          /*!< TPI ITC
 1182:CMSIS/Include/core_cm4.h **** 
 1183:CMSIS/Include/core_cm4.h **** /* TPI DEVID Register Definitions */
 1184:CMSIS/Include/core_cm4.h **** #define TPI_DEVID_NRZVALID_Pos             11U                                         /*!< TPI DEV
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 26
-
-
 1185:CMSIS/Include/core_cm4.h **** #define TPI_DEVID_NRZVALID_Msk             (0x1UL << TPI_DEVID_NRZVALID_Pos)           /*!< TPI DEV
 1186:CMSIS/Include/core_cm4.h **** 
 1187:CMSIS/Include/core_cm4.h **** #define TPI_DEVID_MANCVALID_Pos            10U                                         /*!< TPI DEV
@@ -1554,13 +1558,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1235:CMSIS/Include/core_cm4.h ****   __IOM uint32_t RASR_A3;                /*!< Offset: 0x028 (R/W)  MPU Alias 3 Region Attribute and
 1236:CMSIS/Include/core_cm4.h **** } MPU_Type;
 1237:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 27
+
+
 1238:CMSIS/Include/core_cm4.h **** #define MPU_TYPE_RALIASES                  4U
 1239:CMSIS/Include/core_cm4.h **** 
 1240:CMSIS/Include/core_cm4.h **** /* MPU Type Register Definitions */
 1241:CMSIS/Include/core_cm4.h **** #define MPU_TYPE_IREGION_Pos               16U                                            /*!< MPU 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 27
-
-
 1242:CMSIS/Include/core_cm4.h **** #define MPU_TYPE_IREGION_Msk               (0xFFUL << MPU_TYPE_IREGION_Pos)               /*!< MPU 
 1243:CMSIS/Include/core_cm4.h **** 
 1244:CMSIS/Include/core_cm4.h **** #define MPU_TYPE_DREGION_Pos                8U                                            /*!< MPU 
@@ -1614,13 +1618,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1292:CMSIS/Include/core_cm4.h **** 
 1293:CMSIS/Include/core_cm4.h **** #define MPU_RASR_B_Pos                     16U                                            /*!< MPU 
 1294:CMSIS/Include/core_cm4.h **** #define MPU_RASR_B_Msk                     (1UL << MPU_RASR_B_Pos)                        /*!< MPU 
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 28
+
+
 1295:CMSIS/Include/core_cm4.h **** 
 1296:CMSIS/Include/core_cm4.h **** #define MPU_RASR_SRD_Pos                    8U                                            /*!< MPU 
 1297:CMSIS/Include/core_cm4.h **** #define MPU_RASR_SRD_Msk                   (0xFFUL << MPU_RASR_SRD_Pos)                   /*!< MPU 
 1298:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 28
-
-
 1299:CMSIS/Include/core_cm4.h **** #define MPU_RASR_SIZE_Pos                   1U                                            /*!< MPU 
 1300:CMSIS/Include/core_cm4.h **** #define MPU_RASR_SIZE_Msk                  (0x1FUL << MPU_RASR_SIZE_Pos)                  /*!< MPU 
 1301:CMSIS/Include/core_cm4.h **** 
@@ -1674,13 +1678,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1349:CMSIS/Include/core_cm4.h **** #define FPU_FPCCR_THREAD_Msk               (1UL << FPU_FPCCR_THREAD_Pos)                  /*!< FPCC
 1350:CMSIS/Include/core_cm4.h **** 
 1351:CMSIS/Include/core_cm4.h **** #define FPU_FPCCR_USER_Pos                  1U                                            /*!< FPCC
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 29
+
+
 1352:CMSIS/Include/core_cm4.h **** #define FPU_FPCCR_USER_Msk                 (1UL << FPU_FPCCR_USER_Pos)                    /*!< FPCC
 1353:CMSIS/Include/core_cm4.h **** 
 1354:CMSIS/Include/core_cm4.h **** #define FPU_FPCCR_LSPACT_Pos                0U                                            /*!< FPCC
 1355:CMSIS/Include/core_cm4.h **** #define FPU_FPCCR_LSPACT_Msk               (1UL /*<< FPU_FPCCR_LSPACT_Pos*/)              /*!< FPCC
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 29
-
-
 1356:CMSIS/Include/core_cm4.h **** 
 1357:CMSIS/Include/core_cm4.h **** /* Floating-Point Context Address Register Definitions */
 1358:CMSIS/Include/core_cm4.h **** #define FPU_FPCAR_ADDRESS_Pos               3U                                            /*!< FPCA
@@ -1734,13 +1738,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1406:CMSIS/Include/core_cm4.h **** #define FPU_MVFR1_D_NaN_mode_Pos            4U                                            /*!< MVFR
 1407:CMSIS/Include/core_cm4.h **** #define FPU_MVFR1_D_NaN_mode_Msk           (0xFUL << FPU_MVFR1_D_NaN_mode_Pos)            /*!< MVFR
 1408:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 30
+
+
 1409:CMSIS/Include/core_cm4.h **** #define FPU_MVFR1_FtZ_mode_Pos              0U                                            /*!< MVFR
 1410:CMSIS/Include/core_cm4.h **** #define FPU_MVFR1_FtZ_mode_Msk             (0xFUL /*<< FPU_MVFR1_FtZ_mode_Pos*/)          /*!< MVFR
 1411:CMSIS/Include/core_cm4.h **** 
 1412:CMSIS/Include/core_cm4.h **** /*@} end of group CMSIS_FPU */
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 30
-
-
 1413:CMSIS/Include/core_cm4.h **** 
 1414:CMSIS/Include/core_cm4.h **** 
 1415:CMSIS/Include/core_cm4.h **** /**
@@ -1794,13 +1798,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1463:CMSIS/Include/core_cm4.h **** 
 1464:CMSIS/Include/core_cm4.h **** #define CoreDebug_DHCSR_C_HALT_Pos          1U                                            /*!< Core
 1465:CMSIS/Include/core_cm4.h **** #define CoreDebug_DHCSR_C_HALT_Msk         (1UL << CoreDebug_DHCSR_C_HALT_Pos)            /*!< Core
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 31
+
+
 1466:CMSIS/Include/core_cm4.h **** 
 1467:CMSIS/Include/core_cm4.h **** #define CoreDebug_DHCSR_C_DEBUGEN_Pos       0U                                            /*!< Core
 1468:CMSIS/Include/core_cm4.h **** #define CoreDebug_DHCSR_C_DEBUGEN_Msk      (1UL /*<< CoreDebug_DHCSR_C_DEBUGEN_Pos*/)     /*!< Core
 1469:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 31
-
-
 1470:CMSIS/Include/core_cm4.h **** /* Debug Core Register Selector Register Definitions */
 1471:CMSIS/Include/core_cm4.h **** #define CoreDebug_DCRSR_REGWnR_Pos         16U                                            /*!< Core
 1472:CMSIS/Include/core_cm4.h **** #define CoreDebug_DCRSR_REGWnR_Msk         (1UL << CoreDebug_DCRSR_REGWnR_Pos)            /*!< Core
@@ -1854,13 +1858,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1520:CMSIS/Include/core_cm4.h **** /**
 1521:CMSIS/Include/core_cm4.h ****   \ingroup    CMSIS_core_register
 1522:CMSIS/Include/core_cm4.h ****   \defgroup   CMSIS_core_bitfield     Core register bit field macros
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 32
+
+
 1523:CMSIS/Include/core_cm4.h ****   \brief      Macros for use with bit field definitions (xxx_Pos, xxx_Msk).
 1524:CMSIS/Include/core_cm4.h ****   @{
 1525:CMSIS/Include/core_cm4.h ****  */
 1526:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 32
-
-
 1527:CMSIS/Include/core_cm4.h **** /**
 1528:CMSIS/Include/core_cm4.h ****   \brief   Mask and shift a bit field value for use in a register bit range.
 1529:CMSIS/Include/core_cm4.h ****   \param[in] field  Name of the register bit field.
@@ -1914,13 +1918,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1577:CMSIS/Include/core_cm4.h **** #define FPU_BASE            (SCS_BASE +  0x0F30UL)                    /*!< Floating Point Unit */
 1578:CMSIS/Include/core_cm4.h **** #define FPU                 ((FPU_Type       *)     FPU_BASE      )   /*!< Floating Point Unit */
 1579:CMSIS/Include/core_cm4.h **** 
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 33
+
+
 1580:CMSIS/Include/core_cm4.h **** /*@} */
 1581:CMSIS/Include/core_cm4.h **** 
 1582:CMSIS/Include/core_cm4.h **** 
 1583:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 33
-
-
 1584:CMSIS/Include/core_cm4.h **** /*******************************************************************************
 1585:CMSIS/Include/core_cm4.h ****  *                Hardware Abstraction Layer
 1586:CMSIS/Include/core_cm4.h ****   Core Function Interface contains:
@@ -1974,13 +1978,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1634:CMSIS/Include/core_cm4.h **** #endif  /* (CMSIS_VECTAB_VIRTUAL) */
 1635:CMSIS/Include/core_cm4.h **** 
 1636:CMSIS/Include/core_cm4.h **** #define NVIC_USER_IRQ_OFFSET          16
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 34
+
+
 1637:CMSIS/Include/core_cm4.h **** 
 1638:CMSIS/Include/core_cm4.h **** 
 1639:CMSIS/Include/core_cm4.h **** /* The following EXC_RETURN values are saved the LR on exception entry */
 1640:CMSIS/Include/core_cm4.h **** #define EXC_RETURN_HANDLER         (0xFFFFFFF1UL)     /* return to Handler mode, uses MSP after ret
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 34
-
-
 1641:CMSIS/Include/core_cm4.h **** #define EXC_RETURN_THREAD_MSP      (0xFFFFFFF9UL)     /* return to Thread mode, uses MSP after retu
 1642:CMSIS/Include/core_cm4.h **** #define EXC_RETURN_THREAD_PSP      (0xFFFFFFFDUL)     /* return to Thread mode, uses PSP after retu
 1643:CMSIS/Include/core_cm4.h **** #define EXC_RETURN_HANDLER_FPU     (0xFFFFFFE1UL)     /* return to Handler mode, uses MSP after ret
@@ -2034,13 +2038,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1691:CMSIS/Include/core_cm4.h ****   {
 1692:CMSIS/Include/core_cm4.h ****     NVIC->ISER[(((uint32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)IRQn) & 0x1FUL));
 1693:CMSIS/Include/core_cm4.h ****   }
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 35
+
+
 1694:CMSIS/Include/core_cm4.h **** }
 1695:CMSIS/Include/core_cm4.h **** 
 1696:CMSIS/Include/core_cm4.h **** 
 1697:CMSIS/Include/core_cm4.h **** /**
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 35
-
-
 1698:CMSIS/Include/core_cm4.h ****   \brief   Get Interrupt Enable status
 1699:CMSIS/Include/core_cm4.h ****   \details Returns a device specific interrupt enable status from the NVIC interrupt controller.
 1700:CMSIS/Include/core_cm4.h ****   \param [in]      IRQn  Device specific interrupt number.
@@ -2094,13 +2098,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1748:CMSIS/Include/core_cm4.h ****   }
 1749:CMSIS/Include/core_cm4.h ****   else
 1750:CMSIS/Include/core_cm4.h ****   {
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 36
+
+
 1751:CMSIS/Include/core_cm4.h ****     return(0U);
 1752:CMSIS/Include/core_cm4.h ****   }
 1753:CMSIS/Include/core_cm4.h **** }
 1754:CMSIS/Include/core_cm4.h **** 
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 36
-
-
 1755:CMSIS/Include/core_cm4.h **** 
 1756:CMSIS/Include/core_cm4.h **** /**
 1757:CMSIS/Include/core_cm4.h ****   \brief   Set Pending Interrupt
@@ -2154,13 +2158,13 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
 1805:CMSIS/Include/core_cm4.h **** 
 1806:CMSIS/Include/core_cm4.h **** 
 1807:CMSIS/Include/core_cm4.h **** /**
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 37
+
+
 1808:CMSIS/Include/core_cm4.h ****   \brief   Set Interrupt Priority
 1809:CMSIS/Include/core_cm4.h ****   \details Sets the priority of a device specific interrupt or a processor exception.
 1810:CMSIS/Include/core_cm4.h ****            The interrupt number can be positive to specify a device specific interrupt,
 1811:CMSIS/Include/core_cm4.h ****            or negative to specify a processor exception.
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 37
-
-
 1812:CMSIS/Include/core_cm4.h ****   \param [in]      IRQn  Interrupt number.
 1813:CMSIS/Include/core_cm4.h ****   \param [in]  priority  Priority to set.
 1814:CMSIS/Include/core_cm4.h ****   \note    The priority cannot be set for every processor exception.
@@ -2182,8 +2186,8 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  204              		.loc 2 1820 46 view .LVU37
  205              	.LBE7:
  206              	.LBE6:
-  51:Core/Src/interrupt.c ****     NVIC_EnableIRQ(EXTI15_10_IRQn);
- 207              		.loc 1 51 5 is_stmt 1 view .LVU38
+  55:Core/Src/interrupt.c ****     NVIC_EnableIRQ(EXTI15_10_IRQn);
+ 207              		.loc 1 55 5 is_stmt 1 view .LVU38
  208              	.LBB8:
  209              	.LBI8:
 1688:CMSIS/Include/core_cm4.h **** {
@@ -2202,8 +2206,8 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  218              		.loc 2 1692 43 view .LVU43
  219              	.LBE9:
  220              	.LBE8:
-  52:Core/Src/interrupt.c **** }
- 221              		.loc 1 52 1 view .LVU44
+  56:Core/Src/interrupt.c **** }
+ 221              		.loc 1 56 1 view .LVU44
  222 0042 7047     		bx	lr
  223              	.L18:
  224              		.align	2
@@ -2214,760 +2218,903 @@ ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 1
  229              		.cfi_endproc
  230              	.LFE133:
  232              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 38
+
+
  233              		.align	1
  234              		.global	EXTI15_10_IRQHandler
  235              		.syntax unified
  236              		.thumb
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 38
-
-
  237              		.thumb_func
  239              	EXTI15_10_IRQHandler:
  240              	.LFB134:
-  53:Core/Src/interrupt.c **** 
-  54:Core/Src/interrupt.c **** void EXTI15_10_IRQHandler(void)
-  55:Core/Src/interrupt.c **** {
- 241              		.loc 1 55 1 is_stmt 1 view -0
+  57:Core/Src/interrupt.c **** 
+  58:Core/Src/interrupt.c **** void EXTI15_10_IRQHandler(void)
+  59:Core/Src/interrupt.c **** {
+ 241              		.loc 1 59 1 is_stmt 1 view -0
  242              		.cfi_startproc
  243              		@ args = 0, pretend = 0, frame = 0
  244              		@ frame_needed = 0, uses_anonymous_args = 0
  245              		@ link register save eliminated.
-  56:Core/Src/interrupt.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR13) != 0)
- 246              		.loc 1 56 5 view .LVU46
- 247              		.loc 1 56 9 is_stmt 0 view .LVU47
- 248 0000 104B     		ldr	r3, .L23
+  60:Core/Src/interrupt.c ****     if (READ_BIT(EXTI->PR, EXTI_PR_PR13) != 0)
+ 246              		.loc 1 60 5 view .LVU46
+ 247              		.loc 1 60 9 is_stmt 0 view .LVU47
+ 248 0000 154B     		ldr	r3, .L23
  249 0002 5B69     		ldr	r3, [r3, #20]
- 250              		.loc 1 56 8 view .LVU48
+ 250              		.loc 1 60 8 view .LVU48
  251 0004 13F4005F 		tst	r3, #8192
  252 0008 0DD0     		beq	.L19
-  57:Core/Src/interrupt.c ****     {
-  58:Core/Src/interrupt.c ****         if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13) == 0)
- 253              		.loc 1 58 9 is_stmt 1 view .LVU49
- 254              		.loc 1 58 13 is_stmt 0 view .LVU50
- 255 000a 0F4B     		ldr	r3, .L23+4
+  61:Core/Src/interrupt.c ****     {
+  62:Core/Src/interrupt.c ****         if (READ_BIT(GPIOC->IDR, GPIO_IDR_IDR_13) == 0)
+ 253              		.loc 1 62 9 is_stmt 1 view .LVU49
+ 254              		.loc 1 62 13 is_stmt 0 view .LVU50
+ 255 000a 144B     		ldr	r3, .L23+4
  256 000c 1B69     		ldr	r3, [r3, #16]
- 257              		.loc 1 58 12 view .LVU51
+ 257              		.loc 1 62 12 view .LVU51
  258 000e 13F4005F 		tst	r3, #8192
  259 0012 09D1     		bne	.L21
-  59:Core/Src/interrupt.c ****         {
-  60:Core/Src/interrupt.c ****             press_time = ticks;
- 260              		.loc 1 60 13 is_stmt 1 view .LVU52
- 261              		.loc 1 60 24 is_stmt 0 view .LVU53
- 262 0014 0D4B     		ldr	r3, .L23+8
+  63:Core/Src/interrupt.c ****         {
+  64:Core/Src/interrupt.c ****             press_time = ticks;
+ 260              		.loc 1 64 13 is_stmt 1 view .LVU52
+ 261              		.loc 1 64 24 is_stmt 0 view .LVU53
+ 262 0014 124B     		ldr	r3, .L23+8
  263 0016 1A68     		ldr	r2, [r3]
- 264 0018 0D4B     		ldr	r3, .L23+12
+ 264 0018 124B     		ldr	r3, .L23+12
  265 001a 1A60     		str	r2, [r3]
  266              	.L22:
-  61:Core/Src/interrupt.c ****         }
-  62:Core/Src/interrupt.c ****         else
-  63:Core/Src/interrupt.c ****         {
-  64:Core/Src/interrupt.c ****             uint32_t release_time = ticks;
-  65:Core/Src/interrupt.c ****             if ((release_time - press_time) >= MIN_PRESS_DURATION)
-  66:Core/Src/interrupt.c ****             {
-  67:Core/Src/interrupt.c ****                 button_permission = !button_permission; 
-  68:Core/Src/interrupt.c ****             }
-  69:Core/Src/interrupt.c ****         }
-  70:Core/Src/interrupt.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR13);
- 267              		.loc 1 70 9 is_stmt 1 view .LVU54
- 268 001c 094A     		ldr	r2, .L23
+  65:Core/Src/interrupt.c ****         }
+  66:Core/Src/interrupt.c ****         else
+  67:Core/Src/interrupt.c ****         {
+  68:Core/Src/interrupt.c ****             uint32_t release_time = ticks;
+  69:Core/Src/interrupt.c ****             if ((release_time - press_time) >= MIN_PRESS_DURATION)
+  70:Core/Src/interrupt.c ****             {
+  71:Core/Src/interrupt.c ****                 button_permission = !button_permission; 
+  72:Core/Src/interrupt.c ****                 
+  73:Core/Src/interrupt.c ****                 // Если мы заново запускаем робота кнопкой, сб�
+  74:Core/Src/interrupt.c ****                 if (button_permission == 1) 
+  75:Core/Src/interrupt.c ****                 {
+  76:Core/Src/interrupt.c ****                     cross_count = 0;
+  77:Core/Src/interrupt.c ****                     is_on_cross = 0;
+  78:Core/Src/interrupt.c ****                 }
+  79:Core/Src/interrupt.c ****             }
+  80:Core/Src/interrupt.c ****         }
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 39
+
+
+  81:Core/Src/interrupt.c ****         SET_BIT(EXTI->PR, EXTI_PR_PR13);
+ 267              		.loc 1 81 9 is_stmt 1 view .LVU54
+ 268 001c 0E4A     		ldr	r2, .L23
  269 001e 5369     		ldr	r3, [r2, #20]
  270 0020 43F40053 		orr	r3, r3, #8192
  271 0024 5361     		str	r3, [r2, #20]
  272              	.L19:
-  71:Core/Src/interrupt.c ****     }
-  72:Core/Src/interrupt.c **** }
- 273              		.loc 1 72 1 is_stmt 0 view .LVU55
+  82:Core/Src/interrupt.c ****     }
+  83:Core/Src/interrupt.c **** }
+ 273              		.loc 1 83 1 is_stmt 0 view .LVU55
  274 0026 7047     		bx	lr
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 39
-
-
  275              	.L21:
  276              	.LBB10:
-  64:Core/Src/interrupt.c ****             if ((release_time - press_time) >= MIN_PRESS_DURATION)
- 277              		.loc 1 64 13 is_stmt 1 view .LVU56
-  64:Core/Src/interrupt.c ****             if ((release_time - press_time) >= MIN_PRESS_DURATION)
- 278              		.loc 1 64 22 is_stmt 0 view .LVU57
- 279 0028 084B     		ldr	r3, .L23+8
+  68:Core/Src/interrupt.c ****             if ((release_time - press_time) >= MIN_PRESS_DURATION)
+ 277              		.loc 1 68 13 is_stmt 1 view .LVU56
+  68:Core/Src/interrupt.c ****             if ((release_time - press_time) >= MIN_PRESS_DURATION)
+ 278              		.loc 1 68 22 is_stmt 0 view .LVU57
+ 279 0028 0D4B     		ldr	r3, .L23+8
  280 002a 1B68     		ldr	r3, [r3]
  281              	.LVL8:
-  65:Core/Src/interrupt.c ****             {
- 282              		.loc 1 65 13 is_stmt 1 view .LVU58
-  65:Core/Src/interrupt.c ****             {
- 283              		.loc 1 65 31 is_stmt 0 view .LVU59
- 284 002c 084A     		ldr	r2, .L23+12
+  69:Core/Src/interrupt.c ****             {
+ 282              		.loc 1 69 13 is_stmt 1 view .LVU58
+  69:Core/Src/interrupt.c ****             {
+ 283              		.loc 1 69 31 is_stmt 0 view .LVU59
+ 284 002c 0D4A     		ldr	r2, .L23+12
  285 002e 1268     		ldr	r2, [r2]
  286 0030 9B1A     		subs	r3, r3, r2
  287              	.LVL9:
-  65:Core/Src/interrupt.c ****             {
- 288              		.loc 1 65 16 view .LVU60
+  69:Core/Src/interrupt.c ****             {
+ 288              		.loc 1 69 16 view .LVU60
  289 0032 312B     		cmp	r3, #49
  290 0034 F2D9     		bls	.L22
-  67:Core/Src/interrupt.c ****             }
- 291              		.loc 1 67 17 is_stmt 1 view .LVU61
-  67:Core/Src/interrupt.c ****             }
- 292              		.loc 1 67 37 is_stmt 0 view .LVU62
- 293 0036 074A     		ldr	r2, .L23+16
+  71:Core/Src/interrupt.c ****                 
+ 291              		.loc 1 71 17 is_stmt 1 view .LVU61
+  71:Core/Src/interrupt.c ****                 
+ 292              		.loc 1 71 37 is_stmt 0 view .LVU62
+ 293 0036 0C4A     		ldr	r2, .L23+16
  294 0038 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
  295 003a B3FA83F3 		clz	r3, r3
  296 003e 5B09     		lsrs	r3, r3, #5
-  67:Core/Src/interrupt.c ****             }
- 297              		.loc 1 67 35 view .LVU63
+  71:Core/Src/interrupt.c ****                 
+ 297              		.loc 1 71 35 view .LVU63
  298 0040 1370     		strb	r3, [r2]
- 299 0042 EBE7     		b	.L22
- 300              	.L24:
- 301              		.align	2
- 302              	.L23:
- 303 0044 003C0140 		.word	1073822720
- 304 0048 00080240 		.word	1073874944
- 305 004c 00000000 		.word	ticks
- 306 0050 00000000 		.word	press_time
- 307 0054 00000000 		.word	button_permission
- 308              	.LBE10:
- 309              		.cfi_endproc
- 310              	.LFE134:
- 312              		.section	.text.get_button_permission,"ax",%progbits
- 313              		.align	1
- 314              		.global	get_button_permission
- 315              		.syntax unified
- 316              		.thumb
- 317              		.thumb_func
- 319              	get_button_permission:
- 320              	.LFB135:
-  73:Core/Src/interrupt.c **** 
-  74:Core/Src/interrupt.c **** uint8_t get_button_permission(void)
-  75:Core/Src/interrupt.c **** {
- 321              		.loc 1 75 1 is_stmt 1 view -0
- 322              		.cfi_startproc
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 40
+  74:Core/Src/interrupt.c ****                 {
+ 299              		.loc 1 74 17 is_stmt 1 view .LVU64
+  74:Core/Src/interrupt.c ****                 {
+ 300              		.loc 1 74 39 is_stmt 0 view .LVU65
+ 301 0042 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 302 0044 DBB2     		uxtb	r3, r3
+  74:Core/Src/interrupt.c ****                 {
+ 303              		.loc 1 74 20 view .LVU66
+ 304 0046 012B     		cmp	r3, #1
+ 305 0048 E8D1     		bne	.L22
+  76:Core/Src/interrupt.c ****                     is_on_cross = 0;
+ 306              		.loc 1 76 21 is_stmt 1 view .LVU67
+  76:Core/Src/interrupt.c ****                     is_on_cross = 0;
+ 307              		.loc 1 76 33 is_stmt 0 view .LVU68
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 40
 
 
- 323              		@ args = 0, pretend = 0, frame = 0
- 324              		@ frame_needed = 0, uses_anonymous_args = 0
- 325              		@ link register save eliminated.
-  76:Core/Src/interrupt.c ****     return button_permission;
- 326              		.loc 1 76 5 view .LVU65
- 327              		.loc 1 76 12 is_stmt 0 view .LVU66
- 328 0000 014B     		ldr	r3, .L26
- 329 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
-  77:Core/Src/interrupt.c **** }
- 330              		.loc 1 77 1 view .LVU67
- 331 0004 7047     		bx	lr
- 332              	.L27:
- 333 0006 00BF     		.align	2
- 334              	.L26:
- 335 0008 00000000 		.word	button_permission
- 336              		.cfi_endproc
- 337              	.LFE135:
- 339              		.section	.text.TIM2_IRQHandler,"ax",%progbits
- 340              		.align	1
- 341              		.global	TIM2_IRQHandler
- 342              		.syntax unified
- 343              		.thumb
- 344              		.thumb_func
- 346              	TIM2_IRQHandler:
- 347              	.LFB136:
-  78:Core/Src/interrupt.c **** 
-  79:Core/Src/interrupt.c **** void TIM2_IRQHandler(void)
-  80:Core/Src/interrupt.c **** {
- 348              		.loc 1 80 1 is_stmt 1 view -0
- 349              		.cfi_startproc
- 350              		@ args = 0, pretend = 0, frame = 0
- 351              		@ frame_needed = 0, uses_anonymous_args = 0
- 352 0000 38B5     		push	{r3, r4, r5, lr}
- 353              	.LCFI1:
- 354              		.cfi_def_cfa_offset 16
- 355              		.cfi_offset 3, -16
- 356              		.cfi_offset 4, -12
- 357              		.cfi_offset 5, -8
- 358              		.cfi_offset 14, -4
-  81:Core/Src/interrupt.c ****     if (READ_BIT(TIM2->SR, TIM_SR_UIF)) 
- 359              		.loc 1 81 5 view .LVU69
- 360              		.loc 1 81 9 is_stmt 0 view .LVU70
- 361 0002 4FF08043 		mov	r3, #1073741824
- 362 0006 1B69     		ldr	r3, [r3, #16]
- 363              		.loc 1 81 8 view .LVU71
- 364 0008 13F0010F 		tst	r3, #1
- 365 000c 28D0     		beq	.L28
- 366              	.LBB11:
-  82:Core/Src/interrupt.c ****     {
-  83:Core/Src/interrupt.c ****         CLEAR_BIT(TIM2->SR, TIM_SR_UIF); 
- 367              		.loc 1 83 9 is_stmt 1 view .LVU72
- 368 000e 4FF08042 		mov	r2, #1073741824
- 369 0012 1369     		ldr	r3, [r2, #16]
- 370 0014 23F00103 		bic	r3, r3, #1
- 371 0018 1361     		str	r3, [r2, #16]
-  84:Core/Src/interrupt.c ****         tim2_flag = 1;
- 372              		.loc 1 84 9 view .LVU73
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 41
+ 308 004a 0023     		movs	r3, #0
+ 309 004c 074A     		ldr	r2, .L23+20
+ 310 004e 1370     		strb	r3, [r2]
+  77:Core/Src/interrupt.c ****                 }
+ 311              		.loc 1 77 21 is_stmt 1 view .LVU69
+  77:Core/Src/interrupt.c ****                 }
+ 312              		.loc 1 77 33 is_stmt 0 view .LVU70
+ 313 0050 074A     		ldr	r2, .L23+24
+ 314 0052 1370     		strb	r3, [r2]
+ 315 0054 E2E7     		b	.L22
+ 316              	.L24:
+ 317 0056 00BF     		.align	2
+ 318              	.L23:
+ 319 0058 003C0140 		.word	1073822720
+ 320 005c 00080240 		.word	1073874944
+ 321 0060 00000000 		.word	ticks
+ 322 0064 00000000 		.word	press_time
+ 323 0068 00000000 		.word	button_permission
+ 324 006c 00000000 		.word	cross_count
+ 325 0070 00000000 		.word	is_on_cross
+ 326              	.LBE10:
+ 327              		.cfi_endproc
+ 328              	.LFE134:
+ 330              		.section	.text.get_button_permission,"ax",%progbits
+ 331              		.align	1
+ 332              		.global	get_button_permission
+ 333              		.syntax unified
+ 334              		.thumb
+ 335              		.thumb_func
+ 337              	get_button_permission:
+ 338              	.LFB135:
+  84:Core/Src/interrupt.c **** 
+  85:Core/Src/interrupt.c **** uint8_t get_button_permission(void)
+  86:Core/Src/interrupt.c **** {
+ 339              		.loc 1 86 1 is_stmt 1 view -0
+ 340              		.cfi_startproc
+ 341              		@ args = 0, pretend = 0, frame = 0
+ 342              		@ frame_needed = 0, uses_anonymous_args = 0
+ 343              		@ link register save eliminated.
+  87:Core/Src/interrupt.c ****     return button_permission;
+ 344              		.loc 1 87 5 view .LVU72
+ 345              		.loc 1 87 12 is_stmt 0 view .LVU73
+ 346 0000 014B     		ldr	r3, .L26
+ 347 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  88:Core/Src/interrupt.c **** }
+ 348              		.loc 1 88 1 view .LVU74
+ 349 0004 7047     		bx	lr
+ 350              	.L27:
+ 351 0006 00BF     		.align	2
+ 352              	.L26:
+ 353 0008 00000000 		.word	button_permission
+ 354              		.cfi_endproc
+ 355              	.LFE135:
+ 357              		.section	.text.TIM2_IRQHandler,"ax",%progbits
+ 358              		.align	1
+ 359              		.global	TIM2_IRQHandler
+ 360              		.syntax unified
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 41
 
 
- 373              		.loc 1 84 19 is_stmt 0 view .LVU74
- 374 001a 484B     		ldr	r3, .L53
- 375 001c 0122     		movs	r2, #1
- 376 001e 1A70     		strb	r2, [r3]
-  85:Core/Src/interrupt.c **** 
-  86:Core/Src/interrupt.c ****         if (button_permission == 0)
- 377              		.loc 1 86 9 is_stmt 1 view .LVU75
- 378              		.loc 1 86 31 is_stmt 0 view .LVU76
- 379 0020 474B     		ldr	r3, .L53+4
- 380 0022 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 381              		.loc 1 86 12 view .LVU77
- 382 0024 B3B1     		cbz	r3, .L45
-  87:Core/Src/interrupt.c ****         {
-  88:Core/Src/interrupt.c ****             left_motor(0);
-  89:Core/Src/interrupt.c ****             right_motor(0);
-  90:Core/Src/interrupt.c ****             return;
-  91:Core/Src/interrupt.c ****         }
-  92:Core/Src/interrupt.c **** 
-  93:Core/Src/interrupt.c ****         uint8_t s_left   = read_right_sensor();  
- 383              		.loc 1 93 9 is_stmt 1 view .LVU78
- 384              		.loc 1 93 28 is_stmt 0 view .LVU79
- 385 0026 FFF7FEFF 		bl	read_right_sensor
- 386              	.LVL10:
- 387 002a 0446     		mov	r4, r0
- 388              	.LVL11:
-  94:Core/Src/interrupt.c ****         uint8_t s_middle = read_middle_sensor(); 
- 389              		.loc 1 94 9 is_stmt 1 view .LVU80
- 390              		.loc 1 94 28 is_stmt 0 view .LVU81
- 391 002c FFF7FEFF 		bl	read_middle_sensor
- 392              	.LVL12:
- 393 0030 0546     		mov	r5, r0
- 394              	.LVL13:
-  95:Core/Src/interrupt.c ****         uint8_t s_right  = read_left_sensor();   
- 395              		.loc 1 95 9 is_stmt 1 view .LVU82
- 396              		.loc 1 95 28 is_stmt 0 view .LVU83
- 397 0032 FFF7FEFF 		bl	read_left_sensor
- 398              	.LVL14:
-  96:Core/Src/interrupt.c ****         
-  97:Core/Src/interrupt.c ****         // 1. ИДЕАЛЬНО ПРЯМО
-  98:Core/Src/interrupt.c ****         if (!s_left && s_middle && !s_right)
- 399              		.loc 1 98 9 is_stmt 1 view .LVU84
- 400              		.loc 1 98 12 is_stmt 0 view .LVU85
- 401 0036 A4B9     		cbnz	r4, .L31
- 402              		.loc 1 98 21 discriminator 1 view .LVU86
- 403 0038 B5B1     		cbz	r5, .L32
- 404              		.loc 1 98 33 discriminator 2 view .LVU87
- 405 003a A8B9     		cbnz	r0, .L32
-  99:Core/Src/interrupt.c ****         {
- 100:Core/Src/interrupt.c ****             last_state = 0;
- 406              		.loc 1 100 13 is_stmt 1 view .LVU88
- 407              		.loc 1 100 24 is_stmt 0 view .LVU89
- 408 003c 414B     		ldr	r3, .L53+8
- 409 003e 0022     		movs	r2, #0
- 410 0040 1A70     		strb	r2, [r3]
- 101:Core/Src/interrupt.c ****             left_motor(SPEED_BASE);
- 411              		.loc 1 101 13 is_stmt 1 view .LVU90
- 412 0042 4FF4E170 		mov	r0, #450
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 42
+ 361              		.thumb
+ 362              		.thumb_func
+ 364              	TIM2_IRQHandler:
+ 365              	.LFB136:
+  89:Core/Src/interrupt.c **** 
+  90:Core/Src/interrupt.c **** void TIM2_IRQHandler(void)
+  91:Core/Src/interrupt.c **** {
+ 366              		.loc 1 91 1 is_stmt 1 view -0
+ 367              		.cfi_startproc
+ 368              		@ args = 0, pretend = 0, frame = 0
+ 369              		@ frame_needed = 0, uses_anonymous_args = 0
+ 370 0000 38B5     		push	{r3, r4, r5, lr}
+ 371              	.LCFI1:
+ 372              		.cfi_def_cfa_offset 16
+ 373              		.cfi_offset 3, -16
+ 374              		.cfi_offset 4, -12
+ 375              		.cfi_offset 5, -8
+ 376              		.cfi_offset 14, -4
+  92:Core/Src/interrupt.c ****     if (READ_BIT(TIM2->SR, TIM_SR_UIF)) 
+ 377              		.loc 1 92 5 view .LVU76
+ 378              		.loc 1 92 9 is_stmt 0 view .LVU77
+ 379 0002 4FF08043 		mov	r3, #1073741824
+ 380 0006 1B69     		ldr	r3, [r3, #16]
+ 381              		.loc 1 92 8 view .LVU78
+ 382 0008 13F0010F 		tst	r3, #1
+ 383 000c 34D0     		beq	.L28
+ 384              	.LBB11:
+  93:Core/Src/interrupt.c ****     {
+  94:Core/Src/interrupt.c ****         CLEAR_BIT(TIM2->SR, TIM_SR_UIF); 
+ 385              		.loc 1 94 9 is_stmt 1 view .LVU79
+ 386 000e 4FF08042 		mov	r2, #1073741824
+ 387 0012 1369     		ldr	r3, [r2, #16]
+ 388 0014 23F00103 		bic	r3, r3, #1
+ 389 0018 1361     		str	r3, [r2, #16]
+  95:Core/Src/interrupt.c ****         tim2_flag = 1;
+ 390              		.loc 1 95 9 view .LVU80
+ 391              		.loc 1 95 19 is_stmt 0 view .LVU81
+ 392 001a 564B     		ldr	r3, .L53
+ 393 001c 0122     		movs	r2, #1
+ 394 001e 1A70     		strb	r2, [r3]
+  96:Core/Src/interrupt.c **** 
+  97:Core/Src/interrupt.c ****         if (button_permission == 0)
+ 395              		.loc 1 97 9 is_stmt 1 view .LVU82
+ 396              		.loc 1 97 31 is_stmt 0 view .LVU83
+ 397 0020 554B     		ldr	r3, .L53+4
+ 398 0022 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 399              		.loc 1 97 12 view .LVU84
+ 400 0024 13B3     		cbz	r3, .L46
+  98:Core/Src/interrupt.c ****         {
+  99:Core/Src/interrupt.c ****             left_motor(0);
+ 100:Core/Src/interrupt.c ****             right_motor(0);
+ 101:Core/Src/interrupt.c ****             return;
+ 102:Core/Src/interrupt.c ****         }
+ 103:Core/Src/interrupt.c **** 
+ 104:Core/Src/interrupt.c ****         uint8_t s_left   = read_right_sensor();  
+ 401              		.loc 1 104 9 is_stmt 1 view .LVU85
+ 402              		.loc 1 104 28 is_stmt 0 view .LVU86
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 42
 
 
- 413              	.LVL15:
- 414              		.loc 1 101 13 is_stmt 0 view .LVU91
- 415 0046 FFF7FEFF 		bl	left_motor
- 416              	.LVL16:
- 102:Core/Src/interrupt.c ****             right_motor(SPEED_BASE);
- 417              		.loc 1 102 13 is_stmt 1 view .LVU92
- 418 004a 4FF4E170 		mov	r0, #450
- 419 004e FFF7FEFF 		bl	right_motor
- 420              	.LVL17:
- 421 0052 05E0     		b	.L28
- 422              	.LVL18:
- 423              	.L45:
-  88:Core/Src/interrupt.c ****             right_motor(0);
- 424              		.loc 1 88 13 view .LVU93
- 425 0054 0020     		movs	r0, #0
- 426 0056 FFF7FEFF 		bl	left_motor
- 427              	.LVL19:
-  89:Core/Src/interrupt.c ****             return;
- 428              		.loc 1 89 13 view .LVU94
- 429 005a 0020     		movs	r0, #0
- 430 005c FFF7FEFF 		bl	right_motor
- 431              	.LVL20:
-  90:Core/Src/interrupt.c ****         }
- 432              		.loc 1 90 13 view .LVU95
- 433              	.L28:
- 434              	.LBE11:
- 103:Core/Src/interrupt.c ****         }
- 104:Core/Src/interrupt.c ****         
- 105:Core/Src/interrupt.c ****         // 2. ЛЕГКАЯ ДУГА ВЛЕВО - ускоряем правое, левое держ
- 106:Core/Src/interrupt.c ****         else if (s_left && s_middle && !s_right)
- 107:Core/Src/interrupt.c ****         {
- 108:Core/Src/interrupt.c ****             last_state = 1;
- 109:Core/Src/interrupt.c ****             left_motor(SPEED_MIN);  
- 110:Core/Src/interrupt.c ****             right_motor(SPEED_FAST); 
- 111:Core/Src/interrupt.c ****         }
- 112:Core/Src/interrupt.c ****         
- 113:Core/Src/interrupt.c ****         // 3. ЛЕГКАЯ ДУГА ВПРАВО - ускоряем левое, правое дер
- 114:Core/Src/interrupt.c ****         else if (!s_left && s_middle && s_right)
- 115:Core/Src/interrupt.c ****         {
- 116:Core/Src/interrupt.c ****             last_state = 2;
- 117:Core/Src/interrupt.c ****             left_motor(SPEED_FAST);
- 118:Core/Src/interrupt.c ****             right_motor(SPEED_MIN); 
- 119:Core/Src/interrupt.c ****         }
- 120:Core/Src/interrupt.c ****         
- 121:Core/Src/interrupt.c ****         // 4. КРУТАЯ ДУГА ВЛЕВО - тут останавливаем внутренн
- 122:Core/Src/interrupt.c ****         // Если инерция все равно выкидывает робота, попро�
- 123:Core/Src/interrupt.c ****         else if (s_left && !s_middle && !s_right)
- 124:Core/Src/interrupt.c ****         {
- 125:Core/Src/interrupt.c ****             last_state = 1;
- 126:Core/Src/interrupt.c ****             left_motor(0);    
- 127:Core/Src/interrupt.c ****             right_motor(SPEED_FAST);
- 128:Core/Src/interrupt.c ****         }
- 129:Core/Src/interrupt.c ****         
- 130:Core/Src/interrupt.c ****         // 5. КРУТАЯ ДУГА ВПРАВО
- 131:Core/Src/interrupt.c ****         // Аналогично, если заносит - используй реверс right_mo
- 132:Core/Src/interrupt.c ****         else if (!s_left && !s_middle && s_right)
- 133:Core/Src/interrupt.c ****         {
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 43
+ 403 0026 FFF7FEFF 		bl	read_right_sensor
+ 404              	.LVL10:
+ 405 002a 0446     		mov	r4, r0
+ 406              	.LVL11:
+ 105:Core/Src/interrupt.c ****         uint8_t s_middle = read_middle_sensor(); 
+ 407              		.loc 1 105 9 is_stmt 1 view .LVU87
+ 408              		.loc 1 105 28 is_stmt 0 view .LVU88
+ 409 002c FFF7FEFF 		bl	read_middle_sensor
+ 410              	.LVL12:
+ 411 0030 0546     		mov	r5, r0
+ 412              	.LVL13:
+ 106:Core/Src/interrupt.c ****         uint8_t s_right  = read_left_sensor();   
+ 413              		.loc 1 106 9 is_stmt 1 view .LVU89
+ 414              		.loc 1 106 28 is_stmt 0 view .LVU90
+ 415 0032 FFF7FEFF 		bl	read_left_sensor
+ 416              	.LVL14:
+ 107:Core/Src/interrupt.c **** 
+ 108:Core/Src/interrupt.c ****        // === 1. ЛОГИКА ПЕРЕКРЕСТКОВ И ОСТАНОВКИ ===
+ 109:Core/Src/interrupt.c ****         
+ 110:Core/Src/interrupt.c ****         // Главный признак Х-петли или Т-перекрестка: оба к�
+ 111:Core/Src/interrupt.c ****         // Центральный может быть где угодно (на черном или
+ 112:Core/Src/interrupt.c ****         if (s_left && s_right)
+ 417              		.loc 1 112 9 is_stmt 1 view .LVU91
+ 418              		.loc 1 112 12 is_stmt 0 view .LVU92
+ 419 0036 64B3     		cbz	r4, .L31
+ 420              		.loc 1 112 20 discriminator 1 view .LVU93
+ 421 0038 0028     		cmp	r0, #0
+ 422 003a 3DD0     		beq	.L32
+ 113:Core/Src/interrupt.c ****         {
+ 114:Core/Src/interrupt.c ****             if (is_on_cross == 0)
+ 423              		.loc 1 114 13 is_stmt 1 view .LVU94
+ 424              		.loc 1 114 29 is_stmt 0 view .LVU95
+ 425 003c 4F4B     		ldr	r3, .L53+8
+ 426 003e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 427              		.loc 1 114 16 view .LVU96
+ 428 0040 33B9     		cbnz	r3, .L33
+ 115:Core/Src/interrupt.c ****             {
+ 116:Core/Src/interrupt.c ****                 cross_count++;      
+ 429              		.loc 1 116 17 is_stmt 1 view .LVU97
+ 430              		.loc 1 116 28 is_stmt 0 view .LVU98
+ 431 0042 4F4A     		ldr	r2, .L53+12
+ 432 0044 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 433 0046 0133     		adds	r3, r3, #1
+ 434 0048 1370     		strb	r3, [r2]
+ 117:Core/Src/interrupt.c ****                 is_on_cross = 1;    
+ 435              		.loc 1 117 17 is_stmt 1 view .LVU99
+ 436              		.loc 1 117 29 is_stmt 0 view .LVU100
+ 437 004a 4C4B     		ldr	r3, .L53+8
+ 438 004c 0122     		movs	r2, #1
+ 439 004e 1A70     		strb	r2, [r3]
+ 440              	.L33:
+ 118:Core/Src/interrupt.c ****             }
+ 119:Core/Src/interrupt.c **** 
+ 120:Core/Src/interrupt.c ****             // Проверка финиша (3 перекрестка: вход в петлю, в�
+ 121:Core/Src/interrupt.c ****             if (cross_count >= 3)
+ 441              		.loc 1 121 13 is_stmt 1 view .LVU101
+ 442              		.loc 1 121 29 is_stmt 0 view .LVU102
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 43
 
 
- 134:Core/Src/interrupt.c ****             last_state = 2;
- 135:Core/Src/interrupt.c ****             left_motor(SPEED_FAST);
- 136:Core/Src/interrupt.c ****             right_motor(0);   
- 137:Core/Src/interrupt.c ****         }
- 138:Core/Src/interrupt.c ****         
- 139:Core/Src/interrupt.c ****         // 6. ПЕРЕКРЕСТОК
- 140:Core/Src/interrupt.c ****         else if ( (s_left && s_middle && s_right) || (s_left && !s_middle && s_right) )
- 141:Core/Src/interrupt.c ****         {
- 142:Core/Src/interrupt.c ****             last_state = 0; 
- 143:Core/Src/interrupt.c ****             left_motor(SPEED_BASE); 
- 144:Core/Src/interrupt.c ****             right_motor(SPEED_BASE);
- 145:Core/Src/interrupt.c ****         }
+ 443 0050 4B4B     		ldr	r3, .L53+12
+ 444 0052 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 445              		.loc 1 121 16 view .LVU103
+ 446 0054 022B     		cmp	r3, #2
+ 447 0056 10D9     		bls	.L34
+ 122:Core/Src/interrupt.c ****             {
+ 123:Core/Src/interrupt.c ****                 left_motor(0);
+ 448              		.loc 1 123 17 is_stmt 1 view .LVU104
+ 449 0058 0020     		movs	r0, #0
+ 450              	.LVL15:
+ 451              		.loc 1 123 17 is_stmt 0 view .LVU105
+ 452 005a FFF7FEFF 		bl	left_motor
+ 453              	.LVL16:
+ 124:Core/Src/interrupt.c ****                 right_motor(0);
+ 454              		.loc 1 124 17 is_stmt 1 view .LVU106
+ 455 005e 0020     		movs	r0, #0
+ 456 0060 FFF7FEFF 		bl	right_motor
+ 457              	.LVL17:
+ 125:Core/Src/interrupt.c ****                 button_permission = 0; 
+ 458              		.loc 1 125 17 view .LVU107
+ 459              		.loc 1 125 35 is_stmt 0 view .LVU108
+ 460 0064 444B     		ldr	r3, .L53+4
+ 461 0066 0022     		movs	r2, #0
+ 462 0068 1A70     		strb	r2, [r3]
+ 126:Core/Src/interrupt.c ****                 return; 
+ 463              		.loc 1 126 17 is_stmt 1 view .LVU109
+ 464 006a 05E0     		b	.L28
+ 465              	.LVL18:
+ 466              	.L46:
+  99:Core/Src/interrupt.c ****             right_motor(0);
+ 467              		.loc 1 99 13 view .LVU110
+ 468 006c 0020     		movs	r0, #0
+ 469 006e FFF7FEFF 		bl	left_motor
+ 470              	.LVL19:
+ 100:Core/Src/interrupt.c ****             return;
+ 471              		.loc 1 100 13 view .LVU111
+ 472 0072 0020     		movs	r0, #0
+ 473 0074 FFF7FEFF 		bl	right_motor
+ 474              	.LVL20:
+ 101:Core/Src/interrupt.c ****         }
+ 475              		.loc 1 101 13 view .LVU112
+ 476              	.L28:
+ 477              	.LBE11:
+ 127:Core/Src/interrupt.c ****             }
+ 128:Core/Src/interrupt.c ****             
+ 129:Core/Src/interrupt.c ****             // ПРОБИВАЕМ ПЕРЕКРЕСТОК НАСКВОЗЬ
+ 130:Core/Src/interrupt.c ****             // Жестко даем команду ехать прямо, чтобы он не д�
+ 131:Core/Src/interrupt.c ****             last_state = 0; 
+ 132:Core/Src/interrupt.c ****             left_motor(SPEED_BASE); 
+ 133:Core/Src/interrupt.c ****             right_motor(SPEED_BASE);
+ 134:Core/Src/interrupt.c ****             return; 
+ 135:Core/Src/interrupt.c ****         }
+ 136:Core/Src/interrupt.c ****         else
+ 137:Core/Src/interrupt.c ****         {
+ 138:Core/Src/interrupt.c ****             // Сброс флага: мы съехали с перекрестка, когда О�
+ 139:Core/Src/interrupt.c ****             if (!s_left && !s_right)
+ 140:Core/Src/interrupt.c ****             {
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 44
+
+
+ 141:Core/Src/interrupt.c ****                 is_on_cross = 0;
+ 142:Core/Src/interrupt.c ****             }
+ 143:Core/Src/interrupt.c ****         }
+ 144:Core/Src/interrupt.c ****         
+ 145:Core/Src/interrupt.c ****         // === 2. ЛОГИКА РУЛЕНИЯ (ЕЗДА ПО ЛИНИИ) ===
  146:Core/Src/interrupt.c ****         
- 147:Core/Src/interrupt.c ****         // 7. ПОТЕРЯ ЛИНИИ (угол 90 градусов или вылет)
- 148:Core/Src/interrupt.c ****         // Вращаемся на месте на минимальной скорости, что�
- 149:Core/Src/interrupt.c ****         else if (!s_left && !s_middle && !s_right)
- 150:Core/Src/interrupt.c ****         {
- 151:Core/Src/interrupt.c ****             if (last_state == 1)
- 152:Core/Src/interrupt.c ****             {
- 153:Core/Src/interrupt.c ****                 left_motor(-SPEED_MIN);
- 154:Core/Src/interrupt.c ****                 right_motor(SPEED_MIN);
- 155:Core/Src/interrupt.c ****             }
- 156:Core/Src/interrupt.c ****             else if (last_state == 2)
- 157:Core/Src/interrupt.c ****             {
- 158:Core/Src/interrupt.c ****                 left_motor(SPEED_MIN);
- 159:Core/Src/interrupt.c ****                 right_motor(-SPEED_MIN);
- 160:Core/Src/interrupt.c ****             }
- 161:Core/Src/interrupt.c ****             else 
- 162:Core/Src/interrupt.c ****             {
- 163:Core/Src/interrupt.c ****                 // Если слетели на прямой, сдаем чуть-чуть наза
- 164:Core/Src/interrupt.c ****                 left_motor(0);
- 165:Core/Src/interrupt.c ****                 right_motor(0);
- 166:Core/Src/interrupt.c ****             }
- 167:Core/Src/interrupt.c ****         }
- 168:Core/Src/interrupt.c ****     }
- 169:Core/Src/interrupt.c **** }
- 435              		.loc 1 169 1 is_stmt 0 view .LVU96
- 436 0060 38BD     		pop	{r3, r4, r5, pc}
- 437              	.LVL21:
- 438              	.L31:
- 439              	.LBB12:
- 106:Core/Src/interrupt.c ****         {
- 440              		.loc 1 106 25 discriminator 1 view .LVU97
- 441 0062 05B1     		cbz	r5, .L33
- 106:Core/Src/interrupt.c ****         {
- 442              		.loc 1 106 37 discriminator 2 view .LVU98
- 443 0064 F8B1     		cbz	r0, .L46
- 444              	.L33:
- 114:Core/Src/interrupt.c ****         {
- 445              		.loc 1 114 14 is_stmt 1 view .LVU99
- 114:Core/Src/interrupt.c ****         {
- 446              		.loc 1 114 17 is_stmt 0 view .LVU100
- 447 0066 14B9     		cbnz	r4, .L34
- 448              	.L32:
- 114:Core/Src/interrupt.c ****         {
- 449              		.loc 1 114 26 discriminator 1 view .LVU101
- 450 0068 05B1     		cbz	r5, .L35
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 44
-
-
- 114:Core/Src/interrupt.c ****         {
- 451              		.loc 1 114 38 discriminator 2 view .LVU102
- 452 006a 40BB     		cbnz	r0, .L47
- 453              	.L35:
- 123:Core/Src/interrupt.c ****         {
- 454              		.loc 1 123 14 is_stmt 1 view .LVU103
- 123:Core/Src/interrupt.c ****         {
- 455              		.loc 1 123 17 is_stmt 0 view .LVU104
- 456 006c 14B1     		cbz	r4, .L36
- 457              	.L34:
- 123:Core/Src/interrupt.c ****         {
- 458              		.loc 1 123 25 discriminator 1 view .LVU105
- 459 006e 05B9     		cbnz	r5, .L37
- 123:Core/Src/interrupt.c ****         {
- 460              		.loc 1 123 38 discriminator 2 view .LVU106
- 461 0070 88B3     		cbz	r0, .L48
- 462              	.L37:
- 132:Core/Src/interrupt.c ****         {
- 463              		.loc 1 132 14 is_stmt 1 view .LVU107
- 132:Core/Src/interrupt.c ****         {
- 464              		.loc 1 132 17 is_stmt 0 view .LVU108
- 465 0072 1CB9     		cbnz	r4, .L38
- 466              	.L36:
- 132:Core/Src/interrupt.c ****         {
- 467              		.loc 1 132 26 discriminator 1 view .LVU109
- 468 0074 0DB9     		cbnz	r5, .L39
- 132:Core/Src/interrupt.c ****         {
- 469              		.loc 1 132 39 discriminator 2 view .LVU110
- 470 0076 0028     		cmp	r0, #0
- 471 0078 37D1     		bne	.L49
- 472              	.L39:
- 140:Core/Src/interrupt.c ****         {
- 473              		.loc 1 140 14 is_stmt 1 view .LVU111
- 140:Core/Src/interrupt.c ****         {
- 474              		.loc 1 140 17 is_stmt 0 view .LVU112
- 475 007a 1CB1     		cbz	r4, .L40
- 476              	.L38:
- 140:Core/Src/interrupt.c ****         {
- 477              		.loc 1 140 51 discriminator 1 view .LVU113
- 478 007c 0028     		cmp	r0, #0
- 479 007e 3FD1     		bne	.L50
+ 147:Core/Src/interrupt.c ****         // ИДЕАЛЬНО ПРЯМО
+ 148:Core/Src/interrupt.c ****         if (!s_left && s_middle && !s_right)
  149:Core/Src/interrupt.c ****         {
- 480              		.loc 1 149 14 is_stmt 1 view .LVU114
- 149:Core/Src/interrupt.c ****         {
- 481              		.loc 1 149 17 is_stmt 0 view .LVU115
- 482 0080 002C     		cmp	r4, #0
- 483 0082 EDD1     		bne	.L28
- 484              	.L40:
- 149:Core/Src/interrupt.c ****         {
- 485              		.loc 1 149 26 discriminator 1 view .LVU116
- 486 0084 002D     		cmp	r5, #0
- 487 0086 EBD1     		bne	.L28
- 149:Core/Src/interrupt.c ****         {
- 488              		.loc 1 149 39 discriminator 2 view .LVU117
- 489 0088 0028     		cmp	r0, #0
- 490 008a E9D1     		bne	.L28
- 151:Core/Src/interrupt.c ****             {
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 45
+ 150:Core/Src/interrupt.c ****             last_state = 0;
+ 151:Core/Src/interrupt.c ****             left_motor(SPEED_BASE);
+ 152:Core/Src/interrupt.c ****             right_motor(SPEED_BASE);
+ 153:Core/Src/interrupt.c ****         }
+ 154:Core/Src/interrupt.c ****         
+ 155:Core/Src/interrupt.c ****         // ЛЕГКАЯ ДУГА ВЛЕВО
+ 156:Core/Src/interrupt.c ****         else if (s_left && s_middle && !s_right)
+ 157:Core/Src/interrupt.c ****         {
+ 158:Core/Src/interrupt.c ****             last_state = 1;
+ 159:Core/Src/interrupt.c ****             left_motor(SPEED_MIN);  
+ 160:Core/Src/interrupt.c ****             right_motor(SPEED_FAST); 
+ 161:Core/Src/interrupt.c ****         }
+ 162:Core/Src/interrupt.c ****         
+ 163:Core/Src/interrupt.c ****         // ЛЕГКАЯ ДУГА ВПРАВО
+ 164:Core/Src/interrupt.c ****         else if (!s_left && s_middle && s_right)
+ 165:Core/Src/interrupt.c ****         {
+ 166:Core/Src/interrupt.c ****             last_state = 2;
+ 167:Core/Src/interrupt.c ****             left_motor(SPEED_FAST);
+ 168:Core/Src/interrupt.c ****             right_motor(SPEED_MIN); 
+ 169:Core/Src/interrupt.c ****         }
+ 170:Core/Src/interrupt.c ****         
+ 171:Core/Src/interrupt.c ****         // КРУТАЯ ДУГА ВЛЕВО
+ 172:Core/Src/interrupt.c ****         else if (s_left && !s_middle && !s_right)
+ 173:Core/Src/interrupt.c ****         {
+ 174:Core/Src/interrupt.c ****             last_state = 1;
+ 175:Core/Src/interrupt.c ****             left_motor(0);    
+ 176:Core/Src/interrupt.c ****             right_motor(SPEED_FAST);
+ 177:Core/Src/interrupt.c ****         }
+ 178:Core/Src/interrupt.c ****         
+ 179:Core/Src/interrupt.c ****         // КРУТАЯ ДУГА ВПРАВО
+ 180:Core/Src/interrupt.c ****         else if (!s_left && !s_middle && s_right)
+ 181:Core/Src/interrupt.c ****         {
+ 182:Core/Src/interrupt.c ****             last_state = 2;
+ 183:Core/Src/interrupt.c ****             left_motor(SPEED_FAST);
+ 184:Core/Src/interrupt.c ****             right_motor(0);   
+ 185:Core/Src/interrupt.c ****         }
+ 186:Core/Src/interrupt.c ****         
+ 187:Core/Src/interrupt.c ****         // ПОТЕРЯ ЛИНИИ (угол 90 градусов) - вращение на мест�
+ 188:Core/Src/interrupt.c ****         else if (!s_left && !s_middle && !s_right)
+ 189:Core/Src/interrupt.c ****         {
+ 190:Core/Src/interrupt.c ****             if (last_state == 1)
+ 191:Core/Src/interrupt.c ****             {
+ 192:Core/Src/interrupt.c ****                 left_motor(-SPEED_MIN);
+ 193:Core/Src/interrupt.c ****                 right_motor(SPEED_MIN);
+ 194:Core/Src/interrupt.c ****             }
+ 195:Core/Src/interrupt.c ****             else if (last_state == 2)
+ 196:Core/Src/interrupt.c ****             {
+ 197:Core/Src/interrupt.c ****                 left_motor(SPEED_MIN);
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 45
 
 
- 491              		.loc 1 151 13 is_stmt 1 view .LVU118
- 151:Core/Src/interrupt.c ****             {
- 492              		.loc 1 151 28 is_stmt 0 view .LVU119
- 493 008c 2D4B     		ldr	r3, .L53+8
- 494 008e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 151:Core/Src/interrupt.c ****             {
- 495              		.loc 1 151 16 view .LVU120
- 496 0090 012B     		cmp	r3, #1
- 497 0092 41D0     		beq	.L51
- 156:Core/Src/interrupt.c ****             {
- 498              		.loc 1 156 18 is_stmt 1 view .LVU121
- 156:Core/Src/interrupt.c ****             {
- 499              		.loc 1 156 21 is_stmt 0 view .LVU122
- 500 0094 022B     		cmp	r3, #2
- 501 0096 48D0     		beq	.L52
- 164:Core/Src/interrupt.c ****                 right_motor(0);
- 502              		.loc 1 164 17 is_stmt 1 view .LVU123
- 503 0098 0020     		movs	r0, #0
- 504              	.LVL22:
- 164:Core/Src/interrupt.c ****                 right_motor(0);
- 505              		.loc 1 164 17 is_stmt 0 view .LVU124
- 506 009a FFF7FEFF 		bl	left_motor
- 507              	.LVL23:
- 165:Core/Src/interrupt.c ****             }
- 508              		.loc 1 165 17 is_stmt 1 view .LVU125
- 509 009e 0020     		movs	r0, #0
- 510 00a0 FFF7FEFF 		bl	right_motor
- 511              	.LVL24:
- 512 00a4 DCE7     		b	.L28
- 513              	.LVL25:
- 514              	.L46:
- 108:Core/Src/interrupt.c ****             left_motor(SPEED_MIN);  
- 515              		.loc 1 108 13 view .LVU126
- 108:Core/Src/interrupt.c ****             left_motor(SPEED_MIN);  
- 516              		.loc 1 108 24 is_stmt 0 view .LVU127
- 517 00a6 274B     		ldr	r3, .L53+8
- 518 00a8 0122     		movs	r2, #1
- 519 00aa 1A70     		strb	r2, [r3]
- 109:Core/Src/interrupt.c ****             right_motor(SPEED_FAST); 
- 520              		.loc 1 109 13 is_stmt 1 view .LVU128
- 521 00ac 4FF4AF70 		mov	r0, #350
- 522              	.LVL26:
- 109:Core/Src/interrupt.c ****             right_motor(SPEED_FAST); 
- 523              		.loc 1 109 13 is_stmt 0 view .LVU129
- 524 00b0 FFF7FEFF 		bl	left_motor
- 525              	.LVL27:
- 110:Core/Src/interrupt.c ****         }
- 526              		.loc 1 110 13 is_stmt 1 view .LVU130
- 527 00b4 40F22620 		movw	r0, #550
- 528 00b8 FFF7FEFF 		bl	right_motor
- 529              	.LVL28:
- 530 00bc D0E7     		b	.L28
- 531              	.LVL29:
- 532              	.L47:
- 116:Core/Src/interrupt.c ****             left_motor(SPEED_FAST);
- 533              		.loc 1 116 13 view .LVU131
- 116:Core/Src/interrupt.c ****             left_motor(SPEED_FAST);
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 46
+ 198:Core/Src/interrupt.c ****                 right_motor(-SPEED_MIN);
+ 199:Core/Src/interrupt.c ****             }
+ 200:Core/Src/interrupt.c ****             else 
+ 201:Core/Src/interrupt.c ****             {
+ 202:Core/Src/interrupt.c ****                 left_motor(0);
+ 203:Core/Src/interrupt.c ****                 right_motor(0);
+ 204:Core/Src/interrupt.c ****             }
+ 205:Core/Src/interrupt.c ****         }
+ 206:Core/Src/interrupt.c ****     }
+ 207:Core/Src/interrupt.c **** }
+ 478              		.loc 1 207 1 is_stmt 0 view .LVU113
+ 479 0078 38BD     		pop	{r3, r4, r5, pc}
+ 480              	.LVL21:
+ 481              	.L34:
+ 482              	.LBB12:
+ 131:Core/Src/interrupt.c ****             left_motor(SPEED_BASE); 
+ 483              		.loc 1 131 13 is_stmt 1 view .LVU114
+ 131:Core/Src/interrupt.c ****             left_motor(SPEED_BASE); 
+ 484              		.loc 1 131 24 is_stmt 0 view .LVU115
+ 485 007a 424B     		ldr	r3, .L53+16
+ 486 007c 0022     		movs	r2, #0
+ 487 007e 1A70     		strb	r2, [r3]
+ 132:Core/Src/interrupt.c ****             right_motor(SPEED_BASE);
+ 488              		.loc 1 132 13 is_stmt 1 view .LVU116
+ 489 0080 4FF4E170 		mov	r0, #450
+ 490              	.LVL22:
+ 132:Core/Src/interrupt.c ****             right_motor(SPEED_BASE);
+ 491              		.loc 1 132 13 is_stmt 0 view .LVU117
+ 492 0084 FFF7FEFF 		bl	left_motor
+ 493              	.LVL23:
+ 133:Core/Src/interrupt.c ****             return; 
+ 494              		.loc 1 133 13 is_stmt 1 view .LVU118
+ 495 0088 4FF4E170 		mov	r0, #450
+ 496 008c FFF7FEFF 		bl	right_motor
+ 497              	.LVL24:
+ 134:Core/Src/interrupt.c ****         }
+ 498              		.loc 1 134 13 view .LVU119
+ 499 0090 F2E7     		b	.L28
+ 500              	.LVL25:
+ 501              	.L31:
+ 139:Core/Src/interrupt.c ****             {
+ 502              		.loc 1 139 25 is_stmt 0 discriminator 1 view .LVU120
+ 503 0092 10B9     		cbnz	r0, .L35
+ 141:Core/Src/interrupt.c ****             }
+ 504              		.loc 1 141 17 is_stmt 1 view .LVU121
+ 141:Core/Src/interrupt.c ****             }
+ 505              		.loc 1 141 29 is_stmt 0 view .LVU122
+ 506 0094 394B     		ldr	r3, .L53+8
+ 507 0096 0022     		movs	r2, #0
+ 508 0098 1A70     		strb	r2, [r3]
+ 509              	.L35:
+ 148:Core/Src/interrupt.c ****         {
+ 510              		.loc 1 148 9 is_stmt 1 view .LVU123
+ 148:Core/Src/interrupt.c ****         {
+ 511              		.loc 1 148 12 is_stmt 0 view .LVU124
+ 512 009a 6CB9     		cbnz	r4, .L32
+ 148:Core/Src/interrupt.c ****         {
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 46
 
 
- 534              		.loc 1 116 24 is_stmt 0 view .LVU132
- 535 00be 214B     		ldr	r3, .L53+8
- 536 00c0 0222     		movs	r2, #2
- 537 00c2 1A70     		strb	r2, [r3]
- 117:Core/Src/interrupt.c ****             right_motor(SPEED_MIN); 
- 538              		.loc 1 117 13 is_stmt 1 view .LVU133
- 539 00c4 40F22620 		movw	r0, #550
- 540              	.LVL30:
- 117:Core/Src/interrupt.c ****             right_motor(SPEED_MIN); 
- 541              		.loc 1 117 13 is_stmt 0 view .LVU134
- 542 00c8 FFF7FEFF 		bl	left_motor
- 543              	.LVL31:
- 118:Core/Src/interrupt.c ****         }
- 544              		.loc 1 118 13 is_stmt 1 view .LVU135
- 545 00cc 4FF4AF70 		mov	r0, #350
- 546 00d0 FFF7FEFF 		bl	right_motor
- 547              	.LVL32:
- 548 00d4 C4E7     		b	.L28
- 549              	.LVL33:
- 550              	.L48:
- 125:Core/Src/interrupt.c ****             left_motor(0);    
- 551              		.loc 1 125 13 view .LVU136
- 125:Core/Src/interrupt.c ****             left_motor(0);    
- 552              		.loc 1 125 24 is_stmt 0 view .LVU137
- 553 00d6 1B4B     		ldr	r3, .L53+8
- 554 00d8 0122     		movs	r2, #1
- 555 00da 1A70     		strb	r2, [r3]
- 126:Core/Src/interrupt.c ****             right_motor(SPEED_FAST);
- 556              		.loc 1 126 13 is_stmt 1 view .LVU138
- 557 00dc FFF7FEFF 		bl	left_motor
- 558              	.LVL34:
- 127:Core/Src/interrupt.c ****         }
- 559              		.loc 1 127 13 view .LVU139
- 560 00e0 40F22620 		movw	r0, #550
- 561 00e4 FFF7FEFF 		bl	right_motor
- 562              	.LVL35:
- 563 00e8 BAE7     		b	.L28
- 564              	.LVL36:
- 565              	.L49:
- 134:Core/Src/interrupt.c ****             left_motor(SPEED_FAST);
- 566              		.loc 1 134 13 view .LVU140
- 134:Core/Src/interrupt.c ****             left_motor(SPEED_FAST);
- 567              		.loc 1 134 24 is_stmt 0 view .LVU141
- 568 00ea 164B     		ldr	r3, .L53+8
- 569 00ec 0222     		movs	r2, #2
- 570 00ee 1A70     		strb	r2, [r3]
- 135:Core/Src/interrupt.c ****             right_motor(0);   
- 571              		.loc 1 135 13 is_stmt 1 view .LVU142
- 572 00f0 40F22620 		movw	r0, #550
- 573              	.LVL37:
- 135:Core/Src/interrupt.c ****             right_motor(0);   
- 574              		.loc 1 135 13 is_stmt 0 view .LVU143
- 575 00f4 FFF7FEFF 		bl	left_motor
- 576              	.LVL38:
- 136:Core/Src/interrupt.c ****         }
- 577              		.loc 1 136 13 is_stmt 1 view .LVU144
- 578 00f8 0020     		movs	r0, #0
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 47
+ 513              		.loc 1 148 21 discriminator 1 view .LVU125
+ 514 009c 7DB1     		cbz	r5, .L36
+ 148:Core/Src/interrupt.c ****         {
+ 515              		.loc 1 148 33 discriminator 2 view .LVU126
+ 516 009e 70B9     		cbnz	r0, .L36
+ 150:Core/Src/interrupt.c ****             left_motor(SPEED_BASE);
+ 517              		.loc 1 150 13 is_stmt 1 view .LVU127
+ 150:Core/Src/interrupt.c ****             left_motor(SPEED_BASE);
+ 518              		.loc 1 150 24 is_stmt 0 view .LVU128
+ 519 00a0 384B     		ldr	r3, .L53+16
+ 520 00a2 0022     		movs	r2, #0
+ 521 00a4 1A70     		strb	r2, [r3]
+ 151:Core/Src/interrupt.c ****             right_motor(SPEED_BASE);
+ 522              		.loc 1 151 13 is_stmt 1 view .LVU129
+ 523 00a6 4FF4E170 		mov	r0, #450
+ 524              	.LVL26:
+ 151:Core/Src/interrupt.c ****             right_motor(SPEED_BASE);
+ 525              		.loc 1 151 13 is_stmt 0 view .LVU130
+ 526 00aa FFF7FEFF 		bl	left_motor
+ 527              	.LVL27:
+ 152:Core/Src/interrupt.c ****         }
+ 528              		.loc 1 152 13 is_stmt 1 view .LVU131
+ 529 00ae 4FF4E170 		mov	r0, #450
+ 530 00b2 FFF7FEFF 		bl	right_motor
+ 531              	.LVL28:
+ 532 00b6 DFE7     		b	.L28
+ 533              	.LVL29:
+ 534              	.L32:
+ 156:Core/Src/interrupt.c ****         {
+ 535              		.loc 1 156 14 view .LVU132
+ 156:Core/Src/interrupt.c ****         {
+ 536              		.loc 1 156 25 is_stmt 0 discriminator 1 view .LVU133
+ 537 00b8 05B1     		cbz	r5, .L37
+ 156:Core/Src/interrupt.c ****         {
+ 538              		.loc 1 156 37 discriminator 2 view .LVU134
+ 539 00ba E0B1     		cbz	r0, .L47
+ 540              	.L37:
+ 164:Core/Src/interrupt.c ****         {
+ 541              		.loc 1 164 14 is_stmt 1 view .LVU135
+ 164:Core/Src/interrupt.c ****         {
+ 542              		.loc 1 164 17 is_stmt 0 view .LVU136
+ 543 00bc 14B9     		cbnz	r4, .L38
+ 544              	.L36:
+ 164:Core/Src/interrupt.c ****         {
+ 545              		.loc 1 164 26 discriminator 1 view .LVU137
+ 546 00be 05B1     		cbz	r5, .L39
+ 164:Core/Src/interrupt.c ****         {
+ 547              		.loc 1 164 38 discriminator 2 view .LVU138
+ 548 00c0 28BB     		cbnz	r0, .L48
+ 549              	.L39:
+ 172:Core/Src/interrupt.c ****         {
+ 550              		.loc 1 172 14 is_stmt 1 view .LVU139
+ 172:Core/Src/interrupt.c ****         {
+ 551              		.loc 1 172 17 is_stmt 0 view .LVU140
+ 552 00c2 1CB1     		cbz	r4, .L40
+ 553              	.L38:
+ 172:Core/Src/interrupt.c ****         {
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 47
 
 
- 579 00fa FFF7FEFF 		bl	right_motor
- 580              	.LVL39:
- 581 00fe AFE7     		b	.L28
- 582              	.LVL40:
- 583              	.L50:
- 142:Core/Src/interrupt.c ****             left_motor(SPEED_BASE); 
- 584              		.loc 1 142 13 view .LVU145
- 142:Core/Src/interrupt.c ****             left_motor(SPEED_BASE); 
- 585              		.loc 1 142 24 is_stmt 0 view .LVU146
- 586 0100 104B     		ldr	r3, .L53+8
- 587 0102 0022     		movs	r2, #0
- 588 0104 1A70     		strb	r2, [r3]
- 143:Core/Src/interrupt.c ****             right_motor(SPEED_BASE);
- 589              		.loc 1 143 13 is_stmt 1 view .LVU147
- 590 0106 4FF4E170 		mov	r0, #450
- 591              	.LVL41:
- 143:Core/Src/interrupt.c ****             right_motor(SPEED_BASE);
- 592              		.loc 1 143 13 is_stmt 0 view .LVU148
- 593 010a FFF7FEFF 		bl	left_motor
- 594              	.LVL42:
- 144:Core/Src/interrupt.c ****         }
- 595              		.loc 1 144 13 is_stmt 1 view .LVU149
- 596 010e 4FF4E170 		mov	r0, #450
- 597 0112 FFF7FEFF 		bl	right_motor
- 598              	.LVL43:
- 599 0116 A3E7     		b	.L28
- 600              	.LVL44:
- 601              	.L51:
- 153:Core/Src/interrupt.c ****                 right_motor(SPEED_MIN);
- 602              		.loc 1 153 17 view .LVU150
- 603 0118 A0F5AF70 		sub	r0, r0, #350
- 604              	.LVL45:
- 153:Core/Src/interrupt.c ****                 right_motor(SPEED_MIN);
- 605              		.loc 1 153 17 is_stmt 0 view .LVU151
- 606 011c FFF7FEFF 		bl	left_motor
- 607              	.LVL46:
- 154:Core/Src/interrupt.c ****             }
- 608              		.loc 1 154 17 is_stmt 1 view .LVU152
- 609 0120 4FF4AF70 		mov	r0, #350
- 610 0124 FFF7FEFF 		bl	right_motor
- 611              	.LVL47:
- 612 0128 9AE7     		b	.L28
- 613              	.LVL48:
- 614              	.L52:
- 158:Core/Src/interrupt.c ****                 right_motor(-SPEED_MIN);
- 615              		.loc 1 158 17 view .LVU153
- 616 012a 4FF4AF70 		mov	r0, #350
- 617              	.LVL49:
- 158:Core/Src/interrupt.c ****                 right_motor(-SPEED_MIN);
- 618              		.loc 1 158 17 is_stmt 0 view .LVU154
- 619 012e FFF7FEFF 		bl	left_motor
- 620              	.LVL50:
- 159:Core/Src/interrupt.c ****             }
- 621              		.loc 1 159 17 is_stmt 1 view .LVU155
- 622 0132 0548     		ldr	r0, .L53+12
- 623 0134 FFF7FEFF 		bl	right_motor
- 624              	.LVL51:
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 48
+ 554              		.loc 1 172 25 discriminator 1 view .LVU141
+ 555 00c4 05B9     		cbnz	r5, .L41
+ 172:Core/Src/interrupt.c ****         {
+ 556              		.loc 1 172 38 discriminator 2 view .LVU142
+ 557 00c6 70B3     		cbz	r0, .L49
+ 558              	.L41:
+ 180:Core/Src/interrupt.c ****         {
+ 559              		.loc 1 180 14 is_stmt 1 view .LVU143
+ 180:Core/Src/interrupt.c ****         {
+ 560              		.loc 1 180 17 is_stmt 0 view .LVU144
+ 561 00c8 002C     		cmp	r4, #0
+ 562 00ca D5D1     		bne	.L28
+ 563              	.L40:
+ 180:Core/Src/interrupt.c ****         {
+ 564              		.loc 1 180 26 discriminator 1 view .LVU145
+ 565 00cc 05B9     		cbnz	r5, .L42
+ 180:Core/Src/interrupt.c ****         {
+ 566              		.loc 1 180 39 discriminator 2 view .LVU146
+ 567 00ce A0BB     		cbnz	r0, .L50
+ 568              	.L42:
+ 188:Core/Src/interrupt.c ****         {
+ 569              		.loc 1 188 14 is_stmt 1 view .LVU147
+ 188:Core/Src/interrupt.c ****         {
+ 570              		.loc 1 188 17 is_stmt 0 view .LVU148
+ 571 00d0 002C     		cmp	r4, #0
+ 572 00d2 D1D1     		bne	.L28
+ 188:Core/Src/interrupt.c ****         {
+ 573              		.loc 1 188 26 discriminator 1 view .LVU149
+ 574 00d4 002D     		cmp	r5, #0
+ 575 00d6 CFD1     		bne	.L28
+ 188:Core/Src/interrupt.c ****         {
+ 576              		.loc 1 188 39 discriminator 2 view .LVU150
+ 577 00d8 0028     		cmp	r0, #0
+ 578 00da CDD1     		bne	.L28
+ 190:Core/Src/interrupt.c ****             {
+ 579              		.loc 1 190 13 is_stmt 1 view .LVU151
+ 190:Core/Src/interrupt.c ****             {
+ 580              		.loc 1 190 28 is_stmt 0 view .LVU152
+ 581 00dc 294B     		ldr	r3, .L53+16
+ 582 00de 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 190:Core/Src/interrupt.c ****             {
+ 583              		.loc 1 190 16 view .LVU153
+ 584 00e0 012B     		cmp	r3, #1
+ 585 00e2 35D0     		beq	.L51
+ 195:Core/Src/interrupt.c ****             {
+ 586              		.loc 1 195 18 is_stmt 1 view .LVU154
+ 195:Core/Src/interrupt.c ****             {
+ 587              		.loc 1 195 21 is_stmt 0 view .LVU155
+ 588 00e4 022B     		cmp	r3, #2
+ 589 00e6 3CD0     		beq	.L52
+ 202:Core/Src/interrupt.c ****                 right_motor(0);
+ 590              		.loc 1 202 17 is_stmt 1 view .LVU156
+ 591 00e8 0020     		movs	r0, #0
+ 592              	.LVL30:
+ 202:Core/Src/interrupt.c ****                 right_motor(0);
+ 593              		.loc 1 202 17 is_stmt 0 view .LVU157
+ 594 00ea FFF7FEFF 		bl	left_motor
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 48
 
 
- 625 0138 92E7     		b	.L28
- 626              	.L54:
- 627 013a 00BF     		.align	2
- 628              	.L53:
- 629 013c 00000000 		.word	tim2_flag
- 630 0140 00000000 		.word	button_permission
- 631 0144 00000000 		.word	last_state
- 632 0148 A2FEFFFF 		.word	-350
- 633              	.LBE12:
- 634              		.cfi_endproc
- 635              	.LFE136:
- 637              		.section	.text.get_tim2_flag,"ax",%progbits
- 638              		.align	1
- 639              		.global	get_tim2_flag
- 640              		.syntax unified
- 641              		.thumb
- 642              		.thumb_func
- 644              	get_tim2_flag:
- 645              	.LFB137:
- 170:Core/Src/interrupt.c **** 
- 171:Core/Src/interrupt.c **** uint8_t get_tim2_flag(void)
- 172:Core/Src/interrupt.c **** {
- 646              		.loc 1 172 1 view -0
- 647              		.cfi_startproc
- 648              		@ args = 0, pretend = 0, frame = 0
- 649              		@ frame_needed = 0, uses_anonymous_args = 0
- 650              		@ link register save eliminated.
- 173:Core/Src/interrupt.c ****     return tim2_flag;
- 651              		.loc 1 173 5 view .LVU157
- 652              		.loc 1 173 12 is_stmt 0 view .LVU158
- 653 0000 014B     		ldr	r3, .L56
- 654 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
- 174:Core/Src/interrupt.c **** }
- 655              		.loc 1 174 1 view .LVU159
- 656 0004 7047     		bx	lr
- 657              	.L57:
- 658 0006 00BF     		.align	2
- 659              	.L56:
- 660 0008 00000000 		.word	tim2_flag
- 661              		.cfi_endproc
- 662              	.LFE137:
- 664              		.section	.text.set_tim2_flag,"ax",%progbits
- 665              		.align	1
- 666              		.global	set_tim2_flag
- 667              		.syntax unified
- 668              		.thumb
- 669              		.thumb_func
- 671              	set_tim2_flag:
- 672              	.LVL52:
- 673              	.LFB138:
- 175:Core/Src/interrupt.c **** 
- 176:Core/Src/interrupt.c **** void set_tim2_flag(uint8_t flag)
- 177:Core/Src/interrupt.c **** {
- 674              		.loc 1 177 1 is_stmt 1 view -0
- 675              		.cfi_startproc
- 676              		@ args = 0, pretend = 0, frame = 0
- 677              		@ frame_needed = 0, uses_anonymous_args = 0
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 49
+ 595              	.LVL31:
+ 203:Core/Src/interrupt.c ****             }
+ 596              		.loc 1 203 17 is_stmt 1 view .LVU158
+ 597 00ee 0020     		movs	r0, #0
+ 598 00f0 FFF7FEFF 		bl	right_motor
+ 599              	.LVL32:
+ 600 00f4 C0E7     		b	.L28
+ 601              	.LVL33:
+ 602              	.L47:
+ 158:Core/Src/interrupt.c ****             left_motor(SPEED_MIN);  
+ 603              		.loc 1 158 13 view .LVU159
+ 158:Core/Src/interrupt.c ****             left_motor(SPEED_MIN);  
+ 604              		.loc 1 158 24 is_stmt 0 view .LVU160
+ 605 00f6 234B     		ldr	r3, .L53+16
+ 606 00f8 0122     		movs	r2, #1
+ 607 00fa 1A70     		strb	r2, [r3]
+ 159:Core/Src/interrupt.c ****             right_motor(SPEED_FAST); 
+ 608              		.loc 1 159 13 is_stmt 1 view .LVU161
+ 609 00fc 4FF4AF70 		mov	r0, #350
+ 610              	.LVL34:
+ 159:Core/Src/interrupt.c ****             right_motor(SPEED_FAST); 
+ 611              		.loc 1 159 13 is_stmt 0 view .LVU162
+ 612 0100 FFF7FEFF 		bl	left_motor
+ 613              	.LVL35:
+ 160:Core/Src/interrupt.c ****         }
+ 614              		.loc 1 160 13 is_stmt 1 view .LVU163
+ 615 0104 40F22620 		movw	r0, #550
+ 616 0108 FFF7FEFF 		bl	right_motor
+ 617              	.LVL36:
+ 618 010c B4E7     		b	.L28
+ 619              	.LVL37:
+ 620              	.L48:
+ 166:Core/Src/interrupt.c ****             left_motor(SPEED_FAST);
+ 621              		.loc 1 166 13 view .LVU164
+ 166:Core/Src/interrupt.c ****             left_motor(SPEED_FAST);
+ 622              		.loc 1 166 24 is_stmt 0 view .LVU165
+ 623 010e 1D4B     		ldr	r3, .L53+16
+ 624 0110 0222     		movs	r2, #2
+ 625 0112 1A70     		strb	r2, [r3]
+ 167:Core/Src/interrupt.c ****             right_motor(SPEED_MIN); 
+ 626              		.loc 1 167 13 is_stmt 1 view .LVU166
+ 627 0114 40F22620 		movw	r0, #550
+ 628              	.LVL38:
+ 167:Core/Src/interrupt.c ****             right_motor(SPEED_MIN); 
+ 629              		.loc 1 167 13 is_stmt 0 view .LVU167
+ 630 0118 FFF7FEFF 		bl	left_motor
+ 631              	.LVL39:
+ 168:Core/Src/interrupt.c ****         }
+ 632              		.loc 1 168 13 is_stmt 1 view .LVU168
+ 633 011c 4FF4AF70 		mov	r0, #350
+ 634 0120 FFF7FEFF 		bl	right_motor
+ 635              	.LVL40:
+ 636 0124 A8E7     		b	.L28
+ 637              	.LVL41:
+ 638              	.L49:
+ 174:Core/Src/interrupt.c ****             left_motor(0);    
+ 639              		.loc 1 174 13 view .LVU169
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 49
 
 
- 678              		@ link register save eliminated.
- 178:Core/Src/interrupt.c ****     tim2_flag = flag;
- 679              		.loc 1 178 5 view .LVU161
- 680              		.loc 1 178 15 is_stmt 0 view .LVU162
- 681 0000 014B     		ldr	r3, .L59
- 682 0002 1870     		strb	r0, [r3]
- 179:Core/Src/interrupt.c **** }...
- 683              		.loc 1 179 1 view .LVU163
- 684 0004 7047     		bx	lr
- 685              	.L60:
- 686 0006 00BF     		.align	2
- 687              	.L59:
- 688 0008 00000000 		.word	tim2_flag
- 689              		.cfi_endproc
- 690              	.LFE138:
- 692              		.section	.bss.led_counter.0,"aw",%nobits
- 693              		.align	2
- 696              	led_counter.0:
- 697 0000 00000000 		.space	4
- 698              		.section	.bss.last_state,"aw",%nobits
- 701              	last_state:
- 702 0000 00       		.space	1
- 703              		.section	.bss.tim2_flag,"aw",%nobits
- 706              	tim2_flag:
- 707 0000 00       		.space	1
- 708              		.section	.bss.button_permission,"aw",%nobits
- 711              	button_permission:
- 712 0000 00       		.space	1
- 713              		.section	.bss.press_time,"aw",%nobits
- 714              		.align	2
- 717              	press_time:
- 718 0000 00000000 		.space	4
- 719              		.section	.bss.ticks,"aw",%nobits
- 720              		.align	2
- 723              	ticks:
- 724 0000 00000000 		.space	4
- 725              		.text
- 726              	.Letext0:
- 727              		.file 3 "C:/Users/Daiana/Desktop/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/includ
- 728              		.file 4 "C:/Users/Daiana/Desktop/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/includ
- 729              		.file 5 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
- 730              		.file 6 "Core/Inc/sensors.h"
- 731              		.file 7 "Core/Inc/motor.h"
-ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s 			page 50
+ 174:Core/Src/interrupt.c ****             left_motor(0);    
+ 640              		.loc 1 174 24 is_stmt 0 view .LVU170
+ 641 0126 174B     		ldr	r3, .L53+16
+ 642 0128 0122     		movs	r2, #1
+ 643 012a 1A70     		strb	r2, [r3]
+ 175:Core/Src/interrupt.c ****             right_motor(SPEED_FAST);
+ 644              		.loc 1 175 13 is_stmt 1 view .LVU171
+ 645 012c FFF7FEFF 		bl	left_motor
+ 646              	.LVL42:
+ 176:Core/Src/interrupt.c ****         }
+ 647              		.loc 1 176 13 view .LVU172
+ 648 0130 40F22620 		movw	r0, #550
+ 649 0134 FFF7FEFF 		bl	right_motor
+ 650              	.LVL43:
+ 651 0138 9EE7     		b	.L28
+ 652              	.LVL44:
+ 653              	.L50:
+ 182:Core/Src/interrupt.c ****             left_motor(SPEED_FAST);
+ 654              		.loc 1 182 13 view .LVU173
+ 182:Core/Src/interrupt.c ****             left_motor(SPEED_FAST);
+ 655              		.loc 1 182 24 is_stmt 0 view .LVU174
+ 656 013a 124B     		ldr	r3, .L53+16
+ 657 013c 0222     		movs	r2, #2
+ 658 013e 1A70     		strb	r2, [r3]
+ 183:Core/Src/interrupt.c ****             right_motor(0);   
+ 659              		.loc 1 183 13 is_stmt 1 view .LVU175
+ 660 0140 40F22620 		movw	r0, #550
+ 661              	.LVL45:
+ 183:Core/Src/interrupt.c ****             right_motor(0);   
+ 662              		.loc 1 183 13 is_stmt 0 view .LVU176
+ 663 0144 FFF7FEFF 		bl	left_motor
+ 664              	.LVL46:
+ 184:Core/Src/interrupt.c ****         }
+ 665              		.loc 1 184 13 is_stmt 1 view .LVU177
+ 666 0148 0020     		movs	r0, #0
+ 667 014a FFF7FEFF 		bl	right_motor
+ 668              	.LVL47:
+ 669 014e 93E7     		b	.L28
+ 670              	.LVL48:
+ 671              	.L51:
+ 192:Core/Src/interrupt.c ****                 right_motor(SPEED_MIN);
+ 672              		.loc 1 192 17 view .LVU178
+ 673 0150 A0F5AF70 		sub	r0, r0, #350
+ 674              	.LVL49:
+ 192:Core/Src/interrupt.c ****                 right_motor(SPEED_MIN);
+ 675              		.loc 1 192 17 is_stmt 0 view .LVU179
+ 676 0154 FFF7FEFF 		bl	left_motor
+ 677              	.LVL50:
+ 193:Core/Src/interrupt.c ****             }
+ 678              		.loc 1 193 17 is_stmt 1 view .LVU180
+ 679 0158 4FF4AF70 		mov	r0, #350
+ 680 015c FFF7FEFF 		bl	right_motor
+ 681              	.LVL51:
+ 682 0160 8AE7     		b	.L28
+ 683              	.LVL52:
+ 684              	.L52:
+ 197:Core/Src/interrupt.c ****                 right_motor(-SPEED_MIN);
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 50
+
+
+ 685              		.loc 1 197 17 view .LVU181
+ 686 0162 4FF4AF70 		mov	r0, #350
+ 687              	.LVL53:
+ 197:Core/Src/interrupt.c ****                 right_motor(-SPEED_MIN);
+ 688              		.loc 1 197 17 is_stmt 0 view .LVU182
+ 689 0166 FFF7FEFF 		bl	left_motor
+ 690              	.LVL54:
+ 198:Core/Src/interrupt.c ****             }
+ 691              		.loc 1 198 17 is_stmt 1 view .LVU183
+ 692 016a 0748     		ldr	r0, .L53+20
+ 693 016c FFF7FEFF 		bl	right_motor
+ 694              	.LVL55:
+ 695 0170 82E7     		b	.L28
+ 696              	.L54:
+ 697 0172 00BF     		.align	2
+ 698              	.L53:
+ 699 0174 00000000 		.word	tim2_flag
+ 700 0178 00000000 		.word	button_permission
+ 701 017c 00000000 		.word	is_on_cross
+ 702 0180 00000000 		.word	cross_count
+ 703 0184 00000000 		.word	last_state
+ 704 0188 A2FEFFFF 		.word	-350
+ 705              	.LBE12:
+ 706              		.cfi_endproc
+ 707              	.LFE136:
+ 709              		.section	.text.get_tim2_flag,"ax",%progbits
+ 710              		.align	1
+ 711              		.global	get_tim2_flag
+ 712              		.syntax unified
+ 713              		.thumb
+ 714              		.thumb_func
+ 716              	get_tim2_flag:
+ 717              	.LFB137:
+ 208:Core/Src/interrupt.c **** 
+ 209:Core/Src/interrupt.c **** uint8_t get_tim2_flag(void)
+ 210:Core/Src/interrupt.c **** {
+ 718              		.loc 1 210 1 view -0
+ 719              		.cfi_startproc
+ 720              		@ args = 0, pretend = 0, frame = 0
+ 721              		@ frame_needed = 0, uses_anonymous_args = 0
+ 722              		@ link register save eliminated.
+ 211:Core/Src/interrupt.c ****     return tim2_flag;
+ 723              		.loc 1 211 5 view .LVU185
+ 724              		.loc 1 211 12 is_stmt 0 view .LVU186
+ 725 0000 014B     		ldr	r3, .L56
+ 726 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 212:Core/Src/interrupt.c **** }
+ 727              		.loc 1 212 1 view .LVU187
+ 728 0004 7047     		bx	lr
+ 729              	.L57:
+ 730 0006 00BF     		.align	2
+ 731              	.L56:
+ 732 0008 00000000 		.word	tim2_flag
+ 733              		.cfi_endproc
+ 734              	.LFE137:
+ 736              		.section	.text.set_tim2_flag,"ax",%progbits
+ 737              		.align	1
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 51
+
+
+ 738              		.global	set_tim2_flag
+ 739              		.syntax unified
+ 740              		.thumb
+ 741              		.thumb_func
+ 743              	set_tim2_flag:
+ 744              	.LVL56:
+ 745              	.LFB138:
+ 213:Core/Src/interrupt.c **** 
+ 214:Core/Src/interrupt.c **** void set_tim2_flag(uint8_t flag)
+ 215:Core/Src/interrupt.c **** {
+ 746              		.loc 1 215 1 is_stmt 1 view -0
+ 747              		.cfi_startproc
+ 748              		@ args = 0, pretend = 0, frame = 0
+ 749              		@ frame_needed = 0, uses_anonymous_args = 0
+ 750              		@ link register save eliminated.
+ 216:Core/Src/interrupt.c ****     tim2_flag = flag;
+ 751              		.loc 1 216 5 view .LVU189
+ 752              		.loc 1 216 15 is_stmt 0 view .LVU190
+ 753 0000 014B     		ldr	r3, .L59
+ 754 0002 1870     		strb	r0, [r3]
+ 217:Core/Src/interrupt.c **** }...
+ 755              		.loc 1 217 1 view .LVU191
+ 756 0004 7047     		bx	lr
+ 757              	.L60:
+ 758 0006 00BF     		.align	2
+ 759              	.L59:
+ 760 0008 00000000 		.word	tim2_flag
+ 761              		.cfi_endproc
+ 762              	.LFE138:
+ 764              		.section	.bss.led_counter.0,"aw",%nobits
+ 765              		.align	2
+ 768              	led_counter.0:
+ 769 0000 00000000 		.space	4
+ 770              		.section	.bss.is_on_cross,"aw",%nobits
+ 773              	is_on_cross:
+ 774 0000 00       		.space	1
+ 775              		.section	.bss.cross_count,"aw",%nobits
+ 778              	cross_count:
+ 779 0000 00       		.space	1
+ 780              		.section	.bss.last_state,"aw",%nobits
+ 783              	last_state:
+ 784 0000 00       		.space	1
+ 785              		.section	.bss.tim2_flag,"aw",%nobits
+ 788              	tim2_flag:
+ 789 0000 00       		.space	1
+ 790              		.section	.bss.button_permission,"aw",%nobits
+ 793              	button_permission:
+ 794 0000 00       		.space	1
+ 795              		.section	.bss.press_time,"aw",%nobits
+ 796              		.align	2
+ 799              	press_time:
+ 800 0000 00000000 		.space	4
+ 801              		.section	.bss.ticks,"aw",%nobits
+ 802              		.align	2
+ 805              	ticks:
+ 806 0000 00000000 		.space	4
+ 807              		.text
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 52
+
+
+ 808              	.Letext0:
+ 809              		.file 3 "C:/Users/Daiana/Desktop/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/includ
+ 810              		.file 4 "C:/Users/Daiana/Desktop/Tools/GCC/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/includ
+ 811              		.file 5 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ 812              		.file 6 "Core/Inc/sensors.h"
+ 813              		.file 7 "Core/Inc/motor.h"
+ARM GAS  C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s 			page 53
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 interrupt.c
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:21     .text.led_toggle:00000000 $t
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:26     .text.led_toggle:00000000 led_toggle
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:45     .text.led_toggle:0000000c $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:50     .text.SysTick_Handler:00000000 $t
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:56     .text.SysTick_Handler:00000000 SysTick_Handler
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:119    .text.SysTick_Handler:00000038 $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:696    .bss.led_counter.0:00000000 led_counter.0
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:711    .bss.button_permission:00000000 button_permission
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:723    .bss.ticks:00000000 ticks
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:126    .text.get_ticks:00000000 $t
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:132    .text.get_ticks:00000000 get_ticks
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:148    .text.get_ticks:00000008 $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:153    .text.button_interrupt_init:00000000 $t
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:159    .text.button_interrupt_init:00000000 button_interrupt_init
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:226    .text.button_interrupt_init:00000044 $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:233    .text.EXTI15_10_IRQHandler:00000000 $t
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:239    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:303    .text.EXTI15_10_IRQHandler:00000044 $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:717    .bss.press_time:00000000 press_time
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:313    .text.get_button_permission:00000000 $t
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:319    .text.get_button_permission:00000000 get_button_permission
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:335    .text.get_button_permission:00000008 $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:340    .text.TIM2_IRQHandler:00000000 $t
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:346    .text.TIM2_IRQHandler:00000000 TIM2_IRQHandler
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:629    .text.TIM2_IRQHandler:0000013c $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:706    .bss.tim2_flag:00000000 tim2_flag
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:701    .bss.last_state:00000000 last_state
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:638    .text.get_tim2_flag:00000000 $t
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:644    .text.get_tim2_flag:00000000 get_tim2_flag
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:660    .text.get_tim2_flag:00000008 $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:665    .text.set_tim2_flag:00000000 $t
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:671    .text.set_tim2_flag:00000000 set_tim2_flag
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:688    .text.set_tim2_flag:00000008 $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:693    .bss.led_counter.0:00000000 $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:702    .bss.last_state:00000000 $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:707    .bss.tim2_flag:00000000 $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:712    .bss.button_permission:00000000 $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:714    .bss.press_time:00000000 $d
-C:\Users\Daiana\AppData\Local\Temp\ccRi2NIi.s:720    .bss.ticks:00000000 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:21     .text.led_toggle:00000000 $t
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:26     .text.led_toggle:00000000 led_toggle
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:45     .text.led_toggle:0000000c $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:50     .text.SysTick_Handler:00000000 $t
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:56     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:119    .text.SysTick_Handler:00000038 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:768    .bss.led_counter.0:00000000 led_counter.0
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:793    .bss.button_permission:00000000 button_permission
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:805    .bss.ticks:00000000 ticks
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:126    .text.get_ticks:00000000 $t
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:132    .text.get_ticks:00000000 get_ticks
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:148    .text.get_ticks:00000008 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:153    .text.button_interrupt_init:00000000 $t
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:159    .text.button_interrupt_init:00000000 button_interrupt_init
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:226    .text.button_interrupt_init:00000044 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:233    .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:239    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:319    .text.EXTI15_10_IRQHandler:00000058 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:799    .bss.press_time:00000000 press_time
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:778    .bss.cross_count:00000000 cross_count
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:773    .bss.is_on_cross:00000000 is_on_cross
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:331    .text.get_button_permission:00000000 $t
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:337    .text.get_button_permission:00000000 get_button_permission
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:353    .text.get_button_permission:00000008 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:358    .text.TIM2_IRQHandler:00000000 $t
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:364    .text.TIM2_IRQHandler:00000000 TIM2_IRQHandler
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:699    .text.TIM2_IRQHandler:00000174 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:788    .bss.tim2_flag:00000000 tim2_flag
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:783    .bss.last_state:00000000 last_state
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:710    .text.get_tim2_flag:00000000 $t
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:716    .text.get_tim2_flag:00000000 get_tim2_flag
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:732    .text.get_tim2_flag:00000008 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:737    .text.set_tim2_flag:00000000 $t
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:743    .text.set_tim2_flag:00000000 set_tim2_flag
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:760    .text.set_tim2_flag:00000008 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:765    .bss.led_counter.0:00000000 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:774    .bss.is_on_cross:00000000 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:779    .bss.cross_count:00000000 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:784    .bss.last_state:00000000 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:789    .bss.tim2_flag:00000000 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:794    .bss.button_permission:00000000 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:796    .bss.press_time:00000000 $d
+C:\Users\Daiana\AppData\Local\Temp\ccVlwIl6.s:802    .bss.ticks:00000000 $d
 
 UNDEFINED SYMBOLS
 read_right_sensor
