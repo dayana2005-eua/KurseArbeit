@@ -2,9 +2,11 @@
 #include "motor.h"     
 #include "sensors.h"  
 
-#define SPEED_FAST   300 // Высокая скорость
-#define SPEED_BASE   350 // Базовая скорость для движения прямо
-#define SPEED_MIN    300 // Минимальная скорость, при которой мотор крутится
+// Настраиваем "окно" скоростей. 
+// Базовая должна быть ощутимо выше минимальной, чтобы было куда сбрасывать скорость.
+#define SPEED_FAST   550 // Скорость для внешнего колеса при повороте
+#define SPEED_BASE   450 // Базовая скорость для движения прямо
+#define SPEED_MIN    350 // Минимальная скорость (ниже которой мотор глохнет)
 
 static volatile uint32_t ticks = 0;
 static volatile uint32_t press_time = 0;
@@ -88,7 +90,6 @@ void TIM2_IRQHandler(void)
             return;
         }
 
-        // Опрос датчиков с твоей программной заменой
         uint8_t s_left   = read_right_sensor();  
         uint8_t s_middle = read_middle_sensor(); 
         uint8_t s_right  = read_left_sensor();   
@@ -101,35 +102,37 @@ void TIM2_IRQHandler(void)
             right_motor(SPEED_BASE);
         }
         
-        // 2. ЛЕГКАЯ ДУГА ВЛЕВО (полилиния) - не глушим колесо, ставим на минимум
+        // 2. ЛЕГКАЯ ДУГА ВЛЕВО - ускоряем правое, левое держим на грани сваливания
         else if (s_left && s_middle && !s_right)
         {
             last_state = 1;
             left_motor(SPEED_MIN);  
-            right_motor(SPEED_BASE); 
+            right_motor(SPEED_FAST); 
         }
         
-        // 3. ЛЕГКАЯ ДУГА ВПРАВО (полилиния) - не глушим колесо, ставим на минимум
+        // 3. ЛЕГКАЯ ДУГА ВПРАВО - ускоряем левое, правое держим на грани сваливания
         else if (!s_left && s_middle && s_right)
         {
             last_state = 2;
-            left_motor(SPEED_BASE);
+            left_motor(SPEED_FAST);
             right_motor(SPEED_MIN); 
         }
         
-        // 4. КРУТАЯ ДУГА ВЛЕВО - только тут полностью останавливаем левое колесо (0)
+        // 4. КРУТАЯ ДУГА ВЛЕВО - тут останавливаем внутреннее колесо
+        // Если инерция все равно выкидывает робота, попробуй тут left_motor(-SPEED_MIN)
         else if (s_left && !s_middle && !s_right)
         {
             last_state = 1;
             left_motor(0);    
-            right_motor(SPEED_BASE);
+            right_motor(SPEED_FAST);
         }
         
-        // 5. КРУТАЯ ДУГА ВПРАВО - только тут полностью останавливаем правое колесо (0)
+        // 5. КРУТАЯ ДУГА ВПРАВО
+        // Аналогично, если заносит - используй реверс right_motor(-SPEED_MIN)
         else if (!s_left && !s_middle && s_right)
         {
             last_state = 2;
-            left_motor(SPEED_BASE);
+            left_motor(SPEED_FAST);
             right_motor(0);   
         }
         
@@ -141,7 +144,8 @@ void TIM2_IRQHandler(void)
             right_motor(SPEED_BASE);
         }
         
-        // 7. УГОЛ 90 ГРАДУСОВ ИЛИ ПЕТЛЯ (все на белом) - используем минимальную скорость для разворота
+        // 7. ПОТЕРЯ ЛИНИИ (угол 90 градусов или вылет)
+        // Вращаемся на месте на минимальной скорости, чтобы найти линию
         else if (!s_left && !s_middle && !s_right)
         {
             if (last_state == 1)
@@ -156,8 +160,9 @@ void TIM2_IRQHandler(void)
             }
             else 
             {
-                left_motor(SPEED_BASE);
-                right_motor(SPEED_BASE);
+                // Если слетели на прямой, сдаем чуть-чуть назад или просто стоим
+                left_motor(0);
+                right_motor(0);
             }
         }
     }
